@@ -1,0 +1,11 @@
+{
+    "name": "SISIG",
+    "alias": "sisig",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SISIG\\Providers\\SISIGServiceProvider"
+    ],
+    "files": []
+}

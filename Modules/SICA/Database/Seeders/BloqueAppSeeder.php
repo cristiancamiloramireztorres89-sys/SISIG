@@ -118,5 +118,14 @@ class BloqueAppSeeder extends Seeder
             'description' => 'Administración de aprendices, instructores, asignación de turnos operacionales en SENA Empresa y control de asistencia.',
             'description_english' => 'Management of apprentices, instructors, operational shifts and attendance control.'
         ]);
+        
+        App::updateOrCreate(['name' => 'SISIG'], [
+            'bloque_id' => $apoyo->id, 
+            'url' => '/sisig',
+            'color' => '#008450',
+            'icon' => 'fas fa-shield-alt',
+            'description' => 'Gestion de examenes, induccion, evaluaciones',
+            'description_english' => 'Integrated Management System.'
+        ]);
     }
 }
