@@ -147,7 +147,7 @@
                             </a>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
+                        <a href="{{ route('login') }}?redirect=/sisig" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
                             <i class="fas fa-sign-in-alt text-sm"></i>
                             <span>Iniciar Sesión</span>
                         </a>

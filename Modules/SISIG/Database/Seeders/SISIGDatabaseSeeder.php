@@ -11,6 +11,8 @@ class SISIGDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            SISIGUsersTableSeeder::class,
+        ]);
     }
 }

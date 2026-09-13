@@ -486,7 +486,7 @@
             </div>
             
             <div class="relative z-10 flex-shrink-0">
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-sena-green hover:bg-sena-green-hover text-white text-sm font-extrabold shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
+                <a href="{{ route('login') }}?redirect=/sisig" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-sena-green hover:bg-sena-green-hover text-white text-sm font-extrabold shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
                     <i class="fas fa-sign-in-alt text-base"></i>
                     <span>Comenzar Ahora</span>
                 </a>
