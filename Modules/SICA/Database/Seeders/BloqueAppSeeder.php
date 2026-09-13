@@ -124,8 +124,8 @@ class BloqueAppSeeder extends Seeder
             'url' => '/sisig',
             'color' => '#008450',
             'icon' => 'fas fa-shield-alt',
-            'description' => 'Gestion de examenes, induccion, evaluaciones',
-            'description_english' => 'Integrated Management System.'
+            'description' => 'Inducción, contenidos formativos y evaluaciones de conocimientos en SST y Gestión Ambiental.',
+            'description_english' => 'Induction, training content and knowledge evaluations in OSH and Environmental Management.'
         ]);
     }
 }
