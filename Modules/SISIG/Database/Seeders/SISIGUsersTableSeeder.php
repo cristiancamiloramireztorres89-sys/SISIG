@@ -17,36 +17,39 @@ class SISIGUsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Obtener la App de SISIG si existe en SICA
+        // 1. Obtener la App de SISIG para vincularla a los roles
         $app = App::where('name', 'SISIG')->first();
         $appId = $app ? $app->id : null;
 
-        // 2. Registrar Roles de SISIG
-        $roleAdmin = Role::updateOrCreate(['slug' => 'sisig.admin'], [
+        // Limpiar roles con slugs antiguos para evitar duplicados
+        Role::whereIn('slug', ['sisig.admin', 'sisig.instructor', 'sisig.aprendiz'])->delete();
+
+        // 2. Registrar los roles exclusivos de SISIG (full_access = 'No' para delimitar solo a este módulo)
+        $roleAdmin = Role::updateOrCreate(['slug' => 'admin_sisig'], [
             'name' => 'Administrador SISIG',
-            'description' => 'Administrador general del módulo SISIG',
-            'description_english' => 'General Administrator of the SISIG module',
-            'full_access' => 'Si',
-            'app_id' => $appId
-        ]);
-
-        $roleInstructor = Role::updateOrCreate(['slug' => 'sisig.instructor'], [
-            'name' => 'Instructor SIG',
-            'description' => 'Instructor encargado de crear secciones, quices y revisar aprendices',
-            'description_english' => 'Instructor in charge of sections, quizzes and review',
+            'description' => 'Administrador exclusivo del módulo SISIG',
+            'description_english' => 'Exclusive administrator of the SISIG module',
             'full_access' => 'No',
             'app_id' => $appId
         ]);
 
-        $roleAprendiz = Role::updateOrCreate(['slug' => 'sisig.aprendiz'], [
-            'name' => 'Aprendiz SENA Empresa',
-            'description' => 'Aprendiz que realiza la inducción y presenta evaluaciones SIG',
-            'description_english' => 'Apprentice taking SIG induction and evaluations',
+        $roleEditor = Role::updateOrCreate(['slug' => 'editor_sisig'], [
+            'name' => 'Editor SISIG',
+            'description' => 'Editor de contenidos formativos y evaluaciones del módulo SISIG',
+            'description_english' => 'Editor of training content and evaluations in SISIG module',
             'full_access' => 'No',
             'app_id' => $appId
         ]);
 
-        // 3. Crear Persona y Usuario: ADMINISTRADOR
+        $roleAprendiz = Role::updateOrCreate(['slug' => 'aprendiz_sisig'], [
+            'name' => 'Aprendiz SISIG',
+            'description' => 'Aprendiz que cursa la inducción y presenta evaluaciones SIG',
+            'description_english' => 'Apprentice taking induction and evaluations in SISIG',
+            'full_access' => 'No',
+            'app_id' => $appId
+        ]);
+
+        // 3. Crear Persona y Usuario: ADMINISTRADOR SISIG
         $personAdmin = Person::updateOrCreate(['document_number' => 1000000001], [
             'document_type' => 'Cédula de ciudadanía',
             'first_name' => 'CRISTIAN CAMILO',
@@ -58,31 +61,31 @@ class SISIGUsersTableSeeder extends Seeder
 
         $userAdmin = User::updateOrCreate(['email' => 'admin@sena.edu.co'], [
             'name' => 'Cristian Camilo Ramírez Torres',
-            'nickname' => 'admin',
+            'nickname' => 'admin_sisig',
             'person_id' => $personAdmin->id,
             'password' => Hash::make('12345678'),
         ]);
-        $userAdmin->roles()->syncWithoutDetaching([$roleAdmin->id]);
+        $userAdmin->roles()->sync([$roleAdmin->id]);
 
-        // 4. Crear Persona y Usuario: INSTRUCTOR
-        $personInstructor = Person::updateOrCreate(['document_number' => 1000000002], [
+        // 4. Crear Persona y Usuario: EDITOR SISIG
+        $personEditor = Person::updateOrCreate(['document_number' => 1000000002], [
             'document_type' => 'Cédula de ciudadanía',
-            'first_name' => 'INSTRUCTOR',
-            'first_last_name' => 'SST Y AMBIENTAL',
-            'second_last_name' => 'CEFA',
-            'personal_email' => 'instructor@sena.edu.co',
-            'sena_email' => 'instructor@sena.edu.co',
+            'first_name' => 'EDITOR',
+            'first_last_name' => 'DE CONTENIDOS',
+            'second_last_name' => 'SISIG',
+            'personal_email' => 'editor@sena.edu.co',
+            'sena_email' => 'editor@sena.edu.co',
         ]);
 
-        $userInstructor = User::updateOrCreate(['email' => 'instructor@sena.edu.co'], [
-            'name' => 'Instructor SST y Ambiental',
-            'nickname' => 'instructor',
-            'person_id' => $personInstructor->id,
+        $userEditor = User::updateOrCreate(['email' => 'editor@sena.edu.co'], [
+            'name' => 'Editor de Contenidos SISIG',
+            'nickname' => 'editor_sisig',
+            'person_id' => $personEditor->id,
             'password' => Hash::make('12345678'),
         ]);
-        $userInstructor->roles()->syncWithoutDetaching([$roleInstructor->id]);
+        $userEditor->roles()->sync([$roleEditor->id]);
 
-        // 5. Crear Persona, Usuario y Aprendiz: APRENDIZ
+        // 5. Crear Persona, Usuario y Aprendiz: APRENDIZ SISIG
         $personAprendiz = Person::updateOrCreate(['document_number' => 1000000003], [
             'document_type' => 'Cédula de ciudadanía',
             'first_name' => 'APRENDIZ',
@@ -94,11 +97,11 @@ class SISIGUsersTableSeeder extends Seeder
 
         $userAprendiz = User::updateOrCreate(['email' => 'aprendiz@soy.sena.edu.co'], [
             'name' => 'Aprendiz SENA Empresa',
-            'nickname' => 'aprendiz',
+            'nickname' => 'aprendiz_sisig',
             'person_id' => $personAprendiz->id,
             'password' => Hash::make('12345678'),
         ]);
-        $userAprendiz->roles()->syncWithoutDetaching([$roleAprendiz->id]);
+        $userAprendiz->roles()->sync([$roleAprendiz->id]);
 
         // Registrar en tabla 'apprentices'
         DB::table('apprentices')->updateOrInsert(
