@@ -1,3 +1,25 @@
+@php
+    $rolNombre = 'Usuario SISIG';
+    $panelSubtitulo = 'Panel del Aprendiz';
+
+    if (auth()->check()) {
+        $u = auth()->user();
+        if ($u->hasRole('admin_sisig')) {
+            $rolNombre = 'Administrador SISIG';
+            $panelSubtitulo = 'Panel Administrativo';
+        } elseif ($u->hasRole('editor_sisig')) {
+            $rolNombre = 'Editor SISIG';
+            $panelSubtitulo = 'Panel de Edición';
+        } elseif ($u->roles->isNotEmpty()) {
+            $rolNombre = $u->roles->first()->name;
+            $panelSubtitulo = 'Panel del Aprendiz';
+        } elseif ($u->nickname === 'aprendiz' || ($u->person_id && \Illuminate\Support\Facades\Schema::hasTable('apprentices') && \Illuminate\Support\Facades\DB::table('apprentices')->where('person_id', $u->person_id)->exists())) {
+            $rolNombre = 'Aprendiz SISIG';
+            $panelSubtitulo = 'Panel del Aprendiz';
+        }
+    }
+@endphp
+
 <!-- Header / Navbar Superior SISIG -->
 <header class="sticky top-0 z-40 bg-[#001A29]/95 backdrop-blur-md border-b border-slate-800 text-white shadow-md">
     <div class="w-full px-4 sm:px-6 lg:px-8">
@@ -18,7 +40,7 @@
                         <div class="flex items-center gap-2">
                             <span class="text-xl font-extrabold tracking-tight text-white">SISIG</span>
                             <span class="text-xs uppercase font-extrabold tracking-wider text-sena-green">
-                                &bull; Panel Administrativo
+                                &bull; {{ $panelSubtitulo }}
                             </span>
                         </div>
                         <span class="text-[11px] text-slate-400 font-medium block">SENA Empresa &bull; Centro Agroindustrial La Angostura</span>
@@ -50,7 +72,7 @@
                                 {{ auth()->user()->full_name ?? auth()->user()->name }}
                             </p>
                             <span class="text-[10px] font-semibold text-sena-green flex items-center gap-1">
-                                <span>{{ auth()->user()->roles->first()->name ?? 'Usuario SISIG' }}</span>
+                                <span>{{ $rolNombre }}</span>
                                 <i class="fas fa-chevron-right text-[9px] text-slate-500 group-hover:text-sena-green group-hover:translate-x-0.5 transition-all"></i>
                             </span>
                         </div>

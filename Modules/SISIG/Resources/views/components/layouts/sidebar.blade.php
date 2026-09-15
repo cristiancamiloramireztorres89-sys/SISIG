@@ -1,66 +1,107 @@
-<!-- Sidebar Lateral para SISIG (Roles: Editor y Administrador) -->
+<!-- Sidebar Lateral Adaptativo para SISIG (Roles: Administrador, Editor y Aprendiz) -->
 <aside id="sidebar-menu" class="w-64 bg-[#001A29] border-r border-slate-800 text-slate-300 flex-shrink-0 flex flex-col justify-between sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto transition-all duration-300 z-30">
     <div class="p-4 space-y-5">
         
-        <!-- SECCIÓN 1: GESTIÓN PRINCIPAL -->
-        <div>
-            <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                Menú Principal
-            </span>
-            <div class="mt-2 space-y-1">
-                <!-- Dashboard General -->
-                <a href="{{ route('sisig.admin.dashboard') }}" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.admin.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                    <i class="fas fa-chart-line text-sm w-5 text-center"></i>
-                    <span>Dashboard General</span>
-                </a>
+        @if(auth()->check() && auth()->user()->hasRole('admin_sisig'))
+            <!-- VISTA ADMINISTRADOR SISIG -->
+            <!-- SECCIÓN 1: GESTIÓN PRINCIPAL -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Menú Principal
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="{{ route('sisig.admin.dashboard') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.admin.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-chart-line text-sm w-5 text-center"></i>
+                        <span>Dashboard General</span>
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- SECCIÓN 2: LOS 6 MÓDULOS DE GESTIÓN -->
-        <div>
-            <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                Módulos de Gestión
-            </span>
-            <div class="mt-2 space-y-1">
-                
-                <!-- 1. Gestión de Módulos (Secciones, Contenidos SST, Calidad, Ambiental) -->
-                <a href="#gestion-modulos" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                    <i class="fas fa-layer-group text-sm w-5 text-center text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Gestión de Módulos</span>
-                </a>
+            <!-- SECCIÓN 2: LOS MÓDULOS DE GESTIÓN ADMINISTRATIVA -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Módulos de Gestión
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="#gestion-modulos" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-layer-group text-sm w-5 text-center text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Gestión de Módulos</span>
+                    </a>
 
-                <!-- 2. Seguimiento de Exámenes (Quices, Notas, Intentos) -->
-                <a href="#seguimiento-examenes" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                    <i class="fas fa-clipboard-check text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Seguimiento Exámenes</span>
-                </a>
+                    <a href="#seguimiento-examenes" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-clipboard-check text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Seguimiento Exámenes</span>
+                    </a>
 
-                <!-- 3. Gestión de Usuarios (Aprendices, Formación) -->
-                <a href="#gestion-usuarios" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                    <i class="fas fa-users-cog text-sm w-5 text-center text-indigo-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Gestión de Usuarios</span>
-                </a>
+                    <a href="#gestion-usuarios" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-users-cog text-sm w-5 text-center text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
 
-                <!-- 4. Reportes (Descargas Excel / PDF y Estadísticas) -->
-                <a href="#reportes" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                    <i class="fas fa-file-excel text-sm w-5 text-center text-teal-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Reportes y Métricas</span>
-                </a>
+                    <a href="#reportes" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-file-excel text-sm w-5 text-center text-teal-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Reportes y Métricas</span>
+                    </a>
 
-                <!-- 5. Seguridad (Control de Infracciones y Monitoreo de Pantalla) -->
-                <a href="#seguridad" 
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                    <i class="fas fa-shield-alt text-sm w-5 text-center text-amber-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Seguridad e Infracciones</span>
-                </a>
-
+                    <a href="#seguridad" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-shield-alt text-sm w-5 text-center text-amber-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Seguridad e Infracciones</span>
+                    </a>
+                </div>
             </div>
-        </div>
+
+        @else
+            <!-- VISTA DEL APRENDIZ / USUARIO ESTUDIANTE -->
+            <!-- SECCIÓN 1: APRENDIZAJE -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Mi Formación
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="{{ route('sisig.aprendiz.dashboard') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.aprendiz.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-graduation-cap text-sm w-5 text-center"></i>
+                        <span>Mi Dashboard SIG</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: EJES DE INDUCCIÓN Y EVALUACIONES -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Inducción y Pruebas
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Módulos de Inducción', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-book-reader text-sm w-5 text-center text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Módulos de Inducción</span>
+                    </a>
+
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Mis Evaluaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-tasks text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Mis Evaluaciones</span>
+                    </a>
+
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Historial y Calificaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-award text-sm w-5 text-center text-amber-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Historial y Calificaciones</span>
+                    </a>
+
+                </div>
+            </div>
+        @endif
 
     </div>
 
@@ -73,5 +114,3 @@
         </a>
     </div>
 </aside>
-
-

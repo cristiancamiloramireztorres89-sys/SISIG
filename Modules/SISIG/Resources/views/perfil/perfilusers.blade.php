@@ -13,7 +13,12 @@
                 </p>
             </div>
             <div>
-                <a href="{{ route('sisig.admin.dashboard') }}" 
+                @php
+                    $dashboardUrl = (auth()->check() && auth()->user()->hasRole('admin_sisig'))
+                        ? route('sisig.admin.dashboard')
+                        : route('sisig.aprendiz.dashboard');
+                @endphp
+                <a href="{{ $dashboardUrl }}" 
                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-300 hover:border-slate-400 shadow-sm transition-all">
                     <i class="fas fa-arrow-left"></i>
                     <span>Volver al Dashboard</span>
@@ -34,7 +39,7 @@
             </div>
         @endif
 
-        @if($errors->any())
+        @if(isset($errors) && $errors->any())
             <div id="error-alert" class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start justify-between gap-3 shadow-sm transition-all duration-500">
                 <div class="flex items-start gap-3 flex-1">
                     <i class="fas fa-exclamation-triangle text-rose-600 text-base mt-0.5 flex-shrink-0"></i>
@@ -96,10 +101,20 @@
                         {{ $person ? trim($person->first_name . ' ' . $person->first_last_name . ' ' . ($person->second_last_name ?? '')) : $user->name }}
                     </h2>
 
+                    @php
+                        $badgeRol = 'Aprendiz SISIG';
+                        if ($roles->isNotEmpty()) {
+                            $badgeRol = $roles->pluck('name')->join(', ');
+                        } elseif ($user->hasRole('admin_sisig')) {
+                            $badgeRol = 'Administrador SISIG';
+                        } elseif ($user->hasRole('editor_sisig')) {
+                            $badgeRol = 'Editor SISIG';
+                        }
+                    @endphp
                     <div class="mt-3">
                         <span class="text-xs font-extrabold tracking-wide uppercase text-sena-green flex items-center justify-center gap-1.5">
                             <i class="fas fa-shield-alt text-sm"></i>
-                            <span>{{ $roles->pluck('name')->join(', ') ?: 'Usuario SISIG' }}</span>
+                            <span>{{ $badgeRol }}</span>
                         </span>
                     </div>
 
@@ -128,7 +143,7 @@
                         </h3>
                         <div class="space-y-2.5 text-xs">
                             <div class="flex justify-between">
-                                <span class="text-slate-500">Ficha / Curso ID:</span>
+                                <span class="text-slate-500">Ficha:</span>
                                 <span class="font-bold text-slate-800">{{ $aprendiz->course_id ?? 'N/D' }}</span>
                             </div>
                             <div class="flex justify-between">

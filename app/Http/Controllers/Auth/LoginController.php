@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class LoginController extends Controller
 {
@@ -55,7 +57,17 @@ class LoginController extends Controller
                 return redirect()->route('sisig.admin.dashboard')->with('success', '¡Bienvenido(a) al Panel Administrativo SISIG, ' . $user->full_name . '!');
             }
 
+            // Si el usuario es aprendiz de SISIG y proviene del módulo SISIG, redirigir a su dashboard de aprendiz
             $redirectUrl = $request->input('redirect');
+            $isAprendiz = ($user->nickname === 'aprendiz')
+                || $user->hasRole('aprendiz_sisig')
+                || $user->hasRole('sisig.aprendiz')
+                || ($user->person_id && Schema::hasTable('apprentices') && DB::table('apprentices')->where('person_id', $user->person_id)->exists());
+
+            if ($isAprendiz && ($redirectUrl === '/sisig' || str_contains($redirectUrl ?? '', 'sisig') || empty($redirectUrl))) {
+                return redirect()->route('sisig.aprendiz.dashboard')->with('success', '¡Bienvenido(a) a tu Panel de Aprendiz SISIG, ' . $user->full_name . '!');
+            }
+
             if (!empty($redirectUrl) && (str_starts_with($redirectUrl, '/') || str_starts_with($redirectUrl, url('/')))) {
                 return redirect($redirectUrl)->with('success', '¡Bienvenido(a) a SENA Empresa, ' . $user->full_name . '!');
             }

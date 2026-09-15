@@ -142,11 +142,16 @@
                                     <i class="fas fa-chart-line"></i>
                                     <span>Panel Admin</span>
                                 </a>
+                            @else
+                                <a href="{{ route('sisig.aprendiz.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Mi Dashboard</span>
+                                </a>
                             @endif
-                            <span class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <a href="{{ route('sisig.perfil.index') }}" title="Ver Mi Perfil" class="text-xs sm:text-sm font-semibold text-slate-200 hover:text-white flex items-center gap-2 transition-colors">
                                 <i class="fas fa-user-circle text-sena-green text-lg"></i>
                                 <span>{{ auth()->user()->nickname ?? auth()->user()->email }}</span>
-                            </span>
+                            </a>
                             <a href="{{ route('logout') }}?redirect=/sisig" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 rounded-xl transition-all">
                                 <i class="fas fa-sign-out-alt"></i>
                                 <span>Cerrar Sesión</span>
