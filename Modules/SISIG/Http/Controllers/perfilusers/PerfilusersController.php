@@ -17,7 +17,9 @@ class PerfilusersController extends Controller
      */
     public function index()
     {
-        $user = Auth::user()->load('person', 'roles');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->load('person', 'roles');
         $person = $user->person;
         $roles = $user->roles;
 
@@ -37,6 +39,7 @@ class PerfilusersController extends Controller
      */
     public function update(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         $request->validate([
@@ -99,6 +102,7 @@ class PerfilusersController extends Controller
             'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Validar contraseña actual
