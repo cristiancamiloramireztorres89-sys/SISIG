@@ -50,6 +50,11 @@ class LoginController extends Controller
             Auth::login($user, $remember);
             $request->session()->regenerate();
 
+            // Si el usuario es administrador de SISIG, redirigir directamente a su panel administrativo
+            if ($user->hasRole('admin_sisig')) {
+                return redirect()->route('sisig.admin.dashboard')->with('success', '¡Bienvenido(a) al Panel Administrativo SISIG, ' . $user->full_name . '!');
+            }
+
             $redirectUrl = $request->input('redirect');
             if (!empty($redirectUrl) && (str_starts_with($redirectUrl, '/') || str_starts_with($redirectUrl, url('/')))) {
                 return redirect($redirectUrl)->with('success', '¡Bienvenido(a) a SENA Empresa, ' . $user->full_name . '!');
