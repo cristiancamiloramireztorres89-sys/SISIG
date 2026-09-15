@@ -142,6 +142,11 @@
                                     <i class="fas fa-chart-line"></i>
                                     <span>Panel Admin</span>
                                 </a>
+                            @elseif(auth()->user()->hasRole('editor_sisig'))
+                                <a href="{{ route('sisig.editor.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Panel Edición</span>
+                                </a>
                             @else
                                 <a href="{{ route('sisig.aprendiz.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
                                     <i class="fas fa-graduation-cap"></i>

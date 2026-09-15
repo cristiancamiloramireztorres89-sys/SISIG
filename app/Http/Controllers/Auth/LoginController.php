@@ -57,6 +57,11 @@ class LoginController extends Controller
                 return redirect()->route('sisig.admin.dashboard')->with('success', '¡Bienvenido(a) al Panel Administrativo SISIG, ' . $user->full_name . '!');
             }
 
+            // Si el usuario es editor de contenidos de SISIG, redirigir directamente a su panel de edición
+            if ($user->hasRole('editor_sisig')) {
+                return redirect()->route('sisig.editor.dashboard')->with('success', '¡Bienvenido(a) al Panel de Edición SISIG, ' . $user->full_name . '!');
+            }
+
             // Si el usuario es aprendiz de SISIG y proviene del módulo SISIG, redirigir a su dashboard de aprendiz
             $redirectUrl = $request->input('redirect');
             $isAprendiz = ($user->nickname === 'aprendiz')

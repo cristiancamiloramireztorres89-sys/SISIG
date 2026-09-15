@@ -56,6 +56,51 @@
                 </div>
             </div>
 
+        @elseif(auth()->check() && auth()->user()->hasRole('editor_sisig'))
+            <!-- VISTA EDITOR DE CONTENIDOS SISIG -->
+            <!-- SECCIÓN 1: PANEL PRINCIPAL -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Menú Principal
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="{{ route('sisig.editor.dashboard') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.editor.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-edit text-sm w-5 text-center"></i>
+                        <span>Dashboard Editor</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: GESTIÓN DE CONTENIDOS Y EVALUACIONES -->
+            <div>
+                <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
+                    Gestión Editorial
+                </span>
+                <div class="mt-2 space-y-1">
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Gestión de Módulos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-layer-group text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Módulos Temáticos</span>
+                    </a>
+
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Recursos Didácticos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-file-alt text-sm w-5 text-center text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Recursos y Materiales</span>
+                    </a>
+
+                    <a href="#" 
+                       onclick="Swal.fire({ title: 'Banco de Preguntas', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-tasks text-sm w-5 text-center text-teal-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Quices y Preguntas</span>
+                    </a>
+                </div>
+            </div>
+
         @else
             <!-- VISTA DEL APRENDIZ / USUARIO ESTUDIANTE -->
             <!-- SECCIÓN 1: APRENDIZAJE -->

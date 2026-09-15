@@ -14,9 +14,14 @@
             </div>
             <div>
                 @php
-                    $dashboardUrl = (auth()->check() && auth()->user()->hasRole('admin_sisig'))
-                        ? route('sisig.admin.dashboard')
-                        : route('sisig.aprendiz.dashboard');
+                    $dashboardUrl = route('sisig.aprendiz.dashboard');
+                    if (auth()->check()) {
+                        if (auth()->user()->hasRole('admin_sisig')) {
+                            $dashboardUrl = route('sisig.admin.dashboard');
+                        } elseif (auth()->user()->hasRole('editor_sisig')) {
+                            $dashboardUrl = route('sisig.editor.dashboard');
+                        }
+                    }
                 @endphp
                 <a href="{{ $dashboardUrl }}" 
                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-300 hover:border-slate-400 shadow-sm transition-all">
