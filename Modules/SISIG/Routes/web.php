@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\SISIG\Http\Controllers\SISIGController;
 use Modules\SISIG\Http\Controllers\Admin\DashboardController;
+use Modules\SISIG\Http\Controllers\Admin\GestionUsersController;
 use Modules\SISIG\Http\Controllers\Aprendiz\DashboardControllerAprendiz;
 use Modules\SISIG\Http\Controllers\Editor\DashboardControllerEditor;
 use Modules\SISIG\Http\Controllers\Perfilusers\PerfilusersController;
@@ -14,6 +15,13 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
     // Módulo de Administración (Exclusivo admin_sisig)
     Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/usuarios', [GestionUsersController::class, 'index'])->name('users.index');
+        Route::post('/usuarios', [GestionUsersController::class, 'store'])->name('users.store');
+        Route::put('/usuarios/{id}', [GestionUsersController::class, 'update'])->name('users.update');
+        Route::patch('/usuarios/{id}/estado', [GestionUsersController::class, 'toggleStatus'])->name('users.toggleStatus');
+        Route::put('/usuarios/{user}/rol', [GestionUsersController::class, 'updateRole'])->name('users.updateRole');
+        Route::get('/usuarios/{id}/detalle', [GestionUsersController::class, 'show'])->name('users.show');
+        Route::delete('/usuarios/{id}', [GestionUsersController::class, 'destroy'])->name('users.destroy');
     });
 
     // Módulo de Edición de Contenidos (Exclusivo editor_sisig)

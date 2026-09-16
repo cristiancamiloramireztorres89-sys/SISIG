@@ -13,7 +13,7 @@
                     <div>
                         <span class="text-sena-green text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <i class="fas fa-graduation-cap"></i>
-                            <span>Portal del Aprendiz &bull; SISIG</span>
+                            <span>Portal del Aprendiz SISIG</span>
                         </span>
                     </div>
 
@@ -26,18 +26,11 @@
                     </p>
                 </div>
 
-                <!-- Columna Derecha: Tarjeta de Estado Rápido -->
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 flex flex-col items-center text-center sm:min-w-[240px] self-start lg:self-center shadow-lg">
-                    <span class="text-xs text-slate-300 font-bold uppercase tracking-wider">Avance Global</span>
-                    <div class="my-2 flex items-baseline gap-1">
-                        <span class="text-4xl font-black text-white">{{ $progresoGeneral }}</span>
-                        <span class="text-lg font-bold text-sena-green">%</span>
-                    </div>
-                    <div class="w-full bg-slate-800/60 rounded-full h-2 mt-1 overflow-hidden border border-white/10">
-                        <div class="bg-gradient-to-r from-emerald-400 to-teal-400 h-2 rounded-full transition-all duration-500" style="width: {{ $progresoGeneral }}%"></div>
-                    </div>
-                    <span class="text-[11px] text-slate-300 mt-2 font-medium">
-                        {{ $seccionesCompletadas }} de {{ $totalSecciones }} {{ $totalSecciones == 1 ? 'módulo completado' : 'módulos completados' }}
+                <!-- Columna Derecha: Fecha actual limpia -->
+                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
+                    <i class="far fa-calendar-check text-sena-green text-lg"></i>
+                    <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
+                        {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
                 </div>
             </div>
@@ -55,14 +48,11 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $progresoGeneral }}%</h3>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Contenidos revisados</span>
                         <span class="text-xs font-bold {{ $progresoGeneral >= 100 ? 'text-emerald-600' : 'text-slate-700' }}">
                             {{ $progresoGeneral >= 100 ? 'Al día' : 'En curso' }}
                         </span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-emerald-500 h-1.5 rounded-full" style="width: {{ $progresoGeneral }}%"></div>
                     </div>
                 </div>
             </div>
@@ -79,14 +69,11 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $seccionesCompletadas }}</h3>
                         <span class="text-sm font-bold text-slate-400">/ {{ $totalSecciones }} {{ $totalSecciones == 1 ? 'módulo' : 'módulos' }}</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Módulos habilitados</span>
                         <span class="text-xs font-black text-sky-600">
                             {{ $totalSecciones > 0 && $seccionesCompletadas >= $totalSecciones ? 'Finalizados' : 'En proceso' }}
                         </span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-sky-500 h-1.5 rounded-full" style="width: {{ $totalSecciones > 0 ? round(($seccionesCompletadas / $totalSecciones) * 100) : 0 }}%"></div>
                     </div>
                 </div>
             </div>
@@ -103,14 +90,11 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $quicesAprobadosCount }}</h3>
                         <span class="text-sm font-bold text-slate-400">/ {{ $totalQuicesDisponibles }} {{ $totalQuicesDisponibles == 1 ? 'quiz' : 'quices' }}</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Evaluaciones aprobadas</span>
                         <span class="text-xs font-bold text-teal-600">
                             {{ $totalEvaluacionesPresentadas }} presentadas
                         </span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-gradient-to-r from-teal-500 to-emerald-500 h-1.5 rounded-full" style="width: {{ $totalQuicesDisponibles > 0 ? round(($quicesAprobadosCount / $totalQuicesDisponibles) * 100) : 0 }}%"></div>
                     </div>
                 </div>
             </div>

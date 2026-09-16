@@ -54,14 +54,6 @@ class DashboardControllerEditor extends Controller
                 ];
             });
 
-        // 3. Actividad reciente registrada en el módulo
-        $actividadReciente = DB::table('actividadreciente')
-            ->join('users', 'actividadreciente.user_id', '=', 'users.id')
-            ->select('actividadreciente.*', 'users.name as user_name')
-            ->orderByDesc('actividadreciente.created_at')
-            ->limit(5)
-            ->get();
-
         return view('sisig::editor.DashboardEditor', compact(
             'user',
             'totalModulos',
@@ -69,8 +61,7 @@ class DashboardControllerEditor extends Controller
             'totalQuices',
             'quicesActivos',
             'totalPreguntas',
-            'modulos',
-            'actividadReciente'
+            'modulos'
         ));
     }
 

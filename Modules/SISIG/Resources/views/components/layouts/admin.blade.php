@@ -76,27 +76,23 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen antialiased selection:bg-sena-green selection:text-white">
+<body class="bg-slate-50 text-slate-800 flex min-h-screen antialiased selection:bg-sena-green selection:text-white">
 
-    <!-- 1. Navbar Superior -->
-    @include('sisig::components.layouts.header')
+    <!-- 1. Sidebar Lateral Completo (Desde arriba h-screen) -->
+    @include('sisig::components.layouts.sidebar')
 
-    <!-- 2. Contenedor con Sidebar y Contenido Principal -->
-    <div class="flex flex-1 min-h-[calc(100vh-4rem)]">
+    <!-- 2. Columna Derecha: Header + Contenido Principal + Footer -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] min-h-screen">
         
-        <!-- Sidebar de navegación (Fijo en columna izquierda) -->
-        @include('sisig::components.layouts.sidebar')
+        <!-- Header Superior -->
+        @include('sisig::components.layouts.header')
 
-        <!-- Columna Derecha: Contenido Dinámico + Footer -->
-        <div class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
-            <main class="flex-1 p-5 sm:p-8">
-                {{ $slot }}
-            </main>
+        <main class="flex-1 p-5 sm:p-8">
+            {{ $slot }}
+        </main>
 
-            <!-- 3. Pie de página exclusivo de la columna de contenido -->
-            @include('sisig::components.layouts.footer')
-        </div>
-
+        <!-- 3. Pie de página institucional -->
+        @include('sisig::components.layouts.footer')
     </div>
 
     <!-- Toggle script para el sidebar en móviles -->

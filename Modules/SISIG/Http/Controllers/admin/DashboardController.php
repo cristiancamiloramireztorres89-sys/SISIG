@@ -61,12 +61,12 @@ class DashboardController extends Controller
             ->limit(7)
             ->get();
 
-        // Registro de actividad reciente en el módulo
+        // Registro de actividad reciente en el módulo (Auditoría Administrativa)
         $actividadReciente = DB::table('actividadreciente')
             ->join('users', 'actividadreciente.user_id', '=', 'users.id')
             ->select('actividadreciente.*', 'users.name as user_name')
             ->orderByDesc('actividadreciente.created_at')
-            ->limit(6)
+            ->limit(10)
             ->get();
 
         return view('sisig::admin.dashboard', compact(

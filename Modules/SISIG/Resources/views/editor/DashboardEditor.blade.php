@@ -1,19 +1,19 @@
 <x-sisig::layouts.admin title="Panel de Edición SISIG">
     <div class="space-y-6 sm:space-y-8 animate-fade-in pb-8">
 
-        <!-- 1. Banner Principal del Editor -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-[#001A29] p-6 sm:p-8 text-white shadow-xl border border-slate-800">
-            <!-- Patrón decorativo de fondo -->
-            <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-sena-green/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -top-10 w-56 h-56 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <!-- 1. Banner Principal de Bienvenida del Editor -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
+            <!-- Destellos y brillos ambientales de fondo -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
-            <div class="relative z-10">
-                <!-- Información de Bienvenida -->
-                <div class="space-y-2">
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <!-- Columna Izquierda: Información de bienvenida -->
+                <div class="space-y-3">
                     <div>
                         <span class="text-sena-green text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <i class="fas fa-edit"></i>
-                            <span>Panel de Edición y Contenidos Pedagógicos &bull; SISIG</span>
+                            <span>Panel de Edición y Contenidos Pedagógicos SISIG</span>
                         </span>
                     </div>
 
@@ -21,9 +21,17 @@
                         ¡Hola, <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300">{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!
                     </h1>
 
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
                         Gestiona los módulos formativos del Sistema Integrado de Gestión, administra materiales pedagógicos, diseña evaluaciones y supervisa el banco de preguntas institucional.
                     </p>
+                </div>
+
+                <!-- Columna Derecha: Fecha actual limpia -->
+                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
+                    <i class="far fa-calendar-check text-sena-green text-lg"></i>
+                    <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
+                        {{ now()->isoFormat('dddd, D [de] MMMM') }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -43,12 +51,9 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalModulos }}</h3>
                         <span class="text-sm font-bold text-slate-400">{{ $totalModulos == 1 ? 'módulo' : 'módulos' }}</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Ejes formativos SIG</span>
                         <span class="text-xs font-bold text-sky-600">Registrados</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-sky-500 h-1.5 rounded-full" style="width: {{ $totalModulos > 0 ? '100' : '0' }}%"></div>
                     </div>
                 </div>
             </div>
@@ -65,12 +70,9 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalContenidos }}</h3>
                         <span class="text-sm font-bold text-slate-400">{{ $totalContenidos == 1 ? 'recurso' : 'recursos' }}</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">PDFs, videos y guías</span>
                         <span class="text-xs font-bold text-emerald-600">Publicados</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-emerald-500 h-1.5 rounded-full" style="width: {{ $totalContenidos > 0 ? '100' : '0' }}%"></div>
                     </div>
                 </div>
             </div>
@@ -87,12 +89,9 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalQuices }}</h3>
                         <span class="text-sm font-bold text-slate-400">{{ $totalQuices == 1 ? 'quiz' : 'quices' }}</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">{{ $quicesActivos }} activos en línea</span>
                         <span class="text-xs font-bold text-teal-600">{{ $quicesActivos }}/{{ $totalQuices }}</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-gradient-to-r from-teal-500 to-emerald-500 h-1.5 rounded-full" style="width: {{ $totalQuices > 0 ? round(($quicesActivos / $totalQuices) * 100) : 0 }}%"></div>
                     </div>
                 </div>
             </div>
@@ -231,57 +230,6 @@
                     <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
                         A medida que tu equipo registre módulos en la tabla <code class="text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-slate-200">sisig_secciones</code>, aparecerán listados aquí automáticamente con su conteo de recursos y evaluaciones.
                     </p>
-                </div>
-            @endif
-        </div>
-
-        <!-- 5. Registro de Actividad Reciente en la Plataforma -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
-            <div class="pb-4 border-b border-slate-100">
-                <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
-                    <i class="fas fa-history text-sena-green"></i>
-                    <span>Actividad Reciente del Módulo SISIG</span>
-                </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Seguimiento de interacciones, ingresos y actualizaciones en la plataforma</p>
-            </div>
-
-            @if($actividadReciente->count() > 0)
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
-                                <th class="py-3.5 px-4">Usuario</th>
-                                <th class="py-3.5 px-4">Evento</th>
-                                <th class="py-3.5 px-4">Detalle</th>
-                                <th class="py-3.5 px-4 text-right">Fecha y Hora</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @foreach($actividadReciente as $act)
-                                <tr class="hover:bg-slate-50/80 transition-colors">
-                                    <td class="py-3 px-4 font-bold text-slate-800">
-                                        {{ $act->user_name ?? 'Usuario del Sistema' }}
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
-                                            {{ ucfirst(str_replace('_', ' ', $act->tipo_evento)) }}
-                                        </span>
-                                    </td>
-                                    <td class="py-3 px-4 text-slate-600">
-                                        {{ $act->mensaje }}
-                                    </td>
-                                    <td class="py-3 px-4 text-right text-slate-400 text-[11px]">
-                                        {{ \Carbon\Carbon::parse($act->created_at)->format('d/m/Y H:i') }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="text-center py-8 text-slate-400 text-xs">
-                    <i class="fas fa-clipboard-list text-2xl mb-2 block text-slate-300"></i>
-                    No hay eventos recientes registrados en la bitácora del módulo.
                 </div>
             @endif
         </div>

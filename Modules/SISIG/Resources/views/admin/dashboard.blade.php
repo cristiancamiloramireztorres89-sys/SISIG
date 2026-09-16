@@ -12,7 +12,7 @@
                 <div class="space-y-3">
                     <div>
                         <span class="text-sena-green text-xs font-black uppercase tracking-widest">
-                            Panel de Supervisión Estratégica &bull; SISIG
+                            Panel de Supervisión Estratégica SISIG
                         </span>
                     </div>
 
@@ -25,9 +25,9 @@
                     </p>
                 </div>
 
-                <!-- Columna Derecha: Fecha actual limpia sin cuadros -->
-                <div class="flex items-center gap-2.5 self-start lg:self-center">
-                    <i class="far fa-calendar-check text-sena-green text-xl"></i>
+                <!-- Columna Derecha: Fecha actual limpia -->
+                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
+                    <i class="far fa-calendar-check text-sena-green text-lg"></i>
                     <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
                         {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
@@ -47,13 +47,9 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ number_format($totalAprendices) }}</h3>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Asignados a formación</span>
                         <span class="text-xs font-extrabold text-blue-600">Etapa Práctica</span>
-                    </div>
-                    <!-- Barra de progreso decorativa -->
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-blue-600 h-1.5 rounded-full" style="width: {{ $totalAprendices > 0 ? '100%' : '15%' }}"></div>
                     </div>
                 </div>
             </div>
@@ -70,12 +66,9 @@
                         <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $quicesActivos }}</h3>
                         <span class="text-sm font-bold text-slate-400">/ {{ $totalQuices }} creados</span>
                     </div>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Habilitados para presentar</span>
                         <span class="text-xs font-black text-sena-green">Disponibles</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-sena-green h-1.5 rounded-full" style="width: {{ $totalQuices > 0 ? round(($quicesActivos / max($totalQuices, 1)) * 100) : 0 }}%"></div>
                     </div>
                 </div>
             </div>
@@ -89,12 +82,9 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $tasaAprobacion }}%</h3>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">{{ $evaluacionesAprobadas }} aprobados</span>
                         <span class="text-rose-500 font-bold">{{ $evaluacionesReprobadas }} reprobados</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-1.5 rounded-full" style="width: {{ $tasaAprobacion }}%"></div>
                     </div>
                 </div>
             </div>
@@ -108,14 +98,11 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalInfracciones }}</h3>
-                    <div class="mt-3 flex items-center justify-between text-xs">
+                    <div class="mt-2.5 flex items-center justify-between text-xs">
                         <span class="text-slate-500 font-medium">Alertas registradas</span>
                         <span class="text-xs font-bold {{ $evaluacionesAnuladas > 0 ? 'text-rose-600' : 'text-emerald-600' }}">
                             {{ $evaluacionesAnuladas }} Anuladas
                         </span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-                        <div class="bg-amber-500 h-1.5 rounded-full" style="width: {{ min($totalInfracciones * 10, 100) }}%"></div>
                     </div>
                 </div>
             </div>
@@ -284,6 +271,62 @@
                     <p class="text-xs text-slate-500 max-w-md mx-auto mt-1.5 leading-relaxed">
                         Cuando los aprendices inicien su inducción y completen los quices de SST, Calidad y Ambiental, verás sus notas, intentos y auditorías en tiempo real en este panel.
                     </p>
+                </div>
+            @endif
+        </div>
+
+        <!-- 6. Bitácora de Actividad Reciente en la Plataforma (Auditoría Admin) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
+            <div class="pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
+                        <i class="fas fa-history text-sena-green"></i>
+                        <span>Actividad Reciente del Módulo SISIG</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Seguimiento de interacciones, ingresos y actualizaciones en la plataforma</p>
+                </div>
+                <span class="text-[11px] font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-200 self-start sm:self-auto">
+                    Auditoría Administrativa
+                </span>
+            </div>
+
+            @if(isset($actividadReciente) && $actividadReciente->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
+                                <th class="py-3.5 px-4">Usuario</th>
+                                <th class="py-3.5 px-4">Evento</th>
+                                <th class="py-3.5 px-4">Detalle</th>
+                                <th class="py-3.5 px-4 text-right">Fecha y Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($actividadReciente as $act)
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="py-3 px-4 font-bold text-slate-800">
+                                        {{ $act->user_name ?? 'Usuario del Sistema' }}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                            {{ ucfirst(str_replace('_', ' ', $act->tipo_evento)) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-600">
+                                        {{ $act->mensaje }}
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400 text-[11px]">
+                                        {{ \Carbon\Carbon::parse($act->created_at)->format('d/m/Y H:i') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-8 text-slate-400 text-xs">
+                    <i class="fas fa-clipboard-list text-2xl mb-2 block text-slate-300"></i>
+                    No hay eventos recientes registrados en la bitácora del módulo.
                 </div>
             @endif
         </div>
