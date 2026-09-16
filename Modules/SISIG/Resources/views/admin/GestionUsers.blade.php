@@ -551,7 +551,13 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('No se pudo cargar la información del usuario para edición.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de carga',
+                        text: 'No se pudo cargar la información del usuario para edición.',
+                        confirmButtonColor: '#39A900',
+                        confirmButtonText: 'Aceptar'
+                    });
                 });
         }
 
@@ -561,14 +567,52 @@
 
         // 3. Confirmación para Desactivar / Activar Usuario
         function confirmToggleStatus(userId, userName, isActive) {
-            const confirmMsg = isActive 
-                ? `¿Estás seguro de desactivar la cuenta de ${userName}? El usuario no podrá acceder al sistema hasta que sea reactivado.`
-                : `¿Deseas reactivar la cuenta de ${userName}? El usuario podrá volver a ingresar normalmente.`;
-
-            if (confirm(confirmMsg)) {
-                const formStatus = document.getElementById('toggle-status-form');
-                formStatus.action = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
-                formStatus.submit();
+            if (isActive) {
+                Swal.fire({
+                    title: '¿Desactivar cuenta?',
+                    html: `¿Estás seguro de desactivar la cuenta de <strong class="text-slate-800 font-bold">${userName}</strong>?<br><span class="text-xs text-slate-500 mt-2 block">El usuario no podrá acceder al sistema SISIG hasta que sea reactivado.</span>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f59e0b',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="fas fa-user-slash mr-1"></i> Sí, desactivar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                        confirmButton: 'px-4 py-2.5 rounded-xl font-bold text-sm shadow-md',
+                        cancelButton: 'px-4 py-2.5 rounded-xl font-bold text-sm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const formStatus = document.getElementById('toggle-status-form');
+                        formStatus.action = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+                        formStatus.submit();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: '¿Reactivar cuenta?',
+                    html: `¿Deseas reactivar la cuenta de <strong class="text-slate-800 font-bold">${userName}</strong>?<br><span class="text-xs text-slate-500 mt-2 block">El usuario recuperará el acceso inmediato a la plataforma SISIG.</span>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#39A900',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="fas fa-user-check mr-1"></i> Sí, reactivar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                        confirmButton: 'px-4 py-2.5 rounded-xl font-bold text-sm shadow-md',
+                        cancelButton: 'px-4 py-2.5 rounded-xl font-bold text-sm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const formStatus = document.getElementById('toggle-status-form');
+                        formStatus.action = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+                        formStatus.submit();
+                    }
+                });
             }
         }
 
