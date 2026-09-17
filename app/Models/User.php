@@ -59,6 +59,16 @@ class User extends Authenticatable
         return $this->belongsTo(Person::class, 'person_id');
     }
 
+    public function modulosEditables()
+    {
+        return $this->belongsToMany(\Modules\SISIG\Entities\Modulo::class, 'editor_modulos', 'user_id', 'modulo_id');
+    }
+
+    public function quicesEditables()
+    {
+        return $this->belongsToMany(\Modules\SISIG\Entities\Quiz::class, 'editor_quices', 'user_id', 'quiz_id');
+    }
+
     /**
      * Roles asignados al usuario
      */
