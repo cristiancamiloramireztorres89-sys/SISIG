@@ -4,9 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <title>{{ $title ?? 'Panel de Control' }} | SISIG - SENA Empresa</title>
+    <title>{{ $title ?? 'Panel Editorial' }} | SISIG - SENA Empresa</title>
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

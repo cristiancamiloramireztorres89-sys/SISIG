@@ -42,16 +42,16 @@
                         <span>Gestión de Usuarios</span>
                     </a>
 
-                    <a href="#gestion-modulos" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-layer-group text-sm w-5 text-center text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                    <a href="{{ route('sisig.admin.modulos.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.modulos.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-layer-group text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.admin.modulos.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
                         <span>Gestión de Módulos</span>
                     </a>
 
-                    <a href="#seguimiento-examenes" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-clipboard-check text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
-                        <span>Seguimiento Exámenes</span>
+                    <a href="{{ route('sisig.admin.examenes.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.examenes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-clipboard-check text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.admin.examenes.*') ? 'text-white' : 'text-sky-400 group-hover:scale-110' }}"></i>
+                        <span>Gestión de Exámenes</span>
                     </a>
 
                     <a href="#reportes" 
@@ -83,16 +83,22 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN 2: GESTIÓN DE CONTENIDOS Y EVALUACIONES -->
             <div>
                 <span class="px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
                     Gestión Editorial
                 </span>
                 <div class="mt-2 space-y-1">
-                    <a href="#" 
-                       onclick="Swal.fire({ title: 'Gestión de Módulos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-layer-group text-sm w-5 text-center text-sky-400 group-hover:scale-110 transition-transform"></i>
-                        <span>Módulos Temáticos</span>
+                    <a href="{{ route('sisig.editor.contenido.index') }}"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.contenido.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-layer-group text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.contenido.*') ? 'text-white' : 'text-sky-400 group-hover:scale-110' }}"></i>
+                        <span>Gestión de Contenidos</span>
+                    </a>     
+
+                    <a href="{{ route('sisig.editor.examenes.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.examenes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-clipboard-check text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.examenes.*') ? 'text-white' : 'text-sky-400 group-hover:scale-110' }}"></i>
+                        <span>Gestión de Exámenes</span>
                     </a>
 
                     <a href="#" 

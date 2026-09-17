@@ -118,9 +118,14 @@ class GestionUsersController extends Controller
             ];
         });
 
+        // Obtener módulos y quices activos para el modal de asignación de permisos a Editores
+        $modulosActivos = \Modules\SISIG\Entities\Modulo::where('estado', '!=', 'inactivo')->get();
+        $quicesActivos = DB::table('sisig_quices')->where('activo', 1)->get();
+
         return view('sisig::admin.GestionUsers', compact(
             'usersData', 'totalUsuarios', 'totalActivos', 'totalInactivos',
-            'totalAdmins', 'totalEditores', 'totalAprendices', 'totalSecciones', 'totalQuices'
+            'totalAdmins', 'totalEditores', 'totalAprendices', 'totalSecciones', 'totalQuices',
+            'modulosActivos', 'quicesActivos'
         ));
     }
 
@@ -153,6 +158,7 @@ class GestionUsersController extends Controller
 
             $rolNombre = $this->syncRole($user, $request->role_slug);
             $this->syncApprenticeFicha($person->id, $request->ficha, $request->role_slug);
+            $this->syncEditorPermissions($user, $request, $request->role_slug);
             $this->logActivity('usuario_creado', "Se registró al usuario {$user->name} con rol: {$rolNombre}");
 
             DB::commit();
@@ -187,6 +193,7 @@ class GestionUsersController extends Controller
 
             $rolNombre = $this->syncRole($user, $request->role_slug);
             $this->syncApprenticeFicha($person->id, $request->ficha, $request->role_slug);
+            $this->syncEditorPermissions($user, $request, $request->role_slug);
             $this->logActivity('usuario_actualizado', "Se actualizaron los datos y rol de {$user->name}");
 
             DB::commit();
@@ -314,6 +321,8 @@ class GestionUsersController extends Controller
             'ficha'            => $ficha,
             'avatar_url'       => ($user->person && $user->person->avatar) ? asset('storage/' . $user->person->avatar) : null,
             'is_active'        => ($user->deleted_at === null),
+            'modulos_editables'=> $user->modulosEditables()->pluck('sisig_modulos.id')->toArray(),
+            'quices_editables' => $user->quicesEditables()->pluck('sisig_quices.id_quiz')->toArray(),
         ]);
     }
 
@@ -394,6 +403,17 @@ class GestionUsersController extends Controller
             );
         } elseif ($roleSlug && $roleSlug !== 'aprendiz_sisig') {
             DB::table('apprentices')->where('person_id', $personId)->delete();
+        }
+    }
+
+    private function syncEditorPermissions(User $user, Request $request, ?string $roleSlug): void
+    {
+        if ($roleSlug === 'editor_sisig') {
+            $user->modulosEditables()->sync($request->input('modulos', []));
+            $user->quicesEditables()->sync($request->input('quices', []));
+        } else {
+            $user->modulosEditables()->detach();
+            $user->quicesEditables()->detach();
         }
     }
 

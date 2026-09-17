@@ -372,12 +372,51 @@
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-700 block mb-1">Rol en SISIG *</label>
-                        <select name="role_slug" id="user-roleselect" onchange="toggleFichaField(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                        <select name="role_slug" id="user-roleselect" onchange="toggleFichaField(this.value); toggleEditorPermissions(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                             <option value="aprendiz_sisig" selected>Aprendiz SISIG (Inducción y Evaluaciones)</option>
                             <option value="editor_sisig">Editor SISIG (Gestión de Módulos y Quices)</option>
                             <option value="admin_sisig">Administrador SISIG (Control total)</option>
                             <option value="ninguno">Sin Rol en SISIG</option>
                         </select>
+                    </div>
+                </div>
+
+                <!-- Permisos de Edición (Solo para Editor SISIG) -->
+                <div id="user-editor-permissions-container" class="hidden p-4 bg-sky-50/50 rounded-2xl border border-sky-200/60 mt-4 space-y-4">
+                    <h4 class="text-xs font-bold text-sky-800 border-b border-sky-100 pb-2 mb-3">
+                        <i class="fas fa-user-shield mr-1"></i> Asignación de Permisos de Edición
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Módulos -->
+                        <div>
+                            <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Módulos Asignados</span>
+                            <div class="space-y-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+                                @forelse($modulosActivos as $modulo)
+                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-white p-1 rounded-lg transition-colors">
+                                        <input type="checkbox" name="modulos[]" value="{{ $modulo->id }}" class="editor-modulo-cb text-sky-500 rounded border-slate-300 focus:ring-sky-500">
+                                        <span class="font-medium">{{ $modulo->titulo }}</span>
+                                    </label>
+                                @empty
+                                    <p class="text-xs text-slate-400 italic">No hay módulos disponibles.</p>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <!-- Quices -->
+                        <div>
+                            <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Quices Asignados</span>
+                            <div class="space-y-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+                                @forelse($quicesActivos as $quiz)
+                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-white p-1 rounded-lg transition-colors">
+                                        <input type="checkbox" name="quices[]" value="{{ $quiz->id_quiz }}" class="editor-quiz-cb text-sky-500 rounded border-slate-300 focus:ring-sky-500">
+                                        <span class="font-medium">{{ $quiz->titulo }}</span>
+                                    </label>
+                                @empty
+                                    <p class="text-xs text-slate-400 italic">No hay quices disponibles.</p>
+                                @endforelse
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -481,6 +520,10 @@
             document.getElementById('user-ficha-container').classList.toggle('hidden', role !== 'aprendiz_sisig');
         }
 
+        function toggleEditorPermissions(role) {
+            document.getElementById('user-editor-permissions-container').classList.toggle('hidden', role !== 'editor_sisig');
+        }
+
         function openCreateModal() {
             form.reset();
             form.action = "{{ route('sisig.admin.users.store') }}";
@@ -500,6 +543,11 @@
 
             document.getElementById('user-roleselect').value = 'aprendiz_sisig';
             toggleFichaField('aprendiz_sisig');
+            toggleEditorPermissions('aprendiz_sisig');
+            
+            // Desmarcar todos los checkboxes
+            document.querySelectorAll('.editor-modulo-cb, .editor-quiz-cb').forEach(cb => cb.checked = false);
+
             document.getElementById('user-submit-btn').textContent = 'Crear Usuario';
 
             modal.classList.remove('hidden');
@@ -545,6 +593,15 @@
                     document.getElementById('user-roleselect').value = role;
                     document.getElementById('user-ficha').value = data.ficha || '';
                     toggleFichaField(role);
+                    toggleEditorPermissions(role);
+
+                    // Pre-marcar checkboxes de permisos
+                    document.querySelectorAll('.editor-modulo-cb').forEach(cb => {
+                        cb.checked = data.modulos_editables && data.modulos_editables.includes(parseInt(cb.value));
+                    });
+                    document.querySelectorAll('.editor-quiz-cb').forEach(cb => {
+                        cb.checked = data.quices_editables && data.quices_editables.includes(parseInt(cb.value));
+                    });
 
                     document.getElementById('user-submit-btn').textContent = 'Guardar Cambios';
                     modal.classList.remove('hidden');
