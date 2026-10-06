@@ -74,6 +74,11 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
     // Módulo del Aprendiz (Seguimiento, Inducción y Evaluaciones)
     Route::prefix('aprendiz')->name('aprendiz.')->middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardControllerAprendiz::class, 'index'])->name('dashboard');
+        
+        // Quiz Interactivo del Aprendiz
+        Route::get('/quiz', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'index'])->name('quiz.index');
+        Route::get('/quiz/{seccion}', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'show'])->name('quiz.show');
+        Route::post('/quiz/{seccion}/evaluar', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'evaluar'])->name('quiz.evaluar');
     });
 
     // Módulo de Perfil de Usuario (Reutilizable para cualquier rol autenticado en SISIG)

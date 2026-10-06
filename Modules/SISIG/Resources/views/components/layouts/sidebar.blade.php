@@ -150,49 +150,40 @@
             <!-- VISTA DEL APRENDIZ / USUARIO ESTUDIANTE -->
             <div class="sidebar-section-block">
                 <span class="sidebar-section-title px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                    Mi Formación
+                    Principal
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
                     <a href="{{ route('sisig.aprendiz.dashboard') }}" 
-                       title="Mi Dashboard SIG"
+                       title="Inicio"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.aprendiz.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-graduation-cap text-sm w-5 text-center flex-shrink-0"></i>
-                        <span class="sidebar-text truncate">Mi Dashboard SIG</span>
+                        <i class="fas fa-th-large text-sm w-5 text-center flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">Inicio</span>
                     </a>
                 </div>
             </div>
 
             <div class="sidebar-section-block">
                 <span class="sidebar-section-title px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                    Inducción y Pruebas
+                    Evaluaciones
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
-                    <a href="#" 
-                       title="Módulos de Inducción"
-                       onclick="Swal.fire({ title: 'Módulos de Inducción', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-book-reader text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Módulos de Inducción</span>
+                    <a href="{{ route('sisig.aprendiz.quiz.index') }}" 
+                       title="Quiz interactivo"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.aprendiz.quiz.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-gamepad text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.aprendiz.quiz.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Quiz interactivo</span>
                     </a>
 
-                    <a href="#" 
-                       title="Mis Evaluaciones"
-                       onclick="Swal.fire({ title: 'Mis Evaluaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                    <a href="{{ route('sisig.aprendiz.dashboard') }}#mis-evaluaciones" 
+                       title="Mis resultados"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Mis Evaluaciones</span>
-                    </a>
-
-                    <a href="#" 
-                       title="Historial y Calificaciones"
-                       onclick="Swal.fire({ title: 'Historial y Calificaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-award text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Historial y Calificaciones</span>
+                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="sidebar-text truncate">Mis resultados</span>
                     </a>
                 </div>
+            </div>
             </div>
         @endif
 
