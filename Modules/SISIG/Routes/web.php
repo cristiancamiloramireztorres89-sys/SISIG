@@ -63,6 +63,12 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'index'])->name('examenes.preguntas.index');
         Route::post('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'store'])->name('examenes.preguntas.store');
         Route::delete('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'destroy'])->name('examenes.preguntas.destroy');
+
+        // Gestión de Participantes (Exclusivo Editor)
+        Route::get('/participantes', [\Modules\SISIG\Http\Controllers\Editor\ParticipantesController::class, 'index'])->name('participantes.index');
+
+        // Seguimiento y Reportes (Exclusivo Editor)
+        Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Editor\ReportesController::class, 'index'])->name('reportes.index');
     });
 
     // Módulo del Aprendiz (Seguimiento, Inducción y Evaluaciones)
