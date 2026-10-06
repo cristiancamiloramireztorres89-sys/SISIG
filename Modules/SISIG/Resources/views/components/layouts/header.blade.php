@@ -3,10 +3,10 @@
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             
-            <!-- Left: Mobile Toggle + Identificador Institucional -->
+            <!-- Left: Botón Toggle para Sidebar (Desktop y Móvil) + Identificador Institucional -->
             <div class="flex items-center gap-3">
-                <button type="button" id="mobile-sidebar-toggle" class="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus:outline-none transition-colors">
-                    <i class="fas fa-bars text-lg"></i>
+                <button type="button" id="sidebar-toggle-btn" class="p-2.5 rounded-xl text-slate-600 hover:text-sena-green hover:bg-slate-100 focus:outline-none transition-all duration-200 flex items-center justify-center cursor-pointer shadow-xs border border-transparent hover:border-slate-200" title="Mostrar / Ocultar menú lateral (Sidebar)">
+                    <i class="fas fa-bars-staggered text-lg"></i>
                 </button>
 
                 <div class="flex items-center gap-2 text-xs">
