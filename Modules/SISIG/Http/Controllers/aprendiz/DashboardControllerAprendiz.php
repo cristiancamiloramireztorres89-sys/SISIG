@@ -27,33 +27,26 @@ class DashboardControllerAprendiz extends Controller
                 ->first();
         }
 
-        // Consultar las 3 secciones temáticas del SIG (SST, Calidad, Ambiental)
-        $seccionesRaw = DB::table('sisig_secciones')
-            ->orderBy('orden')
-            ->get();
+        // Consultar los módulos formativos del SIG (SST, Calidad, Ambiental, etc.)
+        $modulosRaw = DB::table('sisig_modulos')->get();
 
         $secciones = [];
         $totalProgresoPorcentaje = 0;
         $seccionesCompletadas = 0;
 
-        foreach ($seccionesRaw as $sec) {
-            // Progreso del aprendiz en esta sección
-            $progreso = DB::table('progreso_aprendiz_seccion')
-                ->where('user_id', $userId)
-                ->where('id_seccion', $sec->id_seccion)
-                ->first();
+        foreach ($modulosRaw as $mod) {
+            // Progreso del módulo (si viene configurado o calculado)
+            $porcentajeVisto = (float) ($mod->progreso ?? 0);
+            $estadoModulo = $mod->estado ?? 'No iniciado';
 
-            $porcentajeVisto = $progreso ? (float) $progreso->porcentaje_visto : 0;
-            $estadoSeccion = $progreso ? $progreso->estado : 'No iniciado';
-
-            if ($estadoSeccion === 'Completado' || $porcentajeVisto >= 100) {
+            if ($estadoModulo === 'Completado' || $porcentajeVisto >= 100) {
                 $seccionesCompletadas++;
             }
             $totalProgresoPorcentaje += $porcentajeVisto;
 
-            // Quiz asociado a la sección
+            // Quiz asociado al módulo
             $quiz = DB::table('sisig_quices')
-                ->where('id_seccion', $sec->id_seccion)
+                ->where('modulo_id', $mod->id)
                 ->where('activo', 1)
                 ->first();
 
@@ -89,20 +82,22 @@ class DashboardControllerAprendiz extends Controller
             }
 
             // Metadatos decorativos por eje (Iconos y colores temáticos)
-            $meta = $this->getSeccionMeta($sec->nombre, $sec->orden);
+            $meta = $this->getSeccionMeta($mod->titulo, $mod->id);
 
             $secciones[] = (object) [
-                'id_seccion' => $sec->id_seccion,
-                'nombre' => $sec->nombre,
-                'descripcion' => $sec->descripcion,
-                'orden' => $sec->orden,
+                'id_seccion' => $mod->id,
+                'id' => $mod->id,
+                'nombre' => $mod->titulo,
+                'titulo' => $mod->titulo,
+                'descripcion' => $mod->descripcion,
+                'orden' => $mod->id,
                 'porcentaje_visto' => $porcentajeVisto,
-                'estado' => $estadoSeccion,
+                'estado' => $estadoModulo,
                 'quiz' => $quizData,
-                'icono' => $meta['icono'],
+                'icono' => $mod->icon_class ?? $meta['icono'],
                 'color' => $meta['color'],
                 'gradiente' => $meta['gradiente'],
-                'badge' => $meta['badge'],
+                'badge' => $mod->norma ?? $meta['badge'],
             ];
         }
 
@@ -119,7 +114,7 @@ class DashboardControllerAprendiz extends Controller
         $totalEvaluacionesPresentadas = $todosResultados->count();
         $totalQuicesDisponibles = DB::table('sisig_quices')->where('activo', 1)->count();
 
-        // Contar quices activos únicos que el aprendiz ha aprobado (soporta cualquier cantidad)
+        // Contar quices activos únicos que el aprendiz ha aprobado
         $quicesAprobadosCount = DB::table('sisig_resultados')
             ->join('sisig_quices', 'sisig_resultados.id_quiz', '=', 'sisig_quices.id_quiz')
             ->where('sisig_resultados.user_id', $userId)
@@ -132,7 +127,7 @@ class DashboardControllerAprendiz extends Controller
             ? round((float) $todosResultados->avg('puntaje'), 1)
             : 0;
 
-        // Estado global de inducción (dinámico según lo existente en base de datos)
+        // Estado global de inducción
         $induccionCompleta = ($totalSecciones > 0 
             && $seccionesCompletadas >= $totalSecciones 
             && ($totalQuicesDisponibles === 0 || $quicesAprobadosCount >= $totalQuicesDisponibles));
@@ -140,13 +135,13 @@ class DashboardControllerAprendiz extends Controller
         // Historial reciente de evaluaciones presentadas por el aprendiz
         $historialEvaluaciones = DB::table('sisig_resultados')
             ->join('sisig_quices', 'sisig_resultados.id_quiz', '=', 'sisig_quices.id_quiz')
-            ->leftJoin('sisig_secciones', 'sisig_quices.id_seccion', '=', 'sisig_secciones.id_seccion')
+            ->leftJoin('sisig_modulos', 'sisig_quices.modulo_id', '=', 'sisig_modulos.id')
             ->where('sisig_resultados.user_id', $userId)
             ->select(
                 'sisig_resultados.*',
                 'sisig_quices.titulo as quiz_titulo',
                 'sisig_quices.puntaje_minimo',
-                'sisig_secciones.nombre as seccion_nombre'
+                'sisig_modulos.titulo as seccion_nombre'
             )
             ->orderByDesc('sisig_resultados.created_at')
             ->limit(6)
@@ -180,7 +175,7 @@ class DashboardControllerAprendiz extends Controller
                 'icono' => 'fas fa-hard-hat',
                 'color' => 'text-emerald-500',
                 'gradiente' => 'from-emerald-500 to-teal-700',
-                'badge' => 'SST &bull; Seguridad en el Trabajo',
+                'badge' => 'SST • Seguridad en el Trabajo',
             ];
         }
 

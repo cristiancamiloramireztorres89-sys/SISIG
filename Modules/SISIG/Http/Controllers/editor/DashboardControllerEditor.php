@@ -19,23 +19,18 @@ class DashboardControllerEditor extends Controller
         $user = Auth::user();
 
         // 1. Métricas generales de contenidos y evaluaciones
-        $totalModulos = DB::table('sisig_secciones')->count();
-        $totalContenidos = DB::table('sisig_contenidos')->count();
+        $totalModulos = DB::table('sisig_modulos')->count();
         $totalQuices = DB::table('sisig_quices')->count();
         $quicesActivos = DB::table('sisig_quices')->where('activo', 1)->count();
         $totalPreguntas = DB::table('sisig_preguntas')->count();
+        $totalContenidos = $totalModulos;
 
-        // 2. Módulos con detalle de sus contenidos y quices
-        $modulos = DB::table('sisig_secciones')
-            ->orderBy('orden')
+        // 2. Módulos asignados o existentes con detalle de quices
+        $modulos = DB::table('sisig_modulos')
             ->get()
-            ->map(function ($sec) {
-                $contenidosCount = DB::table('sisig_contenidos')
-                    ->where('id_seccion', $sec->id_seccion)
-                    ->count();
-
+            ->map(function ($mod) {
                 $quiz = DB::table('sisig_quices')
-                    ->where('id_seccion', $sec->id_seccion)
+                    ->where('modulo_id', $mod->id)
                     ->first();
 
                 $preguntasCount = $quiz 
@@ -43,14 +38,16 @@ class DashboardControllerEditor extends Controller
                     : 0;
 
                 return (object) [
-                    'id_seccion' => $sec->id_seccion,
-                    'nombre' => $sec->nombre,
-                    'descripcion' => $sec->descripcion,
-                    'orden' => $sec->orden,
-                    'contenidos_count' => $contenidosCount,
+                    'id_seccion' => $mod->id,
+                    'id' => $mod->id,
+                    'nombre' => $mod->titulo,
+                    'titulo' => $mod->titulo,
+                    'descripcion' => $mod->descripcion,
+                    'orden' => $mod->id,
+                    'contenidos_count' => !empty($mod->contenido_html) ? 1 : 0,
                     'quiz' => $quiz,
                     'preguntas_count' => $preguntasCount,
-                    'meta' => $this->getSeccionMeta($sec->nombre, $sec->orden),
+                    'meta' => $this->getSeccionMeta($mod->titulo, $mod->id),
                 ];
             });
 
