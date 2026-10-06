@@ -115,15 +115,17 @@
                     </a>
 
                     <a href="{{ route('sisig.editor.participantes.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.participantes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-users text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.participantes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span>Participantes</span>
+                       title="Participantes"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.participantes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-users text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.editor.participantes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Participantes</span>
                     </a>
 
                     <a href="{{ route('sisig.editor.reportes.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.reportes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-chart-line text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.reportes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span>Reportes</span>
+                       title="Reportes"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.reportes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.editor.reportes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Reportes</span>
                     </a>
 
                     <a href="#" 
