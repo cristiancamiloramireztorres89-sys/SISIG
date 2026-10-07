@@ -176,10 +176,10 @@
                         <span class="sidebar-text truncate">Quiz interactivo</span>
                     </a>
 
-                    <a href="{{ route('sisig.aprendiz.dashboard') }}#mis-evaluaciones" 
+                    <a href="{{ route('sisig.aprendiz.resultados.index') }}" 
                        title="Mis resultados"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.aprendiz.resultados.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.aprendiz.resultados.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
                         <span class="sidebar-text truncate">Mis resultados</span>
                     </a>
                 </div>

@@ -10,40 +10,45 @@
             </a>
 
             <!-- Temporizador Dinámico -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#e8f5e9] border border-[#c3e6cb] text-[#0d5c3a] text-xs font-extrabold shadow-xs">
-                <i class="fas fa-clock text-[#0d5c3a]"></i>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-extrabold shadow-sm">
+                <i class="fas fa-clock text-sena-green"></i>
                 <span>Tiempo: <span id="timer-display">10:00</span></span>
             </div>
         </div>
 
         <!-- Banner de Encabezado de la Evaluación -->
-        <div class="relative overflow-hidden rounded-2xl p-6 sm:p-7 text-white shadow-sm" style="background: linear-gradient(135deg, #0d5c3a 0%, #116842 50%, #157347 100%);">
-            <div class="flex items-center justify-between gap-4">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-6 sm:p-8 text-white shadow-2xl">
+            <!-- Destellos ambientales decorativos -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex items-center justify-between gap-4">
                 <div class="space-y-1">
-                    <span class="text-emerald-200 text-[11px] font-extrabold tracking-wider uppercase">
-                        Evaluación Interactiva
+                    <span class="text-sena-green text-[11px] font-extrabold tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Evaluación Interactiva</span>
                     </span>
-                    <h1 class="text-2xl font-extrabold text-white">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                         Quiz de {{ $tituloSeccion }}
                     </h1>
-                    <p class="text-xs text-emerald-100/90">
+                    <p class="text-xs sm:text-sm text-slate-300 font-normal">
                         Selecciona la respuesta correcta para cada una de las preguntas formativas.
                     </p>
                 </div>
 
-                <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md items-center justify-center text-white text-2xl shadow-sm">
-                    <i class="fas fa-gamepad"></i>
+                <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md items-center justify-center text-white text-2xl shadow-sm border border-white/10">
+                    <i class="fas fa-gamepad text-sena-green"></i>
                 </div>
             </div>
 
             <!-- Barra de Progreso de Preguntas -->
-            <div class="mt-5 space-y-1.5">
-                <div class="flex justify-between text-xs text-emerald-200 font-bold">
+            <div class="relative z-10 mt-5 space-y-1.5">
+                <div class="flex justify-between text-xs text-slate-300 font-bold">
                     <span>Pregunta <span id="current-question-num">1</span> de {{ count($preguntas) }}</span>
-                    <span id="progress-percent">0%</span>
+                    <span id="progress-percent" class="text-sena-green font-extrabold">0%</span>
                 </div>
-                <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                    <div id="progress-bar-fill" class="h-2 bg-emerald-300 rounded-full transition-all duration-300" style="width: {{ count($preguntas) > 0 ? round(100 / count($preguntas)) : 100 }}%;"></div>
+                <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="h-2.5 bg-gradient-to-r from-sena-green to-emerald-400 rounded-full transition-all duration-300" style="width: {{ count($preguntas) > 0 ? round(100 / count($preguntas)) : 100 }}%;"></div>
                 </div>
             </div>
         </div>
@@ -98,15 +103,15 @@
                     <button type="button"
                             id="btn-next"
                             onclick="navegarPregunta(1)"
-                            class="px-6 py-2.5 rounded-xl bg-[#0d5c3a] hover:bg-[#157347] text-white font-bold text-xs transition-colors shadow-sm cursor-pointer">
+                            class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] hover:brightness-110 text-white font-bold text-xs transition-all shadow-md cursor-pointer active:scale-95">
                         <span>Siguiente</span> <i class="fas fa-chevron-right ml-1"></i>
                     </button>
 
                     <button type="button"
                             id="btn-finish"
                             onclick="enviarRespuestas()"
-                            class="hidden px-6 py-2.5 rounded-xl bg-[#0d5c3a] hover:bg-[#157347] text-white font-bold text-xs transition-colors shadow-sm cursor-pointer">
-                        <i class="fas fa-paper-plane mr-1"></i> Finalizar y evaluar quiz
+                            class="hidden px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] hover:brightness-110 text-white font-bold text-xs transition-all shadow-md cursor-pointer active:scale-95">
+                        <i class="fas fa-paper-plane mr-1 text-sena-green"></i> Finalizar y evaluar quiz
                     </button>
                 </div>
             </form>

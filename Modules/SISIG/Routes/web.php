@@ -79,6 +79,9 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/quiz', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'index'])->name('quiz.index');
         Route::get('/quiz/{seccion}', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'show'])->name('quiz.show');
         Route::post('/quiz/{seccion}/evaluar', [\Modules\SISIG\Http\Controllers\Aprendiz\QuizAprendizController::class, 'evaluar'])->name('quiz.evaluar');
+        
+        // Mis Resultados del Aprendiz
+        Route::get('/resultados', [\Modules\SISIG\Http\Controllers\Aprendiz\ResultadosAprendizController::class, 'index'])->name('resultados.index');
     });
 
     // Módulo de Perfil de Usuario (Reutilizable para cualquier rol autenticado en SISIG)
