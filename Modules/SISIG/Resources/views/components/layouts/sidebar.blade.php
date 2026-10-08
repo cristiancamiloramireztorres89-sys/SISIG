@@ -127,22 +127,6 @@
                         <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.editor.reportes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
                         <span class="sidebar-text truncate">Reportes</span>
                     </a>
-
-                    <a href="#" 
-                       title="Recursos y Materiales"
-                       onclick="Swal.fire({ title: 'Recursos Didácticos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-file-alt text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Recursos y Materiales</span>
-                    </a>
-
-                    <a href="#" 
-                       title="Quices y Preguntas"
-                       onclick="Swal.fire({ title: 'Banco de Preguntas', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-teal-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Quices y Preguntas</span>
-                    </a>
                 </div>
             </div>
 
