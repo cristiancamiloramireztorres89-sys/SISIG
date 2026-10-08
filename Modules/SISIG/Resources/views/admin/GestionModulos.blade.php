@@ -1,35 +1,24 @@
 <x-sisig::layouts.admin title="Gestión de Módulos SIG">
-    <div class="space-y-8 w-full max-w-[1600px] mx-auto pb-10">
+    <div class="space-y-6 sm:space-y-8 animate-fade-in pb-12">
 
-        <!-- 1. Banner Principal Ejecutivo (Estilo del Proyecto SISIG) -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <!-- Destellos y brillos ambientales de fondo -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <!-- Columna Izquierda: Información -->
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
-                            Panel de Administración
-                        </span>
-                    </div>
-
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-3">
-                        <i class="fas fa-layer-group text-sena-green"></i>
-                        <span>{{ auth()->user()->hasRole('admin_sisig') ? 'Gestión de Módulos SIG' : 'Gestión de Contenidos SIG' }}</span>
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        @if(auth()->user()->hasRole('admin_sisig'))
-                            Crea, edita y administra los módulos del proceso de inducción SIG. Controla el contenido, los quizzes y el estado de cada sección.
-                        @else
-                            Administra y enriquece el material formativo y los contenidos para cada una de las secciones del SIG.
-                        @endif
-                    </p>
-                </div>
+        <!-- 1. Encabezado de la Sección (Estilo Limpio y Unificado) -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-layer-group text-sena-green"></i>
+                    <span>{{ auth()->user()->hasRole('admin_sisig') ? 'Gestión de Módulos SIG' : 'Gestión de Contenidos SIG' }}</span>
+                </h1>
             </div>
+
+            @if(auth()->user()->hasRole('admin_sisig'))
+                <div class="self-start lg:self-auto">
+                    <button type="button" onclick="document.getElementById('modalCrearModulo').classList.remove('hidden')"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>Nuevo Módulo</span>
+                    </button>
+                </div>
+            @endif
         </div>
 
         @if(session('success'))
@@ -128,14 +117,6 @@
                     <option value="revision">En revisión</option>
                     <option value="inactivo">Inactivo</option>
                 </select>
-
-                @if(auth()->user()->hasRole('admin_sisig'))
-                    <button type="button" onclick="document.getElementById('modalCrearModulo').classList.remove('hidden')"
-                            class="bg-sena-green hover:bg-sena-green-hover text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-sena hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
-                        <i class="fas fa-plus"></i>
-                        <span>Crear Nuevo</span>
-                    </button>
-                @endif
             </div>
         </div>
 
