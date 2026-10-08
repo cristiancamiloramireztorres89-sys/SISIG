@@ -1,27 +1,34 @@
 <x-sisig::layouts.editor title="Participantes">
     <div class="space-y-6 w-full max-w-[1600px] mx-auto pb-10">
 
-        <!-- Banner de cabecera verde institucional -->
-        <div class="relative overflow-hidden rounded-2xl p-6 sm:p-8 text-white shadow-sm" style="background: linear-gradient(135deg, #0d5c3a 0%, #116842 50%, #157347 100%);">
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="space-y-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-xl shadow-sm">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                            Participantes
-                        </h1>
+        <!-- Banner Principal Editorial -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sena-green/15 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <div>
+                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
+                            Panel Editorial
+                        </span>
                     </div>
-                    <p class="text-emerald-100/90 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
+
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-3">
+                        <i class="fas fa-users text-sena-green"></i>
+                        <span>Participantes</span>
+                    </h1>
+
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
                         Consulta el listado de aprendices, su estado de avance por sección y filtra por resultado de evaluación.
                     </p>
-                    <nav class="flex items-center gap-2 text-xs text-emerald-200/80 pt-1">
+
+                    <nav class="flex items-center gap-2 text-xs text-slate-400 pt-1">
                         <a href="{{ route('sisig.editor.dashboard') }}" class="hover:text-white transition-colors">Inicio</a>
-                        <span class="text-emerald-300/60">›</span>
-                        <span class="text-emerald-200">Contenido</span>
-                        <span class="text-emerald-300/60">›</span>
-                        <span class="text-white font-semibold">Participantes</span>
+                        <span class="text-slate-500">›</span>
+                        <span class="text-slate-300">Contenido</span>
+                        <span class="text-slate-500">›</span>
+                        <span class="text-sena-green font-semibold">Participantes</span>
                     </nav>
                 </div>
             </div>
@@ -95,7 +102,7 @@
 
             <!-- Subtítulo de sección -->
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <i class="fas fa-table-list text-emerald-600"></i>
+                <i class="fas fa-table-list text-sena-green"></i>
                 <span>Listado de aprendices registrados</span>
             </div>
 
@@ -105,13 +112,13 @@
                 <div class="md:col-span-6 relative">
                     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre o correo..."
-                           class="w-full pl-11 pr-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                           class="w-full pl-11 pr-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all">
                 </div>
 
                 <!-- Filtro de Estados -->
                 <div class="md:col-span-3">
                     <select name="estado" onchange="this.form.submit()"
-                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all cursor-pointer">
                         <option value="">Todos los estados</option>
                         <option value="Aprobado" {{ request('estado') === 'Aprobado' ? 'selected' : '' }}>Aprobado</option>
                         <option value="Pendiente" {{ request('estado') === 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
@@ -122,7 +129,7 @@
                 <!-- Filtro de Secciones -->
                 <div class="md:col-span-3">
                     <select name="seccion" onchange="this.form.submit()"
-                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all cursor-pointer">
                         <option value="">Todas las secciones</option>
                         <option value="calidad" {{ request('seccion') === 'calidad' ? 'selected' : '' }}>Calidad</option>
                         <option value="sst" {{ request('seccion') === 'sst' ? 'selected' : '' }}>SST</option>
@@ -134,7 +141,7 @@
             <!-- Encabezado secundario de la tabla -->
             <div class="flex items-center justify-between pt-2 border-t border-slate-50">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-list text-emerald-600"></i>
+                    <i class="fas fa-list text-sena-green"></i>
                     <h2 class="text-sm font-bold text-slate-800">Aprendices registrados</h2>
                 </div>
                 <span class="text-xs text-slate-400 font-medium">
@@ -163,11 +170,11 @@
                             <!-- Aprendiz -->
                             <td class="py-4 pr-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-[#0d5c3a] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#001A29] to-[#003B5C] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm border border-slate-700/20">
                                         {{ $participante->iniciales }}
                                     </div>
                                     <div>
-                                        <div class="font-bold text-slate-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                                        <div class="font-bold text-slate-800 leading-snug group-hover:text-sena-green transition-colors">
                                             {{ $participante->nombre }}
                                         </div>
                                         <div class="text-xs text-slate-400 mt-0.5">
@@ -260,7 +267,7 @@
                                     </p>
                                     @if(request('buscar') || request('estado') || request('seccion'))
                                     <a href="{{ route('sisig.editor.participantes.index') }}"
-                                       class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-sm">
+                                       class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sena-green text-white hover:bg-sena-green-hover transition-colors shadow-sm">
                                         <i class="fas fa-sync-alt"></i> Limpiar filtros
                                     </a>
                                     @endif
@@ -280,17 +287,17 @@
     <div id="modal-detalle-aprendiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-fade-in">
             <!-- Modal Header -->
-            <div class="p-6 pb-4 border-b border-slate-100 flex items-center justify-between" style="background: linear-gradient(135deg, #0d5c3a 0%, #157347 100%); color: white;">
-                <div class="flex items-center gap-3">
-                    <div id="modal-avatar" class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white font-extrabold text-sm flex items-center justify-center shadow-inner">
+            <div class="relative overflow-hidden p-6 pb-4 border-b border-slate-700/50 flex items-center justify-between bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] text-white">
+                <div class="relative z-10 flex items-center gap-3">
+                    <div id="modal-avatar" class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-sena-green font-extrabold text-sm flex items-center justify-center shadow-inner">
                         --
                     </div>
                     <div>
                         <h3 id="modal-nombre" class="font-extrabold text-base leading-snug text-white">Nombre Aprendiz</h3>
-                        <p id="modal-documento" class="text-xs text-emerald-100/90 mt-0.5">CC - --</p>
+                        <p id="modal-documento" class="text-xs text-slate-300 mt-0.5">CC - --</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalDetalle()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+                <button type="button" onclick="cerrarModalDetalle()" class="relative z-10 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
