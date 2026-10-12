@@ -44,6 +44,18 @@
             </div>
         @endif
 
+        @if(session('info'))
+            <div id="info-alert" class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-between gap-3 shadow-sm transition-all duration-500">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-info-circle text-blue-600 text-base flex-shrink-0"></i>
+                    <p class="text-xs sm:text-sm font-bold">{{ session('info') }}</p>
+                </div>
+                <button type="button" onclick="closeAlert('info-alert')" class="text-blue-500 hover:text-blue-800 p-1.5 rounded-lg hover:bg-blue-100 transition-colors" title="Cerrar">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            </div>
+        @endif
+
         @if(isset($errors) && $errors->any())
             <div id="error-alert" class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start justify-between gap-3 shadow-sm transition-all duration-500">
                 <div class="flex items-start gap-3 flex-1">

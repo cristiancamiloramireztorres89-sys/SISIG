@@ -56,13 +56,29 @@ class PerfilusersController extends Controller
             'avatar.max' => 'La foto de perfil no debe superar los 2MB de tamaño.',
         ]);
 
-        $user->email = $request->email;
-        $user->save();
+        $cambiosRealizados = false;
+        $avatarActualizado = false;
+
+        $nuevoEmail = trim($request->email);
+        if ($user->email !== $nuevoEmail) {
+            $user->email = $nuevoEmail;
+            $user->save();
+            $cambiosRealizados = true;
+        }
 
         if ($user->person) {
             $person = $user->person;
-            $person->personal_email = $request->personal_email;
-            $person->sena_email = $request->email;
+            $nuevoPersonalEmail = $request->filled('personal_email') ? trim($request->personal_email) : null;
+
+            if ($person->sena_email !== $nuevoEmail) {
+                $person->sena_email = $nuevoEmail;
+                $cambiosRealizados = true;
+            }
+
+            if ($person->personal_email !== $nuevoPersonalEmail) {
+                $person->personal_email = $nuevoPersonalEmail;
+                $cambiosRealizados = true;
+            }
 
             // Procesar nueva foto de perfil
             if ($request->hasFile('avatar')) {
@@ -71,20 +87,34 @@ class PerfilusersController extends Controller
                 }
                 $path = $request->file('avatar')->store('avatars', 'public');
                 $person->avatar = $path;
+                $cambiosRealizados = true;
+                $avatarActualizado = true;
             }
 
             // Eliminar foto si se solicita
-            if ($request->input('remove_avatar') == '1') {
-                if ($person->avatar && Storage::disk('public')->exists($person->avatar)) {
+            if ($request->input('remove_avatar') == '1' && !empty($person->avatar)) {
+                if (Storage::disk('public')->exists($person->avatar)) {
                     Storage::disk('public')->delete($person->avatar);
                 }
                 $person->avatar = null;
+                $cambiosRealizados = true;
+                $avatarActualizado = true;
             }
 
-            $person->save();
+            if ($person->isDirty()) {
+                $person->save();
+            }
         }
 
-        return back()->with('success', '¡Información de perfil y avatar actualizados exitosamente!');
+        if (!$cambiosRealizados) {
+            return back()->with('info', 'No se detectaron cambios: los datos ya se encuentran actualizados.');
+        }
+
+        $mensajeExito = $avatarActualizado
+            ? '¡Información de perfil y foto actualizadas exitosamente!'
+            : '¡Información de perfil actualizada exitosamente!';
+
+        return back()->with('success', $mensajeExito);
     }
 
     /**
@@ -108,6 +138,11 @@ class PerfilusersController extends Controller
         // Validar contraseña actual
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'La contraseña actual ingresada no es correcta.']);
+        }
+
+        // Validar que la nueva contraseña no sea exactamente la misma
+        if (Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'La nueva contraseña debe ser diferente a la contraseña actual.']);
         }
 
         // Actualizar contraseña encriptada
