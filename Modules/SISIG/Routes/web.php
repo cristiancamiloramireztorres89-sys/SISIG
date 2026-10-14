@@ -43,6 +43,10 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::post('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'store'])->name('examenes.preguntas.store');
         Route::put('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'update'])->name('examenes.preguntas.update');
         Route::delete('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'destroy'])->name('examenes.preguntas.destroy');
+
+        // Módulo de Seguridad y Accesos
+        Route::get('/seguridad', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'index'])->name('seguridad.index');
+        Route::delete('/seguridad/sesiones/{id}', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'cerrarSesion'])->name('seguridad.sesiones.destroy');
     });
 
 

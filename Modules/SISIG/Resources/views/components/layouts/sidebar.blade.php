@@ -67,11 +67,11 @@
                         <span class="sidebar-text truncate">Reportes y Métricas</span>
                     </a>
 
-                    <a href="#seguridad" 
-                       title="Seguridad e Infracciones"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Seguridad e Infracciones</span>
+                    <a href="{{ route('sisig.admin.seguridad.index') }}" 
+                       title="Seguridad y Accesos"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.seguridad.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.admin.seguridad.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Seguridad y Accesos</span>
                     </a>
                 </div>
             </div>
