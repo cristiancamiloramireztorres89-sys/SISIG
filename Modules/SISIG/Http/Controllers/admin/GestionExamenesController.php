@@ -9,13 +9,38 @@ use Modules\SISIG\Entities\Modulo;
 
 class GestionExamenesController extends Controller
 {
+    protected string $routePrefix = 'sisig.admin';
+
+    protected function getModulosPermitidos()
+    {
+        return Modulo::all();
+    }
+
+    protected function getModulosIdsPermitidos()
+    {
+        return $this->getModulosPermitidos()->pluck('id')->toArray();
+    }
+
+    protected function getQuizQuery()
+    {
+        return Quiz::with('modulo')->whereIn('modulo_id', $this->getModulosIdsPermitidos());
+    }
+
+    protected function findQuizOrFail($id)
+    {
+        return $this->getQuizQuery()->findOrFail($id);
+    }
+
     public function index(Request $request)
     {
-        $query = Quiz::with('modulo');
+        $query = $this->getQuizQuery();
+        $modulosIds = $this->getModulosIdsPermitidos();
 
         // Filtros
         if ($request->has('modulo_id') && $request->modulo_id != 'all') {
-            $query->where('modulo_id', $request->modulo_id);
+            if (in_array($request->modulo_id, $modulosIds)) {
+                $query->where('modulo_id', $request->modulo_id);
+            }
         }
         
         if ($request->has('estado') && $request->estado != 'all') {
@@ -28,17 +53,19 @@ class GestionExamenesController extends Controller
         }
 
         $quices = $query->get();
-        $modulos = Modulo::all();
-        $routePrefix = 'sisig.admin';
+        $modulos = $this->getModulosPermitidos();
+        $routePrefix = $this->routePrefix;
 
         return view('sisig::admin.GestionExamenes', compact('quices', 'modulos', 'routePrefix'));
     }
 
     public function store(Request $request)
     {
+        $modulosIds = $this->getModulosIdsPermitidos();
+
         $request->validate([
             'titulo' => 'required|string|max:100',
-            'modulo_id' => 'required|exists:sisig_modulos,id',
+            'modulo_id' => 'required|in:' . implode(',', $modulosIds),
             'activo' => 'required|boolean',
             'numero_intentos' => 'required|integer|min:1',
             'puntaje_minimo' => 'required|numeric|min:0|max:100',
@@ -48,14 +75,16 @@ class GestionExamenesController extends Controller
 
         Quiz::create($request->all());
 
-        return redirect()->route('sisig.admin.examenes.index')->with('success', 'Examen creado exitosamente.');
+        return redirect()->route($this->routePrefix . '.examenes.index')->with('success', 'Examen creado exitosamente.');
     }
 
     public function update(Request $request, $id)
     {
+        $modulosIds = $this->getModulosIdsPermitidos();
+
         $request->validate([
             'titulo' => 'required|string|max:100',
-            'modulo_id' => 'required|exists:sisig_modulos,id',
+            'modulo_id' => 'required|in:' . implode(',', $modulosIds),
             'activo' => 'required|boolean',
             'numero_intentos' => 'required|integer|min:1',
             'puntaje_minimo' => 'required|numeric|min:0|max:100',
@@ -63,18 +92,24 @@ class GestionExamenesController extends Controller
             'fecha_limite' => 'nullable|date'
         ]);
 
-        $quiz = Quiz::findOrFail($id);
-        $quiz->update($request->all());
+        $quiz = $this->findQuizOrFail($id);
+        $quiz->fill($request->all());
 
-        return redirect()->route('sisig.admin.examenes.index')->with('success', 'Examen actualizado exitosamente.');
+        if (!$quiz->isDirty()) {
+            return redirect()->route($this->routePrefix . '.examenes.index')->with('info', 'No se detectaron modificaciones en el examen.');
+        }
+
+        $quiz->save();
+
+        return redirect()->route($this->routePrefix . '.examenes.index')->with('success', 'Examen actualizado exitosamente.');
     }
 
     public function toggleStatus($id)
     {
-        $quiz = Quiz::findOrFail($id);
+        $quiz = $this->findQuizOrFail($id);
         $quiz->activo = !$quiz->activo;
         $quiz->save();
 
-        return redirect()->route('sisig.admin.examenes.index')->with('success', 'Estado del examen actualizado.');
+        return redirect()->route($this->routePrefix . '.examenes.index')->with('success', 'Estado del examen actualizado.');
     }
 }

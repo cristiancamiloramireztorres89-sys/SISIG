@@ -21,6 +21,110 @@
 
     <!-- SweetAlert2 para modales y alertas estilizadas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Sistema Global Unificado de Alertas Banner SISIG (Intercepción Temprana)
+        window._alertasPendientes = [];
+
+        window.mostrarAlertaBanner = function(mensaje, tipo = 'success') {
+            const contenedor = document.getElementById('contenedor-alertas-globales');
+            if (!contenedor) {
+                window._alertasPendientes.push({ mensaje, tipo });
+                return;
+            }
+
+            // Limpiar alertas previas
+            contenedor.innerHTML = '';
+
+            const bgClass = tipo === 'success' 
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                : (tipo === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800');
+            const iconClass = tipo === 'success' 
+                ? 'fa-check-circle text-emerald-600' 
+                : (tipo === 'error' ? 'fa-exclamation-triangle text-rose-600' : 'fa-exclamation-circle text-amber-600');
+
+            const alertEl = document.createElement('div');
+            alertEl.id = 'session-alert';
+            alertEl.className = `p-4 rounded-2xl ${bgClass} border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out animate-fade-in`;
+            alertEl.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${iconClass} text-base flex-shrink-0"></i>
+                    <p class="text-xs sm:text-sm font-bold">${mensaje}</p>
+                </div>
+                <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="p-1.5 rounded-lg opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            `;
+
+            contenedor.appendChild(alertEl);
+            window.iniciarTemporizadorAlerta(alertEl);
+        };
+
+        window.cerrarAlertaGlobal = function(el) {
+            if (!el) return;
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-8px)';
+            setTimeout(() => {
+                if (el && el.parentNode) el.remove();
+            }, 400);
+        };
+
+        window.iniciarTemporizadorAlerta = function(el) {
+            if (!el) return;
+            setTimeout(() => {
+                window.cerrarAlertaGlobal(el);
+            }, 3000);
+        };
+
+        // Procesar alertas pendientes al cargar el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialAlert = document.getElementById('session-alert');
+            if (initialAlert) {
+                window.iniciarTemporizadorAlerta(initialAlert);
+            }
+            if (window._alertasPendientes && window._alertasPendientes.length > 0) {
+                window._alertasPendientes.forEach(item => window.mostrarAlertaBanner(item.mensaje, item.tipo));
+                window._alertasPendientes = [];
+            }
+        });
+
+        // Interceptar INMEDIATAMENTE SweetAlert2 para redirigir toda notificación al banner superior
+        if (window.Swal) {
+            const _swalFireOriginal = window.Swal.fire;
+            window.Swal.fire = function(...args) {
+                let config = {};
+                if (typeof args[0] === 'object' && args[0] !== null) {
+                    config = args[0];
+                } else {
+                    config = {
+                        title: args[0] || '',
+                        text: args[1] || '',
+                        icon: args[2] || 'info'
+                    };
+                }
+
+                // Si es un diálogo de confirmación interactivo que tiene botón cancelar o inputs
+                if (config.showCancelButton || config.input) {
+                    return _swalFireOriginal.apply(this, args);
+                }
+
+                // Para cualquier mensaje o alerta de acción:
+                let rawMsg = config.text || (config.title && config.title !== '¡Éxito!' && config.title !== 'Éxito' ? config.title : '') || config.html || config.title || '';
+                
+                // Limpiar entidades HTML (ej. &quot;)
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawMsg;
+                const cleanMsg = tempDiv.textContent || tempDiv.innerText || rawMsg;
+
+                let tipo = 'success';
+                if (config.icon === 'error') tipo = 'error';
+                else if (config.icon === 'warning') tipo = 'warning';
+                else if (config.icon === 'info') tipo = 'info';
+
+                window.mostrarAlertaBanner(cleanMsg, tipo);
+                return Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false });
+            };
+        }
+    </script>
 
     <!-- Tailwind CSS CDN with custom SENA palette -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -95,8 +199,16 @@
             }
             #sidebar-menu.sidebar-collapsed .sidebar-header-container {
                 justify-content: center !important;
-                padding-left: 0.25rem !important;
-                padding-right: 0.25rem !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            #sidebar-menu.sidebar-collapsed .sidebar-header-inner {
+                justify-content: center !important;
+                gap: 0 !important;
+                width: 100% !important;
+            }
+            #sidebar-menu.sidebar-collapsed .sidebar-logo-box {
+                margin: 0 auto !important;
             }
             #sidebar-menu.sidebar-collapsed #sidebar-nav {
                 padding: 0.5rem 0.25rem !important;
@@ -163,15 +275,37 @@
         <!-- Header Superior -->
         @include('sisig::components.layouts.header')
 
-        <main class="flex-1 p-5 sm:p-8">
+        <main class="flex-1 p-5 sm:p-8 relative">
+            <!-- Contenedor Universal de Alertas de Sesión / Acciones -->
+            <div id="contenedor-alertas-globales" class="space-y-3 mb-6">
+                @if(session('success') || session('error') || session('info') || session('warning'))
+                    @php 
+                        $tipo = session('success') ? 'success' : (session('error') ? 'error' : (session('warning') ? 'warning' : 'info'));
+                        $mensaje = session('success') ?? session('error') ?? session('warning') ?? session('info');
+                    @endphp
+                    <div id="session-alert" class="p-4 rounded-2xl {{ $tipo === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : ($tipo === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800') }} border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <i class="fas {{ $tipo === 'success' ? 'fa-check-circle text-emerald-600' : ($tipo === 'error' ? 'fa-exclamation-triangle text-rose-600' : 'fa-exclamation-circle text-amber-600') }} text-base flex-shrink-0"></i>
+                            <p class="text-xs sm:text-sm font-bold">{{ $mensaje }}</p>
+                        </div>
+                        <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="p-1.5 rounded-lg opacity-70 hover:opacity-100 transition-opacity">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                @endif
+            </div>
+
             {{ $slot }}
+
+            <!-- Modal Universal Reutilizable de Confirmación -->
+            @include('sisig::components.modals.confirmacion')
         </main>
 
         <!-- 3. Pie de página institucional -->
         @include('sisig::components.layouts.footer')
     </div>
 
-    <!-- Script universal para un solo botón toggle con persistencia -->
+    <!-- Script universal para sidebar y navegación -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar-menu');
