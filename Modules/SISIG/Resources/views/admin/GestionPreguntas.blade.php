@@ -1,6 +1,9 @@
+
 <x-sisig::layouts.admin>
     <div class="space-y-6 max-w-5xl mx-auto pb-10">
         
+
+
         <!-- Cabecera -->
         <div class="flex items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
             <div class="flex items-center gap-4">
@@ -28,9 +31,9 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Opción Múltiple -->
-                <button onclick="openPreguntaModal('opcion_multiple')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-check-square text-xl"></i>
+                <button onclick="openPreguntaModal('opcion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                        <i class="fas fa-check-square"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Opción múltiple</h4>
@@ -39,9 +42,9 @@
                 </button>
 
                 <!-- Selección Múltiple -->
-                <button onclick="openPreguntaModal('seleccion_multiple')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-check-double text-xl"></i>
+                <button onclick="openPreguntaModal('seleccion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                        <i class="fas fa-check-double"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Selección múltiple</h4>
@@ -50,10 +53,10 @@
                 </button>
 
                 <!-- Verdadero o Falso -->
-                <button onclick="openPreguntaModal('verdadero_falso')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative">
-                        <i class="fas fa-check text-lg absolute -top-0.5 -left-0.5 text-emerald-600"></i>
-                        <i class="fas fa-times text-lg absolute -bottom-0.5 -right-0.5 text-rose-500"></i>
+                <button onclick="openPreguntaModal('verdadero_falso')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                    <div class="text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center gap-1">
+                        <i class="fas fa-check text-emerald-500 text-lg"></i>
+                        <i class="fas fa-times text-rose-500 text-sm"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Verdadero o falso</h4>
@@ -62,9 +65,9 @@
                 </button>
 
                 <!-- Espacios en blanco -->
-                <button onclick="openPreguntaModal('espacios_blanco')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-pen-nib text-xl border-b-2 border-dashed border-emerald-500 pb-1"></i>
+                <button onclick="openPreguntaModal('espacios_blanco')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                        <i class="fas fa-pen-nib"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Completa los espacios en blanco</h4>
@@ -72,9 +75,9 @@
                 </button>
 
                 <!-- Respuestas Abiertas -->
-                <button onclick="openPreguntaModal('abierta')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-align-left text-xl"></i>
+                <button onclick="openPreguntaModal('abierta')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                        <i class="fas fa-align-left"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Respuestas abiertas</h4>
@@ -83,14 +86,14 @@
                 </button>
 
                 <!-- Tabla de relleno -->
-                <button onclick="openPreguntaModal('tabla_relleno')" class="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left relative overflow-hidden">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-table text-xl"></i>
+                <button onclick="openPreguntaModal('tabla_relleno')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer relative overflow-hidden">
+                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                        <i class="fas fa-table"></i>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
                             Tabla de relleno
-                            <span class="text-[9px] font-black bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded uppercase tracking-widest border border-emerald-200">Nuevo</span>
+                            <span class="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Nuevo</span>
                         </h4>
                         <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Completar celdas.</p>
                     </div>
@@ -119,11 +122,14 @@
                                     <h4 class="text-sm font-bold text-slate-800">{{ $pregunta->pregunta }}</h4>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">{{ $pregunta->puntaje }} pts</span>
-                                    <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta pregunta?')">
+                                    <span class="text-xs font-black text-amber-500">{{ $pregunta->puntaje }} pts</span>
+                                    <button type="button" onclick="openEditarPreguntaModal({{ json_encode($pregunta) }})" title="Editar pregunta" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-sky-600 hover:border-sky-200 hover:bg-sky-50 transition-all flex items-center justify-center">
+                                        <i class="fas fa-pen text-xs"></i>
+                                    </button>
+                                    <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirmarEliminarPregunta(event, this, '{{ addslashes(Str::limit($pregunta->pregunta, 60)) }}')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all flex items-center justify-center">
+                                        <button type="submit" title="Eliminar pregunta" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all flex items-center justify-center">
                                             <i class="fas fa-trash-alt text-xs"></i>
                                         </button>
                                     </form>
@@ -166,36 +172,38 @@
 
     <!-- Modal Dinámico para Crear Pregunta -->
     <div id="pregunta-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 animate-scale-in flex flex-col max-h-[90vh]">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto relative">
             
-            <div class="bg-slate-900 text-white rounded-t-3xl p-5 flex items-center justify-between">
+            <!-- Header Modal Limpio -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sena-green">
-                        <i class="fas fa-question-circle text-sm"></i>
+                    <i id="modal-icon" class="fas fa-question-circle text-2xl text-sena-green"></i>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800"><span id="modal-action-title">Configurar</span> Pregunta: <span id="modal-tipo-label" class="text-sena-green font-extrabold"></span></h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Define el enunciado, puntaje y opciones de respuesta</p>
                     </div>
-                    <h3 class="font-bold text-base tracking-wide">Configurar Pregunta: <span id="modal-tipo-label" class="text-emerald-400"></span></h3>
                 </div>
-                <button type="button" onclick="closePreguntaModal()" class="text-white/60 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10">
+                <button type="button" onclick="closePreguntaModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
 
-            <div class="p-6 overflow-y-auto">
-                <form id="pregunta-form" action="{{ route($routePrefix . '.examenes.preguntas.store', $quiz->id_quiz) }}" method="POST" class="space-y-5">
+            <form id="pregunta-form" action="{{ route($routePrefix . '.examenes.preguntas.store', $quiz->id_quiz) }}" method="POST" class="mt-5 space-y-5">
                     @csrf
+                    <input type="hidden" name="_method" id="form-method" value="POST">
                     <input type="hidden" name="tipo" id="input-tipo">
 
                     <!-- Enunciado -->
                     <div>
                         <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Enunciado de la pregunta *</label>
-                        <textarea name="pregunta" required rows="3" placeholder="Escribe la pregunta aquí..." 
+                        <textarea name="pregunta" id="input-pregunta" required rows="3" placeholder="Escribe la pregunta aquí..." 
                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-none"></textarea>
                     </div>
 
                     <!-- Puntaje -->
                     <div class="w-1/3">
                         <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Puntaje *</label>
-                        <input type="number" name="puntaje" required step="0.1" min="0" value="1" 
+                        <input type="number" name="puntaje" id="input-puntaje" required step="0.1" min="0" value="1" 
                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                     </div>
 
@@ -227,7 +235,7 @@
                                 <i class="fas fa-question-circle text-[10px]"></i>
                             </span>
                         </label>
-                        <textarea name="retroalimentacion" rows="3" placeholder="Mensaje que verá el aprendiz al finalizar el quiz (ej. explicación de la respuesta o rúbrica esperada para abiertas)." 
+                        <textarea name="retroalimentacion" id="input-retroalimentacion" rows="3" placeholder="Mensaje que verá el aprendiz al finalizar el quiz (ej. explicación de la respuesta o rúbrica esperada para abiertas)." 
                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-none"></textarea>
                     </div>
 
@@ -236,22 +244,32 @@
                             Cancelar
                         </button>
                         <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all flex items-center gap-2">
-                            <i class="fas fa-save"></i> <span>Guardar pregunta</span>
+                            <i class="fas fa-save"></i> <span id="btn-submit-label">Guardar pregunta</span>
                         </button>
                     </div>
                 </form>
-            </div>
         </div>
     </div>
+
+
 
     <script>
         const modal = document.getElementById('pregunta-modal');
         const form = document.getElementById('pregunta-form');
+        const formMethod = document.getElementById('form-method');
+        const modalActionTitle = document.getElementById('modal-action-title');
+        const btnSubmitLabel = document.getElementById('btn-submit-label');
+        const inputPregunta = document.getElementById('input-pregunta');
+        const inputPuntaje = document.getElementById('input-puntaje');
+        const inputRetro = document.getElementById('input-retroalimentacion');
         const opcionesContainer = document.getElementById('opciones-container');
         const listaOpciones = document.getElementById('lista-opciones');
         const infoCompleja = document.getElementById('info-compleja');
         let optionCount = 0;
         let currentType = '';
+
+        const storeUrl = "{{ route($routePrefix . '.examenes.preguntas.store', $quiz->id_quiz) }}";
+        const updateUrlTemplate = "{{ route($routePrefix . '.examenes.preguntas.update', [$quiz->id_quiz, ':preguntaId']) }}";
 
         const TYPE_LABELS = {
             'opcion_multiple': 'Opción múltiple',
@@ -264,11 +282,18 @@
 
         function openPreguntaModal(tipo) {
             currentType = tipo;
+            form.action = storeUrl;
+            formMethod.value = 'POST';
+            modalActionTitle.textContent = 'Configurar';
+            btnSubmitLabel.textContent = 'Guardar pregunta';
+
             document.getElementById('input-tipo').value = tipo;
-            document.getElementById('modal-tipo-label').textContent = TYPE_LABELS[tipo];
+            document.getElementById('modal-tipo-label').textContent = TYPE_LABELS[tipo] || tipo;
             
             // Reiniciar form y opciones
-            form.reset();
+            inputPregunta.value = '';
+            inputPuntaje.value = 1;
+            inputRetro.value = '';
             listaOpciones.innerHTML = '';
             optionCount = 0;
 
@@ -276,14 +301,14 @@
                 opcionesContainer.classList.remove('hidden');
                 infoCompleja.classList.add('hidden');
                 addOpcion();
-                addOpcion(); // Iniciar con 2 opciones
+                addOpcion(); // Iniciar con 2 opciones vacías
             } else if (tipo === 'verdadero_falso') {
                 opcionesContainer.classList.remove('hidden');
                 infoCompleja.classList.add('hidden');
                 // Inyectar Verdadero y Falso
                 listaOpciones.innerHTML = `
                     <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
-                        <input type="radio" name="opciones[0][es_correcta]" value="1" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500">
+                        <input type="radio" name="opciones[0][es_correcta]" value="1" checked class="w-4 h-4 text-emerald-500 focus:ring-emerald-500">
                         <input type="text" name="opciones[0][texto]" value="Verdadero" readonly class="flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none">
                     </div>
                     <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
@@ -299,24 +324,115 @@
             modal.classList.remove('hidden');
         }
 
+        function openEditarPreguntaModal(pregunta) {
+            currentType = pregunta.tipo;
+            form.action = updateUrlTemplate.replace(':preguntaId', pregunta.id_pregunta);
+            formMethod.value = 'PUT';
+            modalActionTitle.textContent = 'Editar';
+            btnSubmitLabel.textContent = 'Actualizar pregunta';
+
+            document.getElementById('input-tipo').value = pregunta.tipo;
+            document.getElementById('modal-tipo-label').textContent = TYPE_LABELS[pregunta.tipo] || pregunta.tipo;
+
+            inputPregunta.value = pregunta.pregunta || '';
+            inputPuntaje.value = pregunta.puntaje || 1;
+            inputRetro.value = pregunta.retroalimentacion || '';
+            listaOpciones.innerHTML = '';
+            optionCount = 0;
+
+            if (pregunta.tipo === 'opcion_multiple' || pregunta.tipo === 'seleccion_multiple') {
+                opcionesContainer.classList.remove('hidden');
+                infoCompleja.classList.add('hidden');
+
+                if (pregunta.opciones && pregunta.opciones.length > 0) {
+                    pregunta.opciones.forEach((opc) => {
+                        addOpcion(opc.opcion, opc.es_correcta == 1);
+                    });
+                } else {
+                    addOpcion();
+                    addOpcion();
+                }
+            } else if (pregunta.tipo === 'verdadero_falso') {
+                opcionesContainer.classList.remove('hidden');
+                infoCompleja.classList.add('hidden');
+
+                let isVerdaderoCorrect = true;
+                if (pregunta.opciones && pregunta.opciones.length > 0) {
+                    const verd = pregunta.opciones.find(o => o.opcion && o.opcion.toLowerCase() === 'verdadero');
+                    if (verd) {
+                        isVerdaderoCorrect = (verd.es_correcta == 1);
+                    }
+                }
+
+                listaOpciones.innerHTML = `
+                    <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
+                        <input type="radio" name="opciones[0][es_correcta]" value="1" ${isVerdaderoCorrect ? 'checked' : ''} class="w-4 h-4 text-emerald-500 focus:ring-emerald-500">
+                        <input type="text" name="opciones[0][texto]" value="Verdadero" readonly class="flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none">
+                    </div>
+                    <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
+                        <input type="radio" name="opciones[1][es_correcta]" value="1" ${!isVerdaderoCorrect ? 'checked' : ''} class="w-4 h-4 text-emerald-500 focus:ring-emerald-500">
+                        <input type="text" name="opciones[1][texto]" value="Falso" readonly class="flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none">
+                    </div>
+                `;
+            } else {
+                opcionesContainer.classList.add('hidden');
+                infoCompleja.classList.remove('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                preguntaOriginalSnapshot = JSON.stringify(getPreguntaSnapshot());
+            }, 50);
+        }
+
+        let preguntaOriginalSnapshot = null;
+
+        function getPreguntaSnapshot() {
+            const opciones = [];
+            const textInputs = listaOpciones.querySelectorAll('input[type="text"]');
+            textInputs.forEach(t => opciones.push(t.value.trim()));
+            return {
+                pregunta: inputPregunta.value.trim(),
+                puntaje: String(inputPuntaje.value).trim(),
+                retro: inputRetro.value.trim(),
+                opciones: opciones
+            };
+        }
+
+        form.addEventListener('submit', function(e) {
+            if (preguntaOriginalSnapshot) {
+                const current = JSON.stringify(getPreguntaSnapshot());
+                if (current === preguntaOriginalSnapshot) {
+                    e.preventDefault();
+                    closePreguntaModal();
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('No se detectaron modificaciones en la pregunta.', 'info');
+                    }
+                    return false;
+                }
+            }
+        });
+
         function closePreguntaModal() {
             modal.classList.add('hidden');
         }
 
-        function addOpcion() {
+        function addOpcion(texto = '', esCorrecta = false) {
             const isMultiple = currentType === 'seleccion_multiple';
-            const inputType = isMultiple ? 'checkbox' : 'radio';
-            const inputNameCorrect = isMultiple ? `opciones[${optionCount}][es_correcta]` : `opciones_correcta_radio`; // radio groups need same name
+            const index = optionCount;
+            const isChecked = esCorrecta ? 'checked' : '';
+            const isVal = esCorrecta ? '1' : '0';
+            const safeText = texto ? String(texto).replace(/"/g, '&quot;') : '';
 
             const html = `
-                <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 group" id="opcion-row-${optionCount}">
+                <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 group" id="opcion-row-${index}">
                     ${isMultiple ? 
-                        `<input type="checkbox" name="opciones[${optionCount}][es_correcta]" value="1" class="w-4 h-4 text-sena-green rounded focus:ring-sena-green">` : 
-                        `<input type="radio" name="opciones_correcta_radio" onchange="syncRadio(${optionCount})" class="w-4 h-4 text-sena-green focus:ring-sena-green">
-                         <input type="hidden" name="opciones[${optionCount}][es_correcta]" id="radio-sync-${optionCount}" value="0">`
+                        `<input type="checkbox" name="opciones[${index}][es_correcta]" value="1" ${isChecked} class="w-4 h-4 text-sena-green rounded focus:ring-sena-green cursor-pointer">` : 
+                        `<input type="radio" name="opciones_correcta_radio" onchange="syncRadio(${index})" ${isChecked} class="w-4 h-4 text-sena-green focus:ring-sena-green cursor-pointer">
+                         <input type="hidden" name="opciones[${index}][es_correcta]" id="radio-sync-${index}" value="${isVal}">`
                     }
-                    <input type="text" name="opciones[${optionCount}][texto]" required placeholder="Texto de la opción..." class="flex-1 bg-transparent text-sm font-medium text-slate-700 outline-none">
-                    <button type="button" onclick="document.getElementById('opcion-row-${optionCount}').remove()" class="text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2">
+                    <input type="text" name="opciones[${index}][texto]" value="${safeText}" required placeholder="Texto de la opción..." class="flex-1 bg-transparent text-sm font-medium text-slate-700 outline-none">
+                    <button type="button" onclick="document.getElementById('opcion-row-${index}').remove()" class="text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2" title="Eliminar opción">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -335,5 +451,29 @@
             const selected = document.getElementById(`radio-sync-${selectedIndex}`);
             if(selected) selected.value = "1";
         }
+
+        // Modal universal reutilizable para confirmación de eliminación
+        function confirmarEliminarPregunta(event, form, tituloPregunta) {
+            if (event) event.preventDefault();
+            window.abrirModalConfirmacion({
+                tipo: 'danger',
+                titulo: '¿Eliminar pregunta?',
+                descripcion: 'Esta acción no se puede deshacer y retirará la pregunta permanentemente del examen.',
+                item: `"${tituloPregunta}"`,
+                itemTag: 'Pregunta a eliminar',
+                advertencia: 'Se borrarán también sus opciones de respuesta.',
+                btnTexto: 'Sí, eliminar',
+                btnIcon: 'fa-trash-alt',
+                onConfirm: form
+            });
+            return false;
+        }
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePreguntaModal();
+            }
+        });
     </script>
 </x-sisig::layouts.admin>

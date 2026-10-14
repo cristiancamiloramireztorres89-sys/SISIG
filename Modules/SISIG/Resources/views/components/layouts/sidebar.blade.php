@@ -114,17 +114,17 @@
                         <span class="sidebar-text truncate">Gestión de Exámenes</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Recursos y Materiales"
-                       onclick="Swal.fire({ title: 'Recursos Didácticos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Recursos Didácticos: Módulo en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-file-alt text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Recursos y Materiales</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Quices y Preguntas"
-                       onclick="Swal.fire({ title: 'Banco de Preguntas', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Banco de Preguntas: Módulo en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-teal-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Quices y Preguntas</span>
@@ -155,25 +155,25 @@
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Módulos de Inducción"
-                       onclick="Swal.fire({ title: 'Módulos de Inducción', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Módulos de Inducción: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-book-reader text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Módulos de Inducción</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Mis Evaluaciones"
-                       onclick="Swal.fire({ title: 'Mis Evaluaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Mis Evaluaciones: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Mis Evaluaciones</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Historial y Calificaciones"
-                       onclick="Swal.fire({ title: 'Historial y Calificaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Historial y Calificaciones: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-award text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Historial y Calificaciones</span>

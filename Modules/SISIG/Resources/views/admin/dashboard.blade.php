@@ -112,36 +112,85 @@
         <!-- 3. Sección de Visualización Gráfica y Rendimiento del SIG -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Gráfica de Barras: Rendimiento por Eje SIG (2 columnas) -->
+            <!-- Gráfica de Barras: Rendimiento por Módulo SIG (2 columnas) -->
             <div class="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col justify-between">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
                     <div>
                         <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
-                            <i class="fas fa-chart-bar text-sena-green"></i>
-                            <span>Rendimiento y Evaluaciones por Eje SIG</span>
+                            <i class="fas fa-layer-group text-sena-green"></i>
+                            <span>Rendimiento y Evaluaciones por Módulo SIG</span>
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Comparativa de participación y aprobación en cada área temática</p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Estadísticas y tasa de aprobación de los módulos registrados en el sistema ({{ $modulosEstadisticas->count() }} {{ $modulosEstadisticas->count() == 1 ? 'módulo' : 'módulos' }})
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            {{ $modulosEstadisticas->where('estado', 'publicado')->count() }} Publicados
+                        </span>
+                        <a href="{{ route('sisig.admin.modulos.index') }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-sena-green hover:bg-slate-50 rounded-lg transition" title="Ir a Gestión de Módulos">
+                            <i class="fas fa-cog"></i>
+                            <span class="hidden sm:inline">Gestionar</span>
+                        </a>
                     </div>
                 </div>
 
-                <div class="py-6 h-64 sm:h-72 w-full relative">
-                    <canvas id="chartEjesSIG"></canvas>
-                </div>
+                @if($modulosEstadisticas->isEmpty())
+                    <div class="py-12 h-64 sm:h-72 w-full flex flex-col items-center justify-center text-center p-6 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 my-4">
+                        <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-sena-green mb-3">
+                            <i class="fas fa-layer-group text-xl"></i>
+                        </div>
+                        <p class="text-slate-700 font-bold text-sm">No hay módulos registrados en el sistema</p>
+                        <p class="text-xs text-slate-500 max-w-xs mt-1">Registra nuevos módulos en la sección de Gestión de Módulos para visualizar su rendimiento.</p>
+                        <a href="{{ route('sisig.admin.modulos.index') }}" class="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sena-green text-white hover:bg-emerald-700 transition shadow-sm">
+                            <i class="fas fa-plus"></i> Crear Primer Módulo
+                        </a>
+                    </div>
+                @else
+                    <div class="py-6 h-64 sm:h-72 w-full relative">
+                        <canvas id="chartEjesSIG"></canvas>
+                    </div>
 
-                <div class="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-center text-xs">
-                    <div class="p-2 rounded-xl bg-emerald-50/70 border border-emerald-100">
-                        <span class="text-slate-500 block text-[11px]">SST</span>
-                        <strong class="text-emerald-700 font-extrabold text-sm sm:text-base">Seguridad</strong>
+                    @php
+                        $paletasModulos = [
+                            ['bg' => 'bg-emerald-50/70', 'border' => 'border-emerald-200', 'text' => 'text-emerald-700', 'badge' => 'bg-emerald-100 text-emerald-800'],
+                            ['bg' => 'bg-sky-50/70', 'border' => 'border-sky-200', 'text' => 'text-sky-700', 'badge' => 'bg-sky-100 text-sky-800'],
+                            ['bg' => 'bg-amber-50/70', 'border' => 'border-amber-200', 'text' => 'text-amber-700', 'badge' => 'bg-amber-100 text-amber-800'],
+                            ['bg' => 'bg-purple-50/70', 'border' => 'border-purple-200', 'text' => 'text-purple-700', 'badge' => 'bg-purple-100 text-purple-800'],
+                            ['bg' => 'bg-rose-50/70', 'border' => 'border-rose-200', 'text' => 'text-rose-700', 'badge' => 'bg-rose-100 text-rose-800'],
+                            ['bg' => 'bg-indigo-50/70', 'border' => 'border-indigo-200', 'text' => 'text-indigo-700', 'badge' => 'bg-indigo-100 text-indigo-800'],
+                            ['bg' => 'bg-teal-50/70', 'border' => 'border-teal-200', 'text' => 'text-teal-700', 'badge' => 'bg-teal-100 text-teal-800'],
+                        ];
+                    @endphp
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 {{ $modulosEstadisticas->count() >= 4 ? 'xl:grid-cols-4' : '' }} gap-3 pt-4 border-t border-slate-100">
+                        @foreach($modulosEstadisticas as $idx => $modStat)
+                            @php
+                                $col = $paletasModulos[$idx % count($paletasModulos)];
+                            @endphp
+                            <div class="p-3 rounded-2xl {{ $col['bg'] }} border {{ $col['border'] }} flex flex-col justify-between transition-all hover:shadow-xs">
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[10px] font-bold tracking-wider uppercase text-slate-500 truncate" title="{{ $modStat->norma ?? 'Módulo Registrado' }}">
+                                        {{ $modStat->norma ? Str::limit($modStat->norma, 18) : 'Módulo #'.$modStat->id }}
+                                    </span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-extrabold {{ $modStat->tasa_aprobacion >= 70 ? 'bg-emerald-100 text-emerald-800' : ($modStat->total_evaluaciones > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600') }}">
+                                        {{ $modStat->tasa_aprobacion }}%
+                                    </span>
+                                </div>
+                                <div>
+                                    <strong class="{{ $col['text'] }} font-extrabold text-sm sm:text-base block truncate" title="{{ $modStat->titulo }}">
+                                        {{ ucfirst($modStat->titulo) }}
+                                    </strong>
+                                    <div class="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                                        <span><i class="fas fa-file-signature text-[10px] mr-1"></i>{{ $modStat->total_quices }} {{ $modStat->total_quices == 1 ? 'quiz' : 'quices' }}</span>
+                                        <span><i class="fas fa-user-check text-[10px] mr-1"></i>{{ $modStat->total_evaluaciones }} {{ $modStat->total_evaluaciones == 1 ? 'eval' : 'evals' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="p-2 rounded-xl bg-sky-50/70 border border-sky-100">
-                        <span class="text-slate-500 block text-[11px]">Calidad</span>
-                        <strong class="text-sky-700 font-extrabold text-sm sm:text-base">Procesos</strong>
-                    </div>
-                    <div class="p-2 rounded-xl bg-amber-50/70 border border-amber-100">
-                        <span class="text-slate-500 block text-[11px]">Ambiental</span>
-                        <strong class="text-amber-700 font-extrabold text-sm sm:text-base">Sostenible</strong>
-                    </div>
-                </div>
+                @endif
             </div>
 
             <!-- Gráfica Circular / Dona: Estado Global de Evaluaciones (1 columna) -->
@@ -336,42 +385,100 @@
     <!-- Script de Inicialización de Gráficas Chart.js -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Gráfica de Barras: Rendimiento por Eje
+            // 1. Gráfica de Barras: Rendimiento por Módulos Registrados
             const ctxEjes = document.getElementById('chartEjesSIG');
             if (ctxEjes) {
-                new Chart(ctxEjes, {
-                    type: 'bar',
-                    data: {
-                        labels: ['SST (Seguridad)', 'Gestión de Calidad', 'Gestión Ambiental'],
-                        datasets: [
-                            {
-                                label: 'Tasa de Aprobación Esperada (%)',
-                                data: [85, 90, 80],
-                                backgroundColor: ['rgba(57, 169, 0, 0.85)', 'rgba(14, 165, 233, 0.85)', 'rgba(245, 158, 11, 0.85)'],
-                                borderRadius: 10,
-                                borderSkipped: false,
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
+                @php
+                    $paletaBarras = [
+                        ['bg' => 'rgba(16, 185, 129, 0.85)', 'border' => 'rgb(16, 185, 129)'],
+                        ['bg' => 'rgba(14, 165, 233, 0.85)', 'border' => 'rgb(14, 165, 233)'],
+                        ['bg' => 'rgba(245, 158, 11, 0.85)', 'border' => 'rgb(245, 158, 11)'],
+                        ['bg' => 'rgba(168, 85, 247, 0.85)', 'border' => 'rgb(168, 85, 247)'],
+                        ['bg' => 'rgba(244, 63, 94, 0.85)', 'border' => 'rgb(244, 63, 94)'],
+                        ['bg' => 'rgba(99, 102, 241, 0.85)', 'border' => 'rgb(99, 102, 241)'],
+                        ['bg' => 'rgba(20, 184, 166, 0.85)', 'border' => 'rgb(20, 184, 166)'],
+                    ];
+                    $barColors = [];
+                    $borderColors = [];
+                    foreach ($modulosEstadisticas as $k => $m) {
+                        $p = $paletaBarras[$k % count($paletaBarras)];
+                        $barColors[] = $p['bg'];
+                        $borderColors[] = $p['border'];
+                    }
+                @endphp
+
+                const modulosLabels = {!! json_encode($modulosEstadisticas->map(fn($m) => ucfirst($m->titulo))->values()) !!};
+                const modulosTasas = {!! json_encode($modulosEstadisticas->pluck('tasa_aprobacion')->values()) !!};
+                const modulosTotales = {!! json_encode($modulosEstadisticas->pluck('total_evaluaciones')->values()) !!};
+                const modulosAprobadas = {!! json_encode($modulosEstadisticas->pluck('evaluaciones_aprobadas')->values()) !!};
+                const modulosReprobadas = {!! json_encode($modulosEstadisticas->pluck('evaluaciones_reprobadas')->values()) !!};
+                const modulosQuices = {!! json_encode($modulosEstadisticas->pluck('total_quices')->values()) !!};
+                const modulosColors = {!! json_encode($barColors) !!};
+                const modulosBorderColors = {!! json_encode($borderColors) !!};
+
+                if (modulosLabels && modulosLabels.length > 0) {
+                    new Chart(ctxEjes, {
+                        type: 'bar',
+                        data: {
+                            labels: modulosLabels,
+                            datasets: [
+                                {
+                                    label: 'Tasa de Aprobación (%)',
+                                    data: modulosTasas,
+                                    backgroundColor: modulosColors,
+                                    borderColor: modulosBorderColors,
+                                    borderWidth: 1.5,
+                                    borderRadius: 10,
+                                    borderSkipped: false,
+                                    maxBarThickness: 65,
+                                }
+                            ]
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: { callback: v => v + '%' },
-                                grid: { color: 'rgba(226, 232, 240, 0.6)' }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#0f172a',
+                                    titleFont: { size: 13, weight: 'bold' },
+                                    bodyFont: { size: 12 },
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const i = context.dataIndex;
+                                            const tasa = context.parsed.y || 0;
+                                            const total = modulosTotales[i] || 0;
+                                            const aprob = modulosAprobadas[i] || 0;
+                                            const reprob = modulosReprobadas[i] || 0;
+                                            const quices = modulosQuices[i] || 0;
+                                            return [
+                                                ` Tasa de Aprobación: ${tasa}%`,
+                                                ` Evaluaciones: ${aprob} aprobadas, ${reprob} reprobadas (${total} total)`,
+                                                ` Quices asociados: ${quices}`
+                                            ];
+                                        }
+                                    }
+                                }
                             },
-                            x: {
-                                grid: { display: false }
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: { callback: v => v + '%' },
+                                    grid: { color: 'rgba(226, 232, 240, 0.6)' }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        font: { weight: '600' }
+                                    }
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             // 2. Gráfica de Dona: Estado de Evaluaciones

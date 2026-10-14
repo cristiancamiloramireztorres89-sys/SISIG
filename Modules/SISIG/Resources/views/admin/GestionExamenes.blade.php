@@ -1,28 +1,29 @@
-<x-sisig::layouts.admin>
-    <div class="space-y-6 max-w-7xl mx-auto pb-10">
+<x-sisig::layouts.admin title="Gestión de Exámenes">
+    <div class="space-y-6 sm:space-y-8 animate-fade-in pb-12">
 
-        <!-- Banner Principal -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sena-green to-emerald-800 p-8 shadow-2xl">
-            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl mix-blend-overlay"></div>
-            <div class="absolute right-20 -bottom-20 w-48 h-48 bg-emerald-400/20 rounded-full blur-2xl"></div>
+        <!-- 1. Encabezado de la Sección (Estilo Limpio y Unificado) -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-clipboard-list text-sena-green"></i>
+                    <span>Gestión de Exámenes</span>
+                </h1>
+            </div>
 
-            <div class="relative z-10">
-                <div class="flex items-center gap-3 text-emerald-50 mb-3">
-                    <i class="fas fa-clipboard-list text-2xl"></i>
-                    <h1 class="text-3xl font-black tracking-tight">Gestión de Exámenes</h1>
-                </div>
-                <p class="text-emerald-100/90 text-sm max-w-2xl font-medium leading-relaxed">
-                    Crea y gestiona los quizzes evaluativos de cada módulo SIG. Configura preguntas, tipos, intentos y fecha límite.
-                </p>
-                <div class="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-200/80">
-                    <i class="fas fa-home"></i> Inicio <i class="fas fa-chevron-right text-[10px] mx-1"></i> Gestión <i class="fas fa-chevron-right text-[10px] mx-1"></i> Exámenes
-                </div>
+            <div class="self-start lg:self-auto">
+                <button type="button" onclick="openExamenModal()"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    <i class="fas fa-plus text-xs"></i>
+                    <span>Crear Examen</span>
+                </button>
             </div>
         </div>
 
+
+
         <!-- Barra de Filtros y Acciones -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-20">
-            <form action="{{ route($routePrefix . '.examenes.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-1">
+            <form action="{{ route($routePrefix . '.examenes.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 w-full">
                 <div class="relative flex-1 max-w-md">
                     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar examen..." 
@@ -40,9 +41,6 @@
                     <option value="inactivo" {{ request('estado') === 'inactivo' ? 'selected' : '' }}>Inactivos</option>
                 </select>
             </form>
-            <button onclick="openExamenModal()" class="w-full md:w-auto px-6 py-2.5 rounded-xl bg-sena-green hover:bg-emerald-600 text-white font-bold text-sm shadow-sena hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                <i class="fas fa-plus-circle"></i> Crear examen
-            </button>
         </div>
 
         <!-- Listado de Exámenes -->
@@ -57,9 +55,7 @@
                         <!-- Cabecera Card -->
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center {{ $quiz->activo ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-100 text-slate-400' }}">
-                                    <i class="fas fa-check-circle text-2xl"></i>
-                                </div>
+                                <i class="fas fa-check-circle text-2xl {{ $quiz->activo ? 'text-emerald-500' : 'text-slate-400' }} flex-shrink-0"></i>
                                 <div>
                                     <h3 class="font-bold text-slate-800 text-lg leading-tight">{{ $quiz->titulo }}</h3>
                                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mt-0.5 block">
@@ -67,8 +63,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold tracking-wide uppercase {{ $quiz->activo ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $quiz->activo ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                            <span class="text-xs font-black tracking-wide uppercase {{ $quiz->activo ? 'text-emerald-600' : 'text-slate-400' }}">
                                 {{ $quiz->activo ? 'Activo' : 'Inactivo' }}
                             </span>
                         </div>
@@ -127,20 +122,20 @@
 
                         <!-- Botones de Acción -->
                         <div class="flex items-center gap-2 pt-4 border-t border-slate-100 mt-auto">
-                            <button onclick="openExamenModal({{ $quiz->toJson() }})" class="flex-1 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-600 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
-                                <i class="fas fa-pen"></i> Editar
+                            <a href="{{ route($routePrefix . '.examenes.preguntas.index', $quiz->id_quiz) }}" class="flex-1 py-2.5 rounded-xl bg-sena-green hover:bg-emerald-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sena">
+                                <i class="fas fa-cogs"></i> Gestionar preguntas
+                            </a>
+                            <button type="button" onclick="openExamenModal({{ $quiz->toJson() }})" title="Editar examen" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs" aria-label="Editar">
+                                <i class="fas fa-pencil-alt text-xs"></i>
                             </button>
-                            <form action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="flex-1">
+                            <form id="form-toggle-quiz-{{ $quiz->id_quiz }}" action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="inline">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="w-full py-2 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5 {{ $quiz->activo ? 'bg-amber-50 hover:bg-amber-100 text-amber-600' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600' }}">
-                                    <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }}"></i> {{ $quiz->activo ? 'Desactivar' : 'Activar' }}
+                                <button type="button" onclick="confirmarToggleQuiz(document.getElementById('form-toggle-quiz-{{ $quiz->id_quiz }}'), '{{ addslashes($quiz->titulo) }}', {{ $quiz->activo ? 'true' : 'false' }})" title="{{ $quiz->activo ? 'Desactivar examen' : 'Activar examen' }}" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-amber-500 hover:border-amber-200 hover:bg-amber-50 transition-all flex items-center justify-center cursor-pointer shadow-xs" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
+                                    <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }} text-xs"></i>
                                 </button>
                             </form>
                         </div>
-                        <a href="{{ route($routePrefix . '.examenes.preguntas.index', $quiz->id_quiz) }}" class="w-full mt-2 py-2.5 rounded-xl bg-sena-green hover:bg-emerald-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sena">
-                            <i class="fas fa-cogs"></i> Gestionar preguntas
-                        </a>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 border-dashed">
@@ -158,94 +153,96 @@
 
     <!-- Modal Crear / Editar Examen -->
     <div id="examen-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 animate-scale-in flex flex-col max-h-[90vh]">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto relative">
             
-            <div class="bg-slate-900 text-white rounded-t-3xl p-5 flex items-center justify-between">
+            <!-- Header Modal Limpio -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sena-green">
-                        <i class="fas fa-plus-circle text-sm" id="modal-icon"></i>
+                    <i class="fas fa-clipboard-list text-2xl text-sena-green" id="modal-icon"></i>
+                    <div>
+                        <h3 id="modal-title" class="text-base font-bold text-slate-800">Crear Examen Evaluativo</h3>
+                        <p id="modal-subtitle" class="text-xs text-slate-500 mt-0.5">Configura las reglas de evaluación y aprobación del quiz</p>
                     </div>
-                    <h3 id="modal-title" class="font-bold text-base tracking-wide">Crear examen</h3>
                 </div>
-                <button type="button" onclick="closeExamenModal()" class="text-white/60 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10">
+                <button type="button" onclick="closeExamenModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
 
-            <div class="p-6 overflow-y-auto">
-                <form id="examen-form" action="{{ route($routePrefix . '.examenes.store') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div id="examen-method"></div>
+            <!-- Formulario -->
+            <form id="examen-form" action="{{ route($routePrefix . '.examenes.store') }}" method="POST" class="mt-5 space-y-4">
+                @csrf
+                <div id="examen-method"></div>
 
-                    <!-- Nombre -->
+                <!-- Nombre -->
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Nombre del Examen *</label>
+                    <input type="text" name="titulo" id="quiz-titulo" required placeholder="Ej. Quiz Calidad y Normativa SIG" 
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <!-- Módulo -->
                     <div>
-                        <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Nombre *</label>
-                        <input type="text" name="titulo" id="quiz-titulo" required placeholder="Ej: Quiz Calidad" 
-                               class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                        <label class="text-xs font-bold text-slate-700 block mb-1">Sección SIG *</label>
+                        <select name="modulo_id" id="quiz-modulo" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer">
+                            <option value="" disabled selected>Selecciona una sección...</option>
+                            @foreach($modulos as $modulo)
+                                <option value="{{ $modulo->id }}">{{ $modulo->titulo }}</option>
+                            @endforeach
+                        </select>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Módulo -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Sección SIG *</label>
-                            <select name="modulo_id" id="quiz-modulo" required class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                                <option value="" disabled selected>Selecciona...</option>
-                                @foreach($modulos as $modulo)
-                                    <option value="{{ $modulo->id }}">{{ $modulo->titulo }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <!-- Estado -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Estado</label>
-                            <select name="activo" id="quiz-activo" required class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-4">
-                        <!-- Intentos -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Intentos *</label>
-                            <input type="number" name="numero_intentos" id="quiz-intentos" required min="1" value="3" 
-                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                        </div>
-                        <!-- Nota Minima -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Nota Min (%) *</label>
-                            <input type="number" name="puntaje_minimo" id="quiz-puntaje" required min="1" max="100" value="70" 
-                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                        </div>
-                        <!-- Tiempo -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Tiempo (Min)</label>
-                            <input type="number" name="tiempo_minutos" id="quiz-tiempo" min="0" value="0" 
-                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                        </div>
-                    </div>
-
-                    <!-- Número de Preguntas (Oculto porque se cuentan dinámicamente o por defecto) -->
-                    <input type="hidden" name="numero_preguntas" id="quiz-preguntas" value="0">
-
-                    <!-- Fecha Límite -->
+                    <!-- Estado -->
                     <div>
-                        <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-1">Fecha Límite de Entrega</label>
-                        <input type="date" name="fecha_limite" id="quiz-fecha" 
-                               class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                        <label class="text-xs font-bold text-slate-700 block mb-1">Estado *</label>
+                        <select name="activo" id="quiz-activo" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer">
+                            <option value="1">Activo (Habilitado)</option>
+                            <option value="0">Inactivo (Deshabilitado)</option>
+                        </select>
                     </div>
+                </div>
 
-                    <div class="pt-6 flex items-center justify-end gap-3 mt-4">
-                        <button type="button" onclick="closeExamenModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
-                            Cancelar
-                        </button>
-                        <button type="submit" id="btn-submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all flex items-center gap-2">
-                            <i class="fas fa-save"></i> <span>Crear y gestionar preguntas</span>
-                        </button>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <!-- Intentos -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 block mb-1">Intentos *</label>
+                        <input type="number" name="numero_intentos" id="quiz-intentos" required min="1" value="3" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                     </div>
-                </form>
-            </div>
+                    <!-- Nota Minima -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 block mb-1">Nota Mínima (%) *</label>
+                        <input type="number" name="puntaje_minimo" id="quiz-puntaje" required min="1" max="100" value="70" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                    </div>
+                    <!-- Tiempo -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 block mb-1">Tiempo (Minutos)</label>
+                        <input type="number" name="tiempo_minutos" id="quiz-tiempo" min="0" value="0" placeholder="0 = Ilimitado" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                    </div>
+                </div>
+
+                <!-- Número de Preguntas (Oculto) -->
+                <input type="hidden" name="numero_preguntas" id="quiz-preguntas" value="0">
+
+                <!-- Fecha Límite -->
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Fecha Límite de Entrega (Opcional)</label>
+                    <input type="date" name="fecha_limite" id="quiz-fecha" 
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                </div>
+
+                <!-- Footer de Botones -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeExamenModal()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btn-submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        <i class="fas fa-save text-xs"></i> <span>Crear y gestionar preguntas</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -253,13 +250,32 @@
         const modal = document.getElementById('examen-modal');
         const form = document.getElementById('examen-form');
         const method = document.getElementById('examen-method');
+        let quizOriginalSnapshot = null;
+
+        function getQuizFormData() {
+            return {
+                titulo: document.getElementById('quiz-titulo').value.trim(),
+                modulo_id: document.getElementById('quiz-modulo').value,
+                activo: document.getElementById('quiz-activo').value,
+                numero_intentos: String(document.getElementById('quiz-intentos').value).trim(),
+                puntaje_minimo: String(document.getElementById('quiz-puntaje').value).trim(),
+                tiempo_minutos: String(document.getElementById('quiz-tiempo').value || '0').trim(),
+                fecha_limite: document.getElementById('quiz-fecha').value
+            };
+        }
 
         function openExamenModal(quiz = null) {
             form.reset();
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const subtitle = document.getElementById('modal-subtitle');
+            const btnSubmit = document.getElementById('btn-submit');
+
             if (quiz) {
                 // Modo Edición
-                document.getElementById('modal-title').textContent = 'Editar examen';
-                document.getElementById('modal-icon').className = 'fas fa-pen text-sm';
+                title.textContent = 'Editar Examen Evaluativo';
+                subtitle.textContent = 'Modifica los parámetros y condiciones de este examen';
+                icon.className = 'fas fa-edit text-2xl text-sena-green';
                 form.action = `{{ url(str_replace('.', '/', $routePrefix) . '/examenes') }}/${quiz.id_quiz}`;
                 method.innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
@@ -272,25 +288,59 @@
                 document.getElementById('quiz-preguntas').value = quiz.numero_preguntas;
                 if (quiz.fecha_limite) {
                     document.getElementById('quiz-fecha').value = quiz.fecha_limite.split('T')[0];
+                } else {
+                    document.getElementById('quiz-fecha').value = '';
                 }
 
-                document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> <span>Guardar cambios</span>';
+                btnSubmit.innerHTML = '<i class="fas fa-save text-xs"></i> <span>Guardar Cambios</span>';
+                quizOriginalSnapshot = JSON.stringify(getQuizFormData());
             } else {
                 // Modo Creación
-                document.getElementById('modal-title').textContent = 'Crear examen';
-                document.getElementById('modal-icon').className = 'fas fa-plus-circle text-sm';
+                title.textContent = 'Crear Examen Evaluativo';
+                subtitle.textContent = 'Configura las reglas de evaluación y aprobación del quiz';
+                icon.className = 'fas fa-clipboard-list text-2xl text-sena-green';
                 form.action = "{{ route($routePrefix . '.examenes.store') }}";
                 method.innerHTML = '';
                 
                 document.getElementById('quiz-preguntas').value = 0; // Default
+                document.getElementById('quiz-fecha').value = '';
 
-                document.getElementById('btn-submit').innerHTML = '<i class="fas fa-save"></i> <span>Crear y gestionar preguntas</span>';
+                btnSubmit.innerHTML = '<i class="fas fa-save text-xs"></i> <span>Crear y gestionar preguntas</span>';
+                quizOriginalSnapshot = null;
             }
             modal.classList.remove('hidden');
         }
 
+        form.addEventListener('submit', function(e) {
+            if (quizOriginalSnapshot) {
+                const currentData = JSON.stringify(getQuizFormData());
+                if (currentData === quizOriginalSnapshot) {
+                    e.preventDefault();
+                    closeExamenModal();
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('No se detectaron modificaciones en el examen.', 'info');
+                    }
+                    return false;
+                }
+            }
+        });
+
         function closeExamenModal() {
             modal.classList.add('hidden');
+        }
+
+        function confirmarToggleQuiz(form, tituloQuiz, activo) {
+            if (!form) return;
+            window.abrirModalConfirmacion({
+                tipo: activo ? 'warning' : 'success',
+                titulo: activo ? '¿Desactivar examen?' : '¿Activar examen?',
+                descripcion: activo ? 'El examen dejará de estar disponible para los aprendices.' : 'El examen volverá a estar habilitado y visible para los aprendices.',
+                item: `"${tituloQuiz}"`,
+                itemTag: 'Examen seleccionado',
+                btnTexto: activo ? 'Sí, desactivar' : 'Sí, activar',
+                btnIcon: activo ? 'fa-pause-circle' : 'fa-check',
+                onConfirm: form
+            });
         }
     </script>
 </x-sisig::layouts.admin>

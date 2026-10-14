@@ -28,6 +28,7 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/modulos', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'index'])->name('modulos.index');
         Route::post('/modulos', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'store'])->name('modulos.store');
         Route::put('/modulos/{id}', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'update'])->name('modulos.update');
+        Route::delete('/modulos/{id}', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'destroy'])->name('modulos.destroy');
         Route::get('/modulos/{id}/contenido', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'editContent'])->name('modulos.contenido');
         Route::put('/modulos/{id}/contenido', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'updateContent'])->name('modulos.contenido.update');
 
@@ -40,6 +41,7 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         // Gestión de Preguntas de Examen
         Route::get('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'index'])->name('examenes.preguntas.index');
         Route::post('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'store'])->name('examenes.preguntas.store');
+        Route::put('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'update'])->name('examenes.preguntas.update');
         Route::delete('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'destroy'])->name('examenes.preguntas.destroy');
     });
 
@@ -62,6 +64,7 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         // Gestión de Preguntas de Examen para el Editor
         Route::get('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'index'])->name('examenes.preguntas.index');
         Route::post('/examenes/{quiz_id}/preguntas', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'store'])->name('examenes.preguntas.store');
+        Route::put('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'update'])->name('examenes.preguntas.update');
         Route::delete('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Editor\GestionPreguntasController::class, 'destroy'])->name('examenes.preguntas.destroy');
     });
 

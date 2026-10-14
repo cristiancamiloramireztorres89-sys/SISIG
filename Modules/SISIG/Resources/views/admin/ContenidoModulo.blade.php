@@ -23,43 +23,43 @@
         }
     </style>
 
+@php
+    $routePrefix = $routePrefix ?? (request()->is('*editor*') ? 'sisig.editor' : 'sisig.admin');
+    $isEditor = $routePrefix === 'sisig.editor';
+    $tabRouteName = $isEditor ? 'sisig.editor.contenido.edit' : 'sisig.admin.modulos.contenido';
+    $updateRouteName = $isEditor ? 'sisig.editor.contenido.update' : 'sisig.admin.modulos.contenido.update';
+@endphp
+
     <div class="space-y-6 w-full max-w-[1600px] mx-auto pb-10">
         
-        <!-- 1. Header estilo banner verde oscuro -->
-        <div class="bg-[#1a803e] rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
-            <div class="relative z-10">
-                <h1 class="text-2xl font-extrabold flex items-center gap-2 mb-2">
-                    <i class="fas fa-file-alt text-white/80"></i> Gestión de Contenido
-                </h1>
-                <p class="text-white/80 text-sm font-medium mb-5">
-                    Edita el contenido de cada sección: texto, imágenes y videos en el orden que prefieras.
-                </p>
-                <div class="text-xs font-medium text-white/70 flex items-center gap-2">
-                    <span>Inicio</span>
-                    <i class="fas fa-chevron-right text-[10px] text-white/40"></i>
-                    <span>Contenido</span>
-                    <i class="fas fa-chevron-right text-[10px] text-white/40"></i>
-                    <span class="text-white font-bold">Gestión de Contenido</span>
+        <!-- 1. Header estilo banner institucional -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <span class="text-sena-green text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <i class="fas fa-file-alt"></i>
+                        <span>{{ $isEditor ? 'Panel Editorial SISIG' : 'Administración SIG' }}</span>
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                        <span>Edición de Contenido: <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">{{ $moduloSeleccionado->titulo }}</span></span>
+                    </h1>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
+                        Redacta y formatea el material didáctico, guías y contenido interactivo de esta sección usando el editor enriquecido.
+                    </p>
                 </div>
             </div>
-            <!-- Brillos decorativos -->
-            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
-        @if(session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-xl text-sm flex items-center gap-3">
-                <i class="fas fa-check-circle text-emerald-500"></i>
-                <span class="font-medium">{{ session('success') }}</span>
-            </div>
-        @endif
-
         <!-- 2. Alerta de Permisos -->
-        <div class="bg-emerald-50 border border-emerald-200 px-6 py-4 rounded-xl text-sm flex items-center gap-3 shadow-sm">
+        <div class="bg-emerald-50 border border-emerald-200 px-5 py-3.5 rounded-2xl text-xs sm:text-sm flex items-center gap-3 shadow-sm text-emerald-800">
             <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
-                <i class="fas fa-exclamation text-xs"></i>
+                <i class="fas fa-info text-xs"></i>
             </div>
-            <p class="text-emerald-700">
-                <span class="font-bold">Permisos de edición activos:</span> Solo puedes editar las secciones que el administrador te ha habilitado. Las secciones bloqueadas muestran <i class="fas fa-lock mx-1 text-slate-400"></i> y no permiten modificaciones.
+            <p>
+                <span class="font-bold">Editor interactivo activo:</span> Puedes añadir texto con formato, enlaces, listas, imágenes y videos. Al guardar, el material estará disponible inmediatamente para los aprendices.
             </p>
         </div>
 
@@ -69,14 +69,14 @@
         </h3>
 
         <!-- 4. Pestañas de Módulos (Tabs Dinámicos) -->
-        <div class="flex flex-wrap gap-3 border-b border-transparent pb-2">
+        <div class="flex flex-wrap gap-2.5 pb-2">
             @foreach($modulos as $mod)
-                <a href="{{ route('sisig.admin.modulos.contenido', $mod->id) }}" 
-                   class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-all 
-                   {{ $moduloSeleccionado->id == $mod->id ? 'bg-[#e6f4ea] text-[#1a803e] border-[#a8dab5] shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+                <a href="{{ route($tabRouteName, $mod->id) }}" 
+                   class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all 
+                   {{ $moduloSeleccionado->id == $mod->id ? 'bg-emerald-50 text-sena-green border-emerald-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
                    
                    @if($mod->estado == 'publicado')
-                        <i class="fas fa-check-circle {{ $moduloSeleccionado->id == $mod->id ? 'text-[#1a803e]' : 'text-emerald-500' }}"></i>
+                        <i class="fas fa-check-circle {{ $moduloSeleccionado->id == $mod->id ? 'text-sena-green' : 'text-emerald-500' }}"></i>
                    @elseif($mod->estado == 'inactivo')
                         <i class="fas fa-lock text-slate-400"></i>
                    @else
@@ -89,20 +89,20 @@
         </div>
 
         <!-- 5. Editor de Contenido -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             <!-- Header del Editor -->
-            <form action="{{ route('sisig.admin.modulos.contenido.update', $moduloSeleccionado->id) }}" method="POST" id="editorForm">
+            <form action="{{ route($updateRouteName, $moduloSeleccionado->id) }}" method="POST" id="editorForm">
                 @csrf
                 @method('PUT')
                 
-                <div class="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fas fa-file-alt text-sena-green"></i>
-                        Editor de contenido — <span class="text-slate-900">{{ $moduloSeleccionado->titulo }}</span>
+                <div class="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-edit text-sena-green"></i>
+                        <span>Redacción de Contenido: <strong class="text-slate-900">{{ $moduloSeleccionado->titulo }}</strong></span>
                     </h2>
                     
-                    <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-[#0f9d58] hover:bg-[#0b8043] transition-colors flex items-center justify-center gap-2 shadow-sm border border-transparent">
-                        <i class="fas fa-save"></i> Guardar
+                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <i class="fas fa-save text-xs"></i> <span>Guardar Cambios</span>
                     </button>
                 </div>
 
