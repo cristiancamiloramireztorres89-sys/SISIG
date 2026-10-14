@@ -1,16 +1,16 @@
 <!-- Sidebar Lateral Completo para SISIG (Modo Completo y Modo Mini-Iconos) -->
 <aside id="sidebar-menu" class="w-64 bg-[#001A29] border-r border-slate-800 text-slate-300 flex-shrink-0 flex flex-col justify-between h-screen sticky top-0 transition-all duration-300 z-40">
     
-    <!-- 1. Encabezado Superior del Sidebar (Alineado con el Header h-16 = 64px) -->
+    <!-- 1. Encabezado Superior del Sidebar (Identidad Institucional SISIG) -->
     <div class="h-16 px-4 flex-shrink-0 flex items-center justify-start sidebar-header-container transition-all">
-        <a href="{{ route('sisig.index') }}" class="flex items-center gap-3 group overflow-hidden w-full" title="Ir al Portal SISIG">
-            <div class="w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+        <div class="flex items-center gap-3 overflow-hidden w-full select-none sidebar-header-inner">
+            <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 sidebar-logo-box">
                 <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow">
             </div>
             <div class="min-w-0 sidebar-text transition-all duration-200">
                 <span class="text-lg font-extrabold tracking-tight text-white block leading-tight">SISIG</span>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 2. Navegación Principal (Scrollable) -->

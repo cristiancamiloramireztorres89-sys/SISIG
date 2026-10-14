@@ -313,8 +313,8 @@
             @else
                 <!-- Estado vacío ilustrado y elegante -->
                 <div class="py-14 px-6 text-center rounded-2xl bg-gradient-to-b from-slate-50/70 to-slate-50/20 border border-dashed border-slate-200">
-                    <div class="w-16 h-16 mx-auto rounded-3xl bg-emerald-50 border border-emerald-200/60 text-sena-green flex items-center justify-center text-2xl mb-4 shadow-sm">
-                        <i class="fas fa-clipboard-list"></i>
+                    <div class="mb-3 text-sena-green">
+                        <i class="fas fa-clipboard-list text-4xl"></i>
                     </div>
                     <h4 class="text-base font-bold text-slate-800">Aún no hay evaluaciones presentadas</h4>
                     <p class="text-xs text-slate-500 max-w-md mx-auto mt-1.5 leading-relaxed">

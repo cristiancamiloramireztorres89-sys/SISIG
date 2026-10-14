@@ -199,8 +199,16 @@
             }
             #sidebar-menu.sidebar-collapsed .sidebar-header-container {
                 justify-content: center !important;
-                padding-left: 0.25rem !important;
-                padding-right: 0.25rem !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            #sidebar-menu.sidebar-collapsed .sidebar-header-inner {
+                justify-content: center !important;
+                gap: 0 !important;
+                width: 100% !important;
+            }
+            #sidebar-menu.sidebar-collapsed .sidebar-logo-box {
+                margin: 0 auto !important;
             }
             #sidebar-menu.sidebar-collapsed #sidebar-nav {
                 padding: 0.5rem 0.25rem !important;
