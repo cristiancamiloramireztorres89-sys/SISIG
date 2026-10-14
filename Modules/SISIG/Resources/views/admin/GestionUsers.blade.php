@@ -20,30 +20,7 @@
             </div>
         </div>
 
-        <!-- Alertas de Sesión y Validación -->
-        @if(session('success') || session('error'))
-            @php $isSuccess = session('success'); @endphp
-            <div id="session-alert" class="p-4 rounded-2xl {{ $isSuccess ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800' }} border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out">
-                <div class="flex items-center gap-3">
-                    <i class="fas {{ $isSuccess ? 'fa-check-circle text-emerald-600' : 'fa-exclamation-triangle text-rose-600' }} text-base flex-shrink-0"></i>
-                    <p class="text-xs sm:text-sm font-bold">{{ $isSuccess ?? session('error') }}</p>
-                </div>
-                <button type="button" onclick="dismissAlert()" class="p-1.5 rounded-lg opacity-70 hover:opacity-100 transition-opacity">
-                    <i class="fas fa-times text-xs"></i>
-                </button>
-            </div>
-            <script>
-                function dismissAlert() {
-                    const alertEl = document.getElementById('session-alert');
-                    if (alertEl) {
-                        alertEl.style.opacity = '0';
-                        alertEl.style.transform = 'translateY(-8px)';
-                        setTimeout(() => alertEl.remove(), 500);
-                    }
-                }
-                setTimeout(dismissAlert, 4000);
-            </script>
-        @endif
+
 
         @if(isset($errors) && $errors->any())
             <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1 text-xs">
@@ -250,15 +227,15 @@
                                 <td class="py-3.5 px-4 text-right">
                                     <div class="inline-flex items-center gap-1.5">
                                         <button type="button" onclick="openEditModal({{ $u->id }})"
-                                                class="p-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-700 font-bold text-xs transition-colors border border-slate-200"
+                                                class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs"
                                                 title="Editar información y rol del usuario">
-                                            <i class="fas fa-pen text-xs"></i>
+                                            <i class="fas fa-pencil-alt text-xs"></i>
                                         </button>
 
                                         @if(Auth::id() !== $u->id)
                                             <button type="button" 
                                                     onclick="confirmToggleStatus({{ $u->id }}, '{{ addslashes($u->full_name ?: $u->name) }}', {{ $u->is_active ? 'true' : 'false' }})"
-                                                    class="p-1.5 rounded-xl {{ $u->is_active ? 'bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} font-bold text-xs transition-colors border border-slate-200"
+                                                    class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 {{ $u->is_active ? 'hover:text-amber-500 hover:border-amber-200 hover:bg-amber-50' : 'hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50' }} transition-all flex items-center justify-center cursor-pointer shadow-xs"
                                                     title="{{ $u->is_active ? 'Desactivar Cuenta' : 'Reactivar Cuenta' }}">
                                                 <i class="fas {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }} text-xs"></i>
                                             </button>
@@ -266,7 +243,7 @@
                                             <!-- Botón de Eliminar Usuario (Validación de Actividad) -->
                                             <button type="button" 
                                                     onclick="confirmDeleteUser({{ $u->id }}, '{{ addslashes($u->full_name ?: $u->name) }}', {{ $u->has_activity ? 'true' : 'false' }})"
-                                                    class="p-1.5 rounded-xl {{ $u->has_activity ? 'bg-slate-100 text-slate-400 hover:bg-slate-200' : 'bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600' }} font-bold text-xs transition-colors border border-slate-200"
+                                                    class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 {{ $u->has_activity ? 'opacity-40 cursor-not-allowed hover:bg-slate-50' : 'hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 cursor-pointer' }} transition-all flex items-center justify-center shadow-xs"
                                                     title="{{ $u->has_activity ? 'Tiene actividad registrada (no eliminable)' : 'Eliminar usuario permanentemente' }}">
                                                 <i class="fas fa-trash-alt text-xs"></i>
                                             </button>
@@ -450,6 +427,46 @@
         @method('DELETE')
     </form>
 
+    <!-- Modal Informativo: Usuario No Eliminable (Tiene actividad registrada) -->
+    <div id="modal-usuario-no-eliminable" class="fixed inset-0 z-[150] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in relative text-center">
+            
+            <button type="button" onclick="cerrarModalNoEliminable()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+
+            <!-- Ícono sin recuadro -->
+            <div class="text-amber-500 text-3xl mx-auto mb-3">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+
+            <h3 class="text-xl font-black text-slate-800 tracking-tight">No se puede eliminar</h3>
+            
+            <div class="mt-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 text-left">
+                <div class="flex items-center gap-1.5 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">
+                    <i class="fas fa-user text-amber-500"></i>
+                    <span>Usuario</span>
+                </div>
+                <p id="no-eliminable-usuario-nombre" class="text-xs font-bold text-slate-700 leading-snug"></p>
+            </div>
+
+            <p class="text-xs text-slate-500 mt-3 max-w-xs mx-auto leading-relaxed">
+                Este usuario cuenta con actividad formativa o evaluaciones registradas. Para preservar la trazabilidad institucional, el sistema no permite borrarlo.
+            </p>
+
+            <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-medium text-amber-600">
+                <i class="fas fa-info-circle text-xs"></i>
+                <span>Puedes desactivar su cuenta en su lugar para restringir el acceso.</span>
+            </div>
+
+            <div class="mt-6">
+                <button type="button" onclick="cerrarModalNoEliminable()" class="w-full py-2.5 rounded-xl font-bold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS DE INTERACCIÓN REACTIVA -->
     <script>
         let currentRoleFilter = 'todos';
@@ -524,10 +541,35 @@
             document.getElementById('user-editor-permissions-container').classList.toggle('hidden', role !== 'editor_sisig');
         }
 
+        let userOriginalSnapshot = null;
+
+        function getUserFormData() {
+            const modulos = [];
+            document.querySelectorAll('.editor-modulo-cb:checked').forEach(cb => modulos.push(cb.value));
+            const quices = [];
+            document.querySelectorAll('.editor-quiz-cb:checked').forEach(cb => quices.push(cb.value));
+
+            return {
+                document_type: document.getElementById('user-doctype').value,
+                document_number: document.getElementById('user-docnumber').value.trim(),
+                first_name: document.getElementById('user-firstname').value.trim(),
+                first_last_name: document.getElementById('user-firstlastname').value.trim(),
+                second_last_name: document.getElementById('user-secondlastname').value.trim(),
+                email: document.getElementById('user-email').value.trim(),
+                nickname: document.getElementById('user-nickname').value.trim(),
+                password: document.getElementById('user-password').value,
+                role_slug: document.getElementById('user-roleselect').value,
+                ficha: document.getElementById('user-ficha').value.trim(),
+                modulos: modulos.sort(),
+                quices: quices.sort()
+            };
+        }
+
         function openCreateModal() {
             form.reset();
             form.action = "{{ route('sisig.admin.users.store') }}";
             methodContainer.innerHTML = '';
+            userOriginalSnapshot = null;
 
             document.getElementById('user-modal-title').textContent = 'Registrar Nuevo Usuario';
             document.getElementById('user-modal-subtitle').textContent = 'Creación de cuenta y vinculación a persona en el ERP';
@@ -586,6 +628,7 @@
 
                     const pwd = document.getElementById('user-password');
                     pwd.required = false;
+                    pwd.value = '';
                     pwd.placeholder = 'Dejar en blanco para no modificar';
                     document.getElementById('user-password-label').innerHTML = 'Nueva Contraseña <span class="text-slate-400 font-normal">(Opcional)</span>';
 
@@ -604,19 +647,30 @@
                     });
 
                     document.getElementById('user-submit-btn').textContent = 'Guardar Cambios';
+                    userOriginalSnapshot = JSON.stringify(getUserFormData());
                     modal.classList.remove('hidden');
                 })
                 .catch(err => {
                     console.error(err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de carga',
-                        text: 'No se pudo cargar la información del usuario para edición.',
-                        confirmButtonColor: '#39A900',
-                        confirmButtonText: 'Aceptar'
-                    });
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('No se pudo cargar la información del usuario para edición.', 'error');
+                    }
                 });
         }
+
+        form.addEventListener('submit', function(e) {
+            if (userOriginalSnapshot) {
+                const currentData = JSON.stringify(getUserFormData());
+                if (currentData === userOriginalSnapshot) {
+                    e.preventDefault();
+                    closeUserModal();
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('No se detectaron modificaciones en los datos del usuario.', 'info');
+                    }
+                    return false;
+                }
+            }
+        });
 
         function closeUserModal() {
             modal.classList.add('hidden');
@@ -624,49 +678,34 @@
 
         // 3. Confirmación para Desactivar / Activar Usuario
         function confirmToggleStatus(userId, userName, isActive) {
+            const formStatus = document.getElementById('toggle-status-form');
+            const targetUrl = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+
             if (isActive) {
-                Swal.fire({
-                    title: '¿Desactivar cuenta?',
-                    html: `¿Estás seguro de desactivar la cuenta de <strong class="text-slate-800 font-bold">${userName}</strong>?<br><span class="text-xs text-slate-500 mt-2 block">El usuario no podrá acceder al sistema SISIG hasta que sea reactivado.</span>`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#f59e0b',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: '<i class="fas fa-user-slash mr-1"></i> Sí, desactivar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        popup: 'rounded-2xl shadow-2xl border border-slate-100',
-                        confirmButton: 'px-4 py-2.5 rounded-xl font-bold text-sm shadow-md',
-                        cancelButton: 'px-4 py-2.5 rounded-xl font-bold text-sm'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const formStatus = document.getElementById('toggle-status-form');
-                        formStatus.action = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+                window.abrirModalConfirmacion({
+                    tipo: 'warning',
+                    titulo: '¿Desactivar cuenta?',
+                    descripcion: 'El usuario perderá el acceso temporal al sistema SISIG hasta que sea reactivado.',
+                    item: userName,
+                    itemTag: 'Usuario',
+                    btnTexto: 'Sí, desactivar',
+                    btnIcon: 'fa-user-slash',
+                    onConfirm: () => {
+                        formStatus.action = targetUrl;
                         formStatus.submit();
                     }
                 });
             } else {
-                Swal.fire({
-                    title: '¿Reactivar cuenta?',
-                    html: `¿Deseas reactivar la cuenta de <strong class="text-slate-800 font-bold">${userName}</strong>?<br><span class="text-xs text-slate-500 mt-2 block">El usuario recuperará el acceso inmediato a la plataforma SISIG.</span>`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#39A900',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: '<i class="fas fa-user-check mr-1"></i> Sí, reactivar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        popup: 'rounded-2xl shadow-2xl border border-slate-100',
-                        confirmButton: 'px-4 py-2.5 rounded-xl font-bold text-sm shadow-md',
-                        cancelButton: 'px-4 py-2.5 rounded-xl font-bold text-sm'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const formStatus = document.getElementById('toggle-status-form');
-                        formStatus.action = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+                window.abrirModalConfirmacion({
+                    tipo: 'success',
+                    titulo: '¿Reactivar cuenta?',
+                    descripcion: 'El usuario recuperará el acceso inmediato a la plataforma SISIG.',
+                    item: userName,
+                    itemTag: 'Usuario',
+                    btnTexto: 'Sí, reactivar',
+                    btnIcon: 'fa-user-check',
+                    onConfirm: () => {
+                        formStatus.action = targetUrl;
                         formStatus.submit();
                     }
                 });
@@ -676,32 +715,37 @@
         // 4. Confirmación para Eliminar Usuario Definitivamente (con validación de actividad)
         function confirmDeleteUser(userId, userName, hasActivity) {
             if (hasActivity) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'No se puede eliminar',
-                    text: `El usuario "${userName}" cuenta con actividad registrada en la plataforma (evaluaciones o progreso). Para preservar la trazabilidad institucional, no se puede eliminar. Puedes desactivar su cuenta en su lugar.`,
-                    confirmButtonColor: '#39A900',
-                    confirmButtonText: 'Entendido'
-                });
+                document.getElementById('no-eliminable-usuario-nombre').textContent = userName;
+                document.getElementById('modal-usuario-no-eliminable').classList.remove('hidden');
                 return;
             }
 
-            Swal.fire({
-                title: '¿Eliminar usuario permanentemente?',
-                text: `¿Estás seguro de que deseas eliminar permanentemente a "${userName}"? Este usuario no tiene ninguna actividad registrada y será borrado del sistema.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#e11d48',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const deleteForm = document.getElementById('delete-user-form');
+            const deleteForm = document.getElementById('delete-user-form');
+            window.abrirModalConfirmacion({
+                tipo: 'danger',
+                titulo: '¿Eliminar usuario permanentemente?',
+                descripcion: 'Esta acción no se puede deshacer y retirará la cuenta del usuario de la plataforma SISIG.',
+                item: `"${userName}"`,
+                itemTag: 'Usuario seleccionado',
+                advertencia: 'Este usuario no tiene actividad registrada y será borrado del sistema.',
+                btnTexto: 'Sí, eliminar',
+                btnIcon: 'fa-trash-alt',
+                onConfirm: () => {
                     deleteForm.action = `{{ url('sisig/admin/usuarios') }}/${userId}`;
                     deleteForm.submit();
                 }
             });
         }
+
+        function cerrarModalNoEliminable() {
+            document.getElementById('modal-usuario-no-eliminable').classList.add('hidden');
+        }
+
+        // Cerrar modal informativo con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarModalNoEliminable();
+            }
+        });
     </script>
 </x-sisig::layouts.admin>

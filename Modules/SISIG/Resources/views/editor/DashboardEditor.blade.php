@@ -2,100 +2,55 @@
     <div class="space-y-6 sm:space-y-8 animate-fade-in pb-8">
 
         <!-- 1. Banner Principal de Bienvenida del Editor -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <!-- Destellos y brillos ambientales de fondo -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <!-- Columna Izquierda: Información de bienvenida -->
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                            <i class="fas fa-edit"></i>
-                            <span>Panel de Edición y Contenidos Pedagógicos SISIG</span>
-                        </span>
-                    </div>
-
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                        ¡Hola, <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300">{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        Gestiona los módulos formativos del Sistema Integrado de Gestión, administra materiales pedagógicos, diseña evaluaciones y supervisa el banco de preguntas institucional.
-                    </p>
-                </div>
-
-                <!-- Columna Derecha: Fecha actual limpia -->
-                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
+        <x-sisig::banner 
+            badge="Panel de Edición y Contenidos Pedagógicos SISIG"
+            badgeIcon="fas fa-edit"
+            title="¡Hola, <span class='text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300'>{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!"
+            subtitle="Gestiona los módulos formativos del Sistema Integrado de Gestión, administra materiales pedagógicos, diseña evaluaciones y supervisa el banco de preguntas institucional.">
+            <x-slot:action>
+                <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
                     <i class="far fa-calendar-check text-sena-green text-lg"></i>
                     <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
                         {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
                 </div>
-            </div>
-        </div>
+            </x-slot:action>
+        </x-sisig::banner>
 
-        <!-- 2. Tarjetas de Métricas Editoriales (KPIs) -->
+        <!-- 2. Tarjetas de Métricas Editoriales (KPIs Reutilizables) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            
-            <!-- KPI 1: Módulos / Secciones -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-500 to-blue-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Módulos Temáticos</span>
-                    <i class="fas fa-layer-group text-2xl text-sky-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalModulos }}</h3>
-                        <span class="text-sm font-bold text-slate-400">{{ $totalModulos == 1 ? 'módulo' : 'módulos' }}</span>
-                    </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Ejes formativos SIG</span>
-                        <span class="text-xs font-bold text-sky-600">Registrados</span>
-                    </div>
-                </div>
-            </div>
+            <x-sisig::stat-card 
+                title="Módulos Temáticos"
+                value="{{ $totalModulos }}"
+                icon="fas fa-layer-group"
+                color="sky">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">Ejes formativos SIG</span>
+                    <span class="text-xs font-bold text-sky-600">Registrados</span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
 
-            <!-- KPI 2: Recursos y Materiales Educativos -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Recursos Didácticos</span>
-                    <i class="fas fa-file-alt text-2xl text-emerald-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalContenidos }}</h3>
-                        <span class="text-sm font-bold text-slate-400">{{ $totalContenidos == 1 ? 'recurso' : 'recursos' }}</span>
-                    </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">PDFs, videos y guías</span>
-                        <span class="text-xs font-bold text-emerald-600">Publicados</span>
-                    </div>
-                </div>
-            </div>
+            <x-sisig::stat-card 
+                title="Recursos Didácticos"
+                value="{{ $totalContenidos }}"
+                icon="fas fa-file-alt"
+                color="emerald">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">PDFs, videos y guías</span>
+                    <span class="text-xs font-bold text-emerald-600">Publicados</span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
 
-            <!-- KPI 3: Quices y Evaluaciones -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Evaluaciones / Quices</span>
-                    <i class="fas fa-clipboard-check text-2xl text-teal-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalQuices }}</h3>
-                        <span class="text-sm font-bold text-slate-400">{{ $totalQuices == 1 ? 'quiz' : 'quices' }}</span>
-                    </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">{{ $quicesActivos }} activos en línea</span>
-                        <span class="text-xs font-bold text-teal-600">{{ $quicesActivos }}/{{ $totalQuices }}</span>
-                    </div>
-                </div>
-            </div>
-
+            <x-sisig::stat-card 
+                title="Evaluaciones / Quices"
+                value="{{ $totalQuices }}"
+                icon="fas fa-clipboard-check"
+                color="teal">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">{{ $quicesActivos }} activos en línea</span>
+                    <span class="text-xs font-bold text-teal-600">{{ $quicesActivos }}/{{ $totalQuices }}</span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
         </div>
 
         <!-- 3. Herramientas Editoriales y Accesos Rápidos -->
@@ -119,11 +74,11 @@
                         </div>
                     </div>
                     <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-end">
-                        <button onclick="Swal.fire({ title: 'Gestión de Módulos', text: 'Módulo en fase de integración por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })" 
-                                class="text-xs font-bold text-sky-600 hover:text-sky-800 inline-flex items-center gap-1.5 transition-colors">
+                        <a href="{{ route('sisig.editor.contenido.index') }}" 
+                           class="text-xs font-bold text-sky-600 hover:text-sky-800 inline-flex items-center gap-1.5 transition-colors">
                             <span>Administrar módulos</span>
                             <i class="fas fa-arrow-right text-[10px]"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -137,11 +92,11 @@
                         </div>
                     </div>
                     <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-end">
-                        <button onclick="Swal.fire({ title: 'Quices y Evaluaciones', text: 'Módulo en fase de integración por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })" 
-                                class="text-xs font-bold text-emerald-600 hover:text-emerald-800 inline-flex items-center gap-1.5 transition-colors">
+                        <a href="{{ route('sisig.editor.examenes.index') }}" 
+                           class="text-xs font-bold text-emerald-600 hover:text-emerald-800 inline-flex items-center gap-1.5 transition-colors">
                             <span>Gestionar evaluaciones</span>
                             <i class="fas fa-arrow-right text-[10px]"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -155,8 +110,8 @@
                         </div>
                     </div>
                     <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-end">
-                        <button onclick="Swal.fire({ title: 'Recursos Multimedia', text: 'Módulo en fase de integración por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })" 
-                                class="text-xs font-bold text-amber-600 hover:text-amber-800 inline-flex items-center gap-1.5 transition-colors">
+                        <button type="button" onclick="mostrarAlertaBanner('Recursos Multimedia: Módulo en fase de integración por el equipo.', 'info')" 
+                                class="text-xs font-bold text-amber-600 hover:text-amber-800 inline-flex items-center gap-1.5 transition-colors cursor-pointer">
                             <span>Subir recursos</span>
                             <i class="fas fa-arrow-right text-[10px]"></i>
                         </button>

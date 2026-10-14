@@ -1,16 +1,16 @@
 <!-- Sidebar Lateral Completo para SISIG (Modo Completo y Modo Mini-Iconos) -->
 <aside id="sidebar-menu" class="w-64 bg-[#001A29] border-r border-slate-800 text-slate-300 flex-shrink-0 flex flex-col justify-between h-screen sticky top-0 transition-all duration-300 z-40">
     
-    <!-- 1. Encabezado Superior del Sidebar (Alineado con el Header h-16 = 64px) -->
+    <!-- 1. Encabezado Superior del Sidebar (Identidad Institucional SISIG) -->
     <div class="h-16 px-4 flex-shrink-0 flex items-center justify-start sidebar-header-container transition-all">
-        <a href="{{ route('sisig.index') }}" class="flex items-center gap-3 group overflow-hidden w-full" title="Ir al Portal SISIG">
-            <div class="w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+        <div class="flex items-center gap-3 overflow-hidden w-full select-none sidebar-header-inner">
+            <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 sidebar-logo-box">
                 <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow">
             </div>
             <div class="min-w-0 sidebar-text transition-all duration-200">
                 <span class="text-lg font-extrabold tracking-tight text-white block leading-tight">SISIG</span>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 2. Navegación Principal (Scrollable) -->
@@ -67,11 +67,11 @@
                         <span class="sidebar-text truncate">Reportes y Métricas</span>
                     </a>
 
-                    <a href="#seguridad" 
-                       title="Seguridad e Infracciones"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Seguridad e Infracciones</span>
+                    <a href="{{ route('sisig.admin.seguridad.index') }}" 
+                       title="Seguridad y Accesos"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.seguridad.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.admin.seguridad.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Seguridad y Accesos</span>
                     </a>
                 </div>
             </div>
@@ -115,31 +115,17 @@
                     </a>
 
                     <a href="{{ route('sisig.editor.participantes.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.participantes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-users text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.participantes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span>Participantes</span>
+                       title="Participantes"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.participantes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-users text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.editor.participantes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Participantes</span>
                     </a>
 
                     <a href="{{ route('sisig.editor.reportes.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.reportes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-chart-line text-sm w-5 text-center transition-transform {{ request()->routeIs('sisig.editor.reportes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span>Reportes</span>
-                    </a>
-
-                    <a href="#" 
-                       title="Recursos y Materiales"
-                       onclick="Swal.fire({ title: 'Recursos Didácticos', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-file-alt text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Recursos y Materiales</span>
-                    </a>
-
-                    <a href="#" 
-                       title="Quices y Preguntas"
-                       onclick="Swal.fire({ title: 'Banco de Preguntas', text: 'Módulo en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
-                        <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-teal-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="sidebar-text truncate">Quices y Preguntas</span>
+                       title="Reportes"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.editor.reportes.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
+                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.editor.reportes.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
+                        <span class="sidebar-text truncate">Reportes</span>
                     </a>
                 </div>
             </div>
@@ -167,25 +153,25 @@
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Módulos de Inducción"
-                       onclick="Swal.fire({ title: 'Módulos de Inducción', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Módulos de Inducción: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-book-reader text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Módulos de Inducción</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Mis Evaluaciones"
-                       onclick="Swal.fire({ title: 'Mis Evaluaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Mis Evaluaciones: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Mis Evaluaciones</span>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        title="Historial y Calificaciones"
-                       onclick="Swal.fire({ title: 'Historial y Calificaciones', text: 'Esta sección está en desarrollo por el equipo.', icon: 'info', confirmButtonColor: '#39A900' })"
+                       onclick="mostrarAlertaBanner('Historial y Calificaciones: Esta sección está en desarrollo por el equipo.', 'info')"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
                         <i class="fas fa-award text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
                         <span class="sidebar-text truncate">Historial y Calificaciones</span>

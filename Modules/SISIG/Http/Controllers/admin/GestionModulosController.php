@@ -53,11 +53,17 @@ class GestionModulosController extends Controller
         ]);
 
         $modulo = Modulo::findOrFail($id);
-        $modulo->update([
+        $modulo->fill([
             'titulo' => $request->titulo,
             'estado' => $request->estado,
             'descripcion' => $request->descripcion
         ]);
+
+        if (!$modulo->isDirty()) {
+            return redirect()->back()->with('info', 'No se detectaron modificaciones en el módulo.');
+        }
+
+        $modulo->save();
 
         return redirect()->back()->with('success', 'Módulo actualizado exitosamente');
     }
@@ -81,5 +87,15 @@ class GestionModulosController extends Controller
         $modulo->save();
 
         return redirect()->route('sisig.admin.modulos.index')->with('success', 'Contenido actualizado exitosamente');
+    }
+
+    public function destroy($id)
+    {
+        $modulo = Modulo::findOrFail($id);
+        $titulo = $modulo->titulo;
+
+        $modulo->delete();
+
+        return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente');
     }
 }
