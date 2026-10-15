@@ -134,40 +134,49 @@
             <!-- VISTA DEL APRENDIZ / USUARIO ESTUDIANTE -->
             <div class="sidebar-section-block">
                 <span class="sidebar-section-title px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                    Principal
+                    Mi Formación
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
                     <a href="{{ route('sisig.aprendiz.dashboard') }}" 
-                       title="Inicio"
+                       title="Mi Dashboard SIG"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('sisig.aprendiz.dashboard') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-th-large text-sm w-5 text-center flex-shrink-0"></i>
-                        <span class="sidebar-text truncate">Inicio</span>
+                        <i class="fas fa-graduation-cap text-sm w-5 text-center flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">Mi Dashboard SIG</span>
                     </a>
                 </div>
             </div>
 
             <div class="sidebar-section-block">
                 <span class="sidebar-section-title px-3 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                    Evaluaciones
+                    Inducción y Pruebas
                 </span>
                 <div class="sidebar-divider hidden my-1.5 border-t border-slate-800/80"></div>
                 <div class="mt-1 space-y-1">
-                    <a href="{{ route('sisig.aprendiz.quiz.index') }}" 
-                       title="Quiz interactivo"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.aprendiz.quiz.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-gamepad text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.aprendiz.quiz.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span class="sidebar-text truncate">Quiz interactivo</span>
+                    <a href="javascript:void(0)" 
+                       title="Módulos de Inducción"
+                       onclick="mostrarAlertaBanner('Módulos de Inducción: Esta sección está en desarrollo por el equipo.', 'info')"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-book-reader text-sm w-5 text-center flex-shrink-0 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="sidebar-text truncate">Módulos de Inducción</span>
                     </a>
 
-                    <a href="{{ route('sisig.aprendiz.resultados.index') }}" 
-                       title="Mis resultados"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.aprendiz.resultados.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-chart-line text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.aprendiz.resultados.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
-                        <span class="sidebar-text truncate">Mis resultados</span>
+                    <a href="javascript:void(0)" 
+                       title="Mis Evaluaciones"
+                       onclick="mostrarAlertaBanner('Mis Evaluaciones: Esta sección está en desarrollo por el equipo.', 'info')"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-tasks text-sm w-5 text-center flex-shrink-0 text-sky-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="sidebar-text truncate">Mis Evaluaciones</span>
+                    </a>
+
+                    <a href="javascript:void(0)" 
+                       title="Historial y Calificaciones"
+                       onclick="mostrarAlertaBanner('Historial y Calificaciones: Esta sección está en desarrollo por el equipo.', 'info')"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 group">
+                        <i class="fas fa-award text-sm w-5 text-center flex-shrink-0 text-amber-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="sidebar-text truncate">Historial y Calificaciones</span>
                     </a>
                 </div>
-            </div>
             </div>
         @endif
 
