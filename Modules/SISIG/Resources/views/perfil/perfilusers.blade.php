@@ -31,30 +31,7 @@
             </div>
         </div>
 
-        <!-- Alertas de Sesión Temporales -->
-        @if(session('success'))
-            <div id="session-alert" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between gap-3 shadow-sm transition-all duration-500">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-check-circle text-emerald-600 text-base flex-shrink-0"></i>
-                    <p class="text-xs sm:text-sm font-bold">{{ session('success') }}</p>
-                </div>
-                <button type="button" onclick="closeAlert('session-alert')" class="text-emerald-500 hover:text-emerald-800 p-1.5 rounded-lg hover:bg-emerald-100 transition-colors" title="Cerrar">
-                    <i class="fas fa-times text-xs"></i>
-                </button>
-            </div>
-        @endif
 
-        @if(session('info'))
-            <div id="info-alert" class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-between gap-3 shadow-sm transition-all duration-500">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-info-circle text-blue-600 text-base flex-shrink-0"></i>
-                    <p class="text-xs sm:text-sm font-bold">{{ session('info') }}</p>
-                </div>
-                <button type="button" onclick="closeAlert('info-alert')" class="text-blue-500 hover:text-blue-800 p-1.5 rounded-lg hover:bg-blue-100 transition-colors" title="Cerrar">
-                    <i class="fas fa-times text-xs"></i>
-                </button>
-            </div>
-        @endif
 
         @if(isset($errors) && $errors->any())
             <div id="error-alert" class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start justify-between gap-3 shadow-sm transition-all duration-500">
@@ -316,14 +293,8 @@
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 if (file.size > 2 * 1024 * 1024) {
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Imagen demasiado pesada',
-                            text: 'La foto seleccionada supera el límite de 2MB. Por favor elige una imagen más liviana.',
-                            confirmButtonColor: '#39A900',
-                            confirmButtonText: 'Entendido'
-                        });
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('La foto seleccionada supera el límite de 2MB. Por favor elige una imagen más liviana.', 'error');
                     } else {
                         alert('La foto seleccionada supera el límite de 2MB.');
                     }
@@ -345,21 +316,16 @@
             }
         }
 
-        // Eliminar foto con modal SweetAlert2
+        // Eliminar foto con modal dinámico universal
         function submitRemoveAvatar() {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    title: '¿Eliminar foto de perfil?',
-                    text: 'Tu foto de perfil será eliminada y volverás a mostrar tus iniciales institucionales.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e11d48',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: '<i class="fas fa-trash-alt mr-1"></i> Sí, eliminar foto',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
+            if (window.abrirModalConfirmacion) {
+                window.abrirModalConfirmacion({
+                    tipo: 'danger',
+                    titulo: '¿Eliminar foto de perfil?',
+                    descripcion: 'Tu foto de perfil será eliminada y volverás a mostrar tus iniciales institucionales.',
+                    btnTexto: 'Sí, eliminar foto',
+                    btnIcon: 'fa-trash-alt',
+                    onConfirm: () => {
                         document.getElementById('remove_avatar').value = '1';
                         document.getElementById('profile-form').submit();
                     }
@@ -382,8 +348,8 @@
 
         // Auto-cerrar alertas temporales tras unos segundos
         document.addEventListener('DOMContentLoaded', () => {
-            if (document.getElementById('session-alert')) setTimeout(() => closeAlert('session-alert'), 4000);
-            if (document.getElementById('error-alert')) setTimeout(() => closeAlert('error-alert'), 5000);
+            if (document.getElementById('session-alert')) setTimeout(() => closeAlert('session-alert'), 3000);
+            if (document.getElementById('error-alert')) setTimeout(() => closeAlert('error-alert'), 3000);
         });
     </script>
 </x-sisig::layouts.admin>

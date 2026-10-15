@@ -2,103 +2,61 @@
     <div class="space-y-8 w-full max-w-[1600px] mx-auto pb-10">
 
         <!-- 1. Banner Principal de Bienvenida del Aprendiz -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <!-- Destellos ambientales decorativos -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <!-- Columna Izquierda: Información de bienvenida -->
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Portal del Aprendiz SISIG</span>
-                        </span>
-                    </div>
-
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                        ¡Hola, <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300">{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        Bienvenido a tu panel de control de la inducción formativa en el <strong class="text-white">Sistema Integrado de Gestión (SIG)</strong> del Centro Agroindustrial "La Angostura". Aquí puedes consultar el resumen de tu avance, estados de aprobación e historial de evaluaciones.
-                    </p>
-                </div>
-
-                <!-- Columna Derecha: Fecha actual limpia -->
-                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
+        <x-sisig::banner 
+            badge="Portal del Aprendiz SISIG"
+            badgeIcon="fas fa-graduation-cap"
+            title="¡Hola, <span class='text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300'>{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!"
+            subtitle="Bienvenido a tu panel de control de la inducción formativa en el Sistema Integrado de Gestión (SIG) del Centro Agroindustrial 'La Angostura'. Aquí puedes consultar el resumen de tu avance, estados de aprobación e historial de evaluaciones.">
+            <x-slot:action>
+                <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
                     <i class="far fa-calendar-check text-sena-green text-lg"></i>
                     <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
                         {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
                 </div>
-            </div>
-        </div>
+            </x-slot:action>
+        </x-sisig::banner>
 
-        <!-- 2. Tarjetas de Métricas Clave (KPIs Resumen) -->
+        <!-- 2. Tarjetas de Métricas Clave (KPIs Resumen Reutilizables) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            
-            <!-- KPI 1: Progreso General -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Avance de Inducción</span>
-                    <i class="fas fa-tasks text-2xl text-emerald-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $progresoGeneral }}%</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Contenidos revisados</span>
-                        <span class="text-xs font-bold {{ $progresoGeneral >= 100 ? 'text-emerald-600' : 'text-slate-700' }}">
-                            {{ $progresoGeneral >= 100 ? 'Al día' : 'En curso' }}
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <x-sisig::stat-card 
+                title="Avance de Inducción"
+                value="{{ $progresoGeneral }}%"
+                icon="fas fa-tasks"
+                color="emerald">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">Contenidos revisados</span>
+                    <span class="text-xs font-bold {{ $progresoGeneral >= 100 ? 'text-emerald-600' : 'text-slate-700' }}">
+                        {{ $progresoGeneral >= 100 ? 'Al día' : 'En curso' }}
+                    </span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
 
-            <!-- KPI 2: Módulos Ejes Temáticos -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-500 to-blue-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Módulos Temáticos</span>
-                    <i class="fas fa-layer-group text-2xl text-sky-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $seccionesCompletadas }}</h3>
-                        <span class="text-sm font-bold text-slate-400">/ {{ $totalSecciones }} {{ $totalSecciones == 1 ? 'módulo' : 'módulos' }}</span>
-                    </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Módulos habilitados</span>
-                        <span class="text-xs font-black text-sky-600">
-                            {{ $totalSecciones > 0 && $seccionesCompletadas >= $totalSecciones ? 'Finalizados' : 'En proceso' }}
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <x-sisig::stat-card 
+                title="Módulos Temáticos"
+                value="{{ $seccionesCompletadas }}"
+                icon="fas fa-layer-group"
+                color="sky">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">Módulos habilitados</span>
+                    <span class="text-xs font-black text-sky-600">
+                        {{ $totalSecciones > 0 && $seccionesCompletadas >= $totalSecciones ? 'Finalizados' : 'En proceso' }}
+                    </span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
 
-            <!-- KPI 3: Quices Aprobados -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Quices Aprobados</span>
-                    <i class="fas fa-award text-2xl text-teal-600 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $quicesAprobadosCount }}</h3>
-                        <span class="text-sm font-bold text-slate-400">/ {{ $totalQuicesDisponibles }} {{ $totalQuicesDisponibles == 1 ? 'quiz' : 'quices' }}</span>
-                    </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Evaluaciones aprobadas</span>
-                        <span class="text-xs font-bold text-teal-600">
-                            {{ $totalEvaluacionesPresentadas }} presentadas
-                        </span>
-                    </div>
-                </div>
-            </div>
-
+            <x-sisig::stat-card 
+                title="Quices Aprobados"
+                value="{{ $quicesAprobadosCount }}"
+                icon="fas fa-award"
+                color="teal">
+                <x-slot:footer>
+                    <span class="text-slate-500 font-medium">Evaluaciones aprobadas</span>
+                    <span class="text-xs font-bold text-teal-600">
+                        {{ $totalEvaluacionesPresentadas }} presentadas
+                    </span>
+                </x-slot:footer>
+            </x-sisig::stat-card>
         </div>
 
         <!-- 3. Requisitos e Información Clave de Inducción -->

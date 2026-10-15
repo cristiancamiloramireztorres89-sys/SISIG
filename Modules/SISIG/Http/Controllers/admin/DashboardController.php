@@ -39,7 +39,59 @@ class DashboardController extends Controller
         $totalInfracciones = DB::table('infraccionesquiz')->count();
         $evaluacionesAnuladas = DB::table('sisig_resultados')->where('fue_anulado', 1)->count();
 
-        // Secciones temáticas del SIG (SST, Calidad, Ambiental)
+        // Módulos temáticos registrados en el sistema con estadísticas dinámicas
+        $modulos = DB::table('sisig_modulos')
+            ->orderBy('id')
+            ->get();
+
+        $modulosEstadisticas = $modulos->map(function ($mod) {
+            $quices = DB::table('sisig_quices')
+                ->where('modulo_id', $mod->id)
+                ->get();
+
+            $quicesIds = $quices->pluck('id_quiz');
+
+            $totalEvaluaciones = $quicesIds->isNotEmpty()
+                ? DB::table('sisig_resultados')->whereIn('id_quiz', $quicesIds)->count()
+                : 0;
+
+            $evaluacionesAprobadas = $quicesIds->isNotEmpty()
+                ? DB::table('sisig_resultados')->whereIn('id_quiz', $quicesIds)->where('aprobado', 1)->count()
+                : 0;
+
+            $evaluacionesReprobadas = $quicesIds->isNotEmpty()
+                ? DB::table('sisig_resultados')->whereIn('id_quiz', $quicesIds)->where('aprobado', 0)->where('fue_anulado', 0)->count()
+                : 0;
+
+            $evaluacionesAnuladas = $quicesIds->isNotEmpty()
+                ? DB::table('sisig_resultados')->whereIn('id_quiz', $quicesIds)->where('fue_anulado', 1)->count()
+                : 0;
+
+            $tasaAprobacion = $totalEvaluaciones > 0
+                ? round(($evaluacionesAprobadas / $totalEvaluaciones) * 100, 1)
+                : 0;
+
+            $promedioPuntaje = $totalEvaluaciones > 0
+                ? round((float) (DB::table('sisig_resultados')->whereIn('id_quiz', $quicesIds)->avg('puntaje') ?? 0), 1)
+                : 0;
+
+            return (object) [
+                'id' => $mod->id,
+                'titulo' => $mod->titulo,
+                'norma' => $mod->norma,
+                'estado' => $mod->estado,
+                'total_quices' => $quices->count(),
+                'quices_activos' => $quices->where('activo', 1)->count(),
+                'total_evaluaciones' => $totalEvaluaciones,
+                'evaluaciones_aprobadas' => $evaluacionesAprobadas,
+                'evaluaciones_reprobadas' => $evaluacionesReprobadas,
+                'evaluaciones_anuladas' => $evaluacionesAnuladas,
+                'tasa_aprobacion' => $tasaAprobacion,
+                'promedio_puntaje' => $promedioPuntaje,
+            ];
+        });
+
+        // Secciones temáticas del SIG (compatibilidad)
         $secciones = DB::table('sisig_secciones')
             ->orderBy('orden')
             ->get();
@@ -80,6 +132,7 @@ class DashboardController extends Controller
             'totalInfracciones',
             'evaluacionesAnuladas',
             'secciones',
+            'modulosEstadisticas',
             'ultimosResultados',
             'actividadReciente'
         ));

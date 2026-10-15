@@ -21,18 +21,7 @@
             @endif
         </div>
 
-        @if(session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: '{{ session('success') }}',
-                        icon: 'success',
-                        confirmButtonColor: '#39A900'
-                    });
-                });
-            </script>
-        @endif
+
 
         <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo Premium del Dashboard -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -153,14 +142,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     @foreach($modulos as $modulo)
                         <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full">
-                            <!-- Top Decorator -->
-                            <div class="absolute top-0 left-0 right-0 h-1.5 {{ str_replace('bg-', 'bg-', $modulo->icon_bg) }} rounded-t-3xl opacity-80"></div>
 
                             <div class="flex items-start justify-between mb-5">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-14 h-14 rounded-2xl {{ $modulo->icon_bg }} border {{ $modulo->border_class }} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                                        <i class="{{ $modulo->icon_class }} text-2xl drop-shadow-sm"></i>
-                                    </div>
+                                <div class="flex items-center gap-3.5">
+                                    <i class="{{ $modulo->icon_class }} text-2xl sm:text-3xl flex-shrink-0"></i>
                                     <div>
                                         <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ $modulo->titulo }}</h3>
                                         <div class="flex items-center gap-1.5 mt-1 text-slate-500 text-xs font-medium">
@@ -171,21 +156,18 @@
                                 </div>
                             </div>
                             
-                            <!-- Etiqueta de Estado -->
+                            <!-- Etiqueta de Estado Limpia (Sin cuadro ni punto) -->
                             <div class="absolute top-6 right-6">
                                 @if($modulo->estado == 'publicado')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="text-xs font-black tracking-wide uppercase text-emerald-600">
                                         Publicado
                                     </span>
                                 @elseif($modulo->estado == 'revision')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-200/60 shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    <span class="text-xs font-black tracking-wide uppercase text-amber-600">
                                         En Revisión
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200/60 shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                    <span class="text-xs font-black tracking-wide uppercase text-rose-600">
                                         Inactivo
                                     </span>
                                 @endif
@@ -214,67 +196,18 @@
                                     <span>{{ $modulo->created_at->format('d M Y') }}</span>
                                 </div>
                                 
-                                <div class="flex gap-2.5">
-                                    <button type="button" onclick="document.getElementById('modalEditarModulo-{{ $modulo->id }}').classList.remove('hidden')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all shadow-sm flex items-center gap-1.5">
-                                        <i class="fas fa-pencil-alt"></i>
-                                        <span>Editar</span>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="abrirModalEditarModulo({{ json_encode($modulo) }})" title="Editar módulo" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs">
+                                        <i class="fas fa-pencil-alt text-xs"></i>
                                     </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal Editar Módulo -->
-                        <div id="modalEditarModulo-{{ $modulo->id }}" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-                            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modalEditarModulo-{{ $modulo->id }}').classList.add('hidden')"></div>
-                            
-                            <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
-                                <div class="bg-sena-green px-6 py-4 text-white flex justify-between items-center">
-                                    <h3 class="text-lg font-bold flex items-center gap-2.5">
-                                        <i class="fas fa-edit"></i> Editar módulo
-                                    </h3>
-                                    <button type="button" onclick="document.getElementById('modalEditarModulo-{{ $modulo->id }}').classList.add('hidden')" class="text-white/80 hover:text-white transition-colors">
-                                        <i class="fas fa-times text-xl font-light"></i>
-                                    </button>
-                                </div>
-                                
-                                <form action="{{ route('sisig.admin.modulos.update', $modulo->id) }}" method="POST" class="p-6 md:p-8 space-y-6">
-                                    @csrf
-                                    @method('PUT')
-                                    
-                                    <div class="space-y-1.5 text-left">
-                                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Nombre del modulo</label>
-                                        <input type="text" name="titulo" value="{{ $modulo->titulo }}" required 
-                                               class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all">
-                                    </div>
-
-                                    <div class="space-y-1.5 text-left">
-                                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Estado</label>
-                                        <div class="relative">
-                                            <select name="estado" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all appearance-none cursor-pointer">
-                                                <option value="publicado" {{ $modulo->estado == 'publicado' ? 'selected' : '' }}>Publicado</option>
-                                                <option value="revision" {{ $modulo->estado == 'revision' ? 'selected' : '' }}>En Revisión</option>
-                                                <option value="inactivo" {{ $modulo->estado == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
-                                            </select>
-                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                                                <i class="fas fa-chevron-down text-[10px]"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-1.5 text-left">
-                                        <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Descripcion</label>
-                                        <textarea name="descripcion" rows="4" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all resize-y">{{ $modulo->descripcion }}</textarea>
-                                    </div>
-
-                                    <div class="pt-2 flex justify-center items-center gap-4">
-                                        <button type="button" onclick="document.getElementById('modalEditarModulo-{{ $modulo->id }}').classList.add('hidden')" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors border border-transparent">
-                                            Cancelar
+                                    <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" title="Eliminar módulo" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all flex items-center justify-center cursor-pointer shadow-xs">
+                                            <i class="fas fa-trash-alt text-xs"></i>
                                         </button>
-                                        <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-[#0f9d58] hover:bg-[#0b8043] transition-colors flex items-center gap-2 shadow-sm border border-transparent">
-                                            <i class="fas fa-save"></i> Guardar cambios
-                                        </button>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -290,64 +223,187 @@
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')"></div>
         
         <!-- Modal Contenedor -->
-        <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+        <div class="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto">
             
-            <!-- Header Modal (Estilo Imagen: Verde sólido) -->
-            <div class="bg-sena-green px-6 py-4 text-white flex justify-between items-center">
-                <h3 class="text-lg font-bold flex items-center gap-2.5">
-                    <i class="fas fa-archive"></i> Nuevo modulo
-                </h3>
-                <button type="button" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')" class="text-white/80 hover:text-white transition-colors">
-                    <i class="fas fa-times text-xl font-light"></i>
+            <!-- Header Modal Limpio con Icono Verde -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-layer-group text-2xl text-sena-green"></i>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Registrar Nuevo Módulo</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Creación de módulo y asignación de estado para el SIG</p>
+                    </div>
+                </div>
+                <button type="button" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
             
-            <!-- Body del Modal / Formulario -->
-            <form action="{{ route('sisig.admin.modulos.store') }}" method="POST" class="p-6 md:p-8 space-y-6">
+            <!-- Formulario -->
+            <form action="{{ route('sisig.admin.modulos.store') }}" method="POST" class="mt-5 space-y-4">
                 @csrf
                 
-                <!-- Nombre -->
-                <div class="space-y-1.5">
-                    <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Nombre del modulo</label>
-                    <input type="text" name="titulo" required placeholder="Ej: Presentacion Organizacional" 
-                           class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all placeholder-slate-400">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Nombre del Módulo *</label>
+                    <input type="text" name="titulo" required placeholder="Ej. Presentación Organizacional" 
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                 </div>
 
-                <!-- Estado -->
-                <div class="space-y-1.5">
-                    <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Estado</label>
-                    <div class="relative">
-                        <select name="estado" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all appearance-none cursor-pointer">
-                            <option value="publicado">Publicado</option>
-                            <option value="revision">En Revisión</option>
-                            <option value="inactivo">Inactivo</option>
-                        </select>
-                        <!-- Custom Select Arrow -->
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                            <i class="fas fa-chevron-down text-[10px]"></i>
-                        </div>
-                    </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Estado de Publicación *</label>
+                    <select name="estado" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer">
+                        <option value="publicado">Publicado (Visible para aprendices)</option>
+                        <option value="revision">En Revisión (Borrador)</option>
+                        <option value="inactivo">Inactivo (Oculto)</option>
+                    </select>
                 </div>
 
-                <!-- Descripción -->
-                <div class="space-y-1.5">
-                    <label class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Descripcion</label>
-                    <textarea name="descripcion" rows="4" placeholder="Descripcion breve del modulo..." 
-                              class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-sena-green/50 outline-none transition-all resize-y placeholder-slate-400"></textarea>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Descripción del Módulo</label>
+                    <textarea name="descripcion" rows="3" placeholder="Descripción breve del contenido y alcance del módulo..." 
+                              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-y"></textarea>
                 </div>
 
-                <!-- Footer Modal (Botones Centrados) -->
-                <div class="pt-2 flex justify-center items-center gap-4">
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                     <button type="button" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')" 
-                            class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors border border-transparent">
+                            class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all">
                         Cancelar
                     </button>
                     <button type="submit" 
-                            class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-[#0f9d58] hover:bg-[#0b8043] transition-colors flex items-center gap-2 shadow-sm border border-transparent">
-                        <i class="fas fa-save"></i> Guardar modulo
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        <i class="fas fa-save text-xs"></i>
+                        <span>Guardar Módulo</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- 6. Modal Editar Módulo (Instancia Única y Centralizada) -->
+    <div id="modalEditarModulo" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <!-- Backdrop oscuro -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalEditarModulo()"></div>
+        
+        <div class="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-edit text-2xl text-sena-green"></i>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Editar Módulo</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Modifica los detalles y estado del módulo SIG</p>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalEditarModulo()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <form id="formEditarModulo" action="" method="POST" class="mt-5 space-y-4">
+                @csrf
+                @method('PUT')
+                
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Nombre del Módulo *</label>
+                    <input type="text" name="titulo" id="edit-modulo-titulo" required 
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                </div>
+
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Estado de Publicación *</label>
+                    <select name="estado" id="edit-modulo-estado" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer">
+                        <option value="publicado">Publicado (Visible)</option>
+                        <option value="revision">En Revisión (Borrador)</option>
+                        <option value="inactivo">Inactivo (Oculto)</option>
+                    </select>
+                </div>
+
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Descripción del Módulo</label>
+                    <textarea name="descripcion" id="edit-modulo-descripcion" rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-y"></textarea>
+                </div>
+
+                <div class="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" id="btn-eliminar-desde-modal" class="text-rose-500 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i class="fas fa-trash-alt text-xs"></i>
+                        <span>Eliminar</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="cerrarModalEditarModulo()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                            <i class="fas fa-save text-xs"></i>
+                            <span>Guardar Cambios</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const rutaUpdateModuloBase = "{{ route('sisig.admin.modulos.update', ':id') }}";
+        let moduloOriginalSnapshot = null;
+
+        function getModuloFormData() {
+            return {
+                titulo: document.getElementById('edit-modulo-titulo').value.trim(),
+                estado: document.getElementById('edit-modulo-estado').value,
+                descripcion: document.getElementById('edit-modulo-descripcion').value.trim()
+            };
+        }
+
+        function abrirModalEditarModulo(modulo) {
+            const modal = document.getElementById('modalEditarModulo');
+            const form = document.getElementById('formEditarModulo');
+            form.action = rutaUpdateModuloBase.replace(':id', modulo.id);
+            document.getElementById('edit-modulo-titulo').value = modulo.titulo || '';
+            document.getElementById('edit-modulo-estado').value = modulo.estado || 'publicado';
+            document.getElementById('edit-modulo-descripcion').value = modulo.descripcion || '';
+            moduloOriginalSnapshot = JSON.stringify(getModuloFormData());
+
+            // Configurar botón eliminar dentro del modal de edición
+            document.getElementById('btn-eliminar-desde-modal').onclick = function() {
+                cerrarModalEditarModulo();
+                confirmarEliminarModulo('form-eliminar-modulo-' + modulo.id, modulo.titulo);
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        document.getElementById('formEditarModulo').addEventListener('submit', function(e) {
+            if (moduloOriginalSnapshot) {
+                const currentData = JSON.stringify(getModuloFormData());
+                if (currentData === moduloOriginalSnapshot) {
+                    e.preventDefault();
+                    cerrarModalEditarModulo();
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('No se detectaron modificaciones en el módulo.', 'info');
+                    }
+                    return false;
+                }
+            }
+        });
+
+        function cerrarModalEditarModulo() {
+            document.getElementById('modalEditarModulo').classList.add('hidden');
+        }
+
+        function confirmarEliminarModulo(formId, tituloModulo) {
+            const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
+            if (!form) return;
+
+            window.abrirModalConfirmacion({
+                tipo: 'danger',
+                titulo: '¿Eliminar módulo?',
+                descripcion: 'Esta acción no se puede deshacer y retirará el módulo permanentemente del catálogo del SIG.',
+                item: `"${tituloModulo}"`,
+                itemTag: 'Módulo seleccionado',
+                advertencia: 'Se eliminarán también las evaluaciones asociadas a este módulo.',
+                btnTexto: 'Sí, eliminar',
+                btnIcon: 'fa-trash-alt',
+                onConfirm: form
+            });
+        }
+    </script>
 </x-sisig::layouts.admin>

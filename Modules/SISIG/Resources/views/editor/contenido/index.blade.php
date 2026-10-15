@@ -1,56 +1,14 @@
 <x-sisig::layouts.editor title="Gestión de Contenidos">
     <div class="space-y-8 w-full max-w-[1600px] mx-auto pb-10">
 
-        <!-- Banner Principal Editorial -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sena-green/15 rounded-full blur-2xl pointer-events-none"></div>
+        <!-- Banner Principal Editorial Reutilizable -->
+        <x-sisig::banner 
+            badge="Panel Editorial"
+            icon="fas fa-layer-group"
+            title="Gestión de Contenidos SIG"
+            subtitle="Administra y enriquece el material formativo y los contenidos para cada una de las secciones del Sistema Integrado de Gestión." />
 
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
-                            Panel Editorial
-                        </span>
-                    </div>
 
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-3">
-                        <i class="fas fa-layer-group text-sena-green"></i>
-                        <span>Gestión de Contenidos SIG</span>
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        Administra y enriquece el material formativo y los contenidos para cada una de las secciones del Sistema Integrado de Gestión.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        @if(session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: '{{ session('success') }}',
-                        icon: 'success',
-                        confirmButtonColor: '#39A900'
-                    });
-                });
-            </script>
-        @endif
-        
-        @if(session('error'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        title: 'Restricción',
-                        text: '{{ session('error') }}',
-                        icon: 'error',
-                        confirmButtonColor: '#e3342f'
-                    });
-                });
-            </script>
-        @endif
 
         <!-- Listado de Módulos para Editor -->
         <div class="space-y-5">
@@ -78,13 +36,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     @foreach($modulos as $modulo)
                         <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full">
-                            <div class="absolute top-0 left-0 right-0 h-1.5 {{ str_replace('bg-', 'bg-', $modulo->icon_bg) }} rounded-t-3xl opacity-80"></div>
 
                             <div class="flex items-start justify-between mb-5">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-14 h-14 rounded-2xl {{ $modulo->icon_bg }} border {{ $modulo->border_class }} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                                        <i class="{{ $modulo->icon_class }} text-2xl drop-shadow-sm"></i>
-                                    </div>
+                                <div class="flex items-center gap-3.5">
+                                    <i class="{{ $modulo->icon_class }} text-2xl sm:text-3xl flex-shrink-0"></i>
                                     <div>
                                         <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ $modulo->titulo }}</h3>
                                         <div class="flex items-center gap-1.5 mt-1 text-slate-500 text-xs font-medium">

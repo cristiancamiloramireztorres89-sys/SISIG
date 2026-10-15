@@ -180,20 +180,76 @@ class GestionUsersController extends Controller
 
         DB::beginTransaction();
         try {
-            $person = $this->syncPerson($request, $user->person);
+            $person = $user->person;
+            $personData = [
+                'document_type'    => $request->document_type,
+                'document_number'  => trim($request->document_number),
+                'first_name'       => mb_strtoupper(trim($request->first_name)),
+                'first_last_name'  => mb_strtoupper(trim($request->first_last_name)),
+                'second_last_name' => $request->filled('second_last_name') ? mb_strtoupper(trim($request->second_last_name)) : null,
+                'personal_email'   => trim($request->email),
+                'sena_email'       => trim($request->email),
+            ];
+
+            $personChanged = false;
+            if ($person) {
+                $person->fill($personData);
+                $personChanged = $person->isDirty();
+                $person->save();
+            } else {
+                $person = Person::updateOrCreate(['document_number' => $personData['document_number']], $personData);
+                $personChanged = true;
+            }
+
             if (!$user->person_id) {
                 $user->person_id = $person->id;
             }
 
-            $user->name = trim($request->first_name . ' ' . $request->first_last_name . ' ' . ($request->second_last_name ?? ''));
-            $user->email = trim($request->email);
+            $user->fill([
+                'name'  => trim($request->first_name . ' ' . $request->first_last_name . ' ' . ($request->second_last_name ?? '')),
+                'email' => trim($request->email),
+            ]);
             if ($request->filled('nickname')) $user->nickname = trim($request->nickname);
             if ($request->filled('password')) $user->password = Hash::make($request->password);
+
+            $userChanged = $user->isDirty();
             $user->save();
+
+            // Verificar cambio de rol
+            $currentRole = $this->resolveSisigRole($user);
+            $roleChanged = ($currentRole['slug'] ?? 'ninguno') !== ($request->role_slug ?? 'ninguno');
+
+            // Ficha
+            $currentFicha = ($user->person_id && ($currentRole['slug'] ?? '') === 'aprendiz_sisig') 
+                ? DB::table('apprentices')->where('person_id', $user->person_id)->value('course_id') 
+                : null;
+            $newFicha = $request->role_slug === 'aprendiz_sisig' ? trim($request->ficha ?? '') : null;
+            $fichaChanged = (string)$currentFicha !== (string)$newFicha;
+
+            // Permisos de editor
+            $permissionsChanged = false;
+            if ($request->role_slug === 'editor_sisig') {
+                $currentModulos = $user->modulosEditables()->pluck('sisig_modulos.id')->toArray();
+                $newModulos = array_map('intval', $request->input('modulos_editables', []));
+                sort($currentModulos);
+                sort($newModulos);
+                if ($currentModulos !== $newModulos) {
+                    $permissionsChanged = true;
+                }
+            }
 
             $rolNombre = $this->syncRole($user, $request->role_slug);
             $this->syncApprenticeFicha($person->id, $request->ficha, $request->role_slug);
             $this->syncEditorPermissions($user, $request, $request->role_slug);
+
+            $hasAnyChange = $personChanged || $userChanged || $roleChanged || $fichaChanged || $permissionsChanged;
+
+            if (!$hasAnyChange) {
+                DB::commit();
+                return redirect()->route('sisig.admin.users.index')
+                    ->with('info', "No se detectaron modificaciones en los datos del usuario \"{$user->name}\".");
+            }
+
             $this->logActivity('usuario_actualizado', "Se actualizaron los datos y rol de {$user->name}");
 
             DB::commit();
