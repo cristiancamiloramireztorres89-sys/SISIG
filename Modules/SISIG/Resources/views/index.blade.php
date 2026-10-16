@@ -37,6 +37,10 @@
                             <i class="fas fa-shield-alt text-sena-green"></i>
                             <span>Ejes Temáticos SIG</span>
                         </a>
+                        <a href="{{ route('sisig.desarrolladores') }}" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold border border-white/20 hover:border-sena-green transition-all duration-300 backdrop-blur-sm group">
+                            <i class="fas fa-code text-sena-green group-hover:scale-110 transition-transform"></i>
+                            <span>Desarrolladores</span>
+                        </a>
                         <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white text-sm font-semibold border border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm">
                             <i class="fas fa-arrow-left text-sena-green"></i>
                             <span>Volver al ERP</span>

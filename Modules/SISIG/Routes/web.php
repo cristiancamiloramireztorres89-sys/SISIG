@@ -12,6 +12,7 @@ use Modules\SISIG\Http\Controllers\editor\ContenidoController;
 Route::prefix('sisig')->name('sisig.')->group(function () {
     // Portal Informativo Público
     Route::get('/', [SISIGController::class, 'index'])->name('index');
+    Route::get('/desarrolladores', [SISIGController::class, 'desarrolladores'])->name('desarrolladores');
 
     // Módulo de Administración (Exclusivo admin_sisig)
     Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
