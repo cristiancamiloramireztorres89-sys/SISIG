@@ -1,361 +1,377 @@
-<x-sisig::layouts.editor title="Seguimiento y Reportes">
-    <div class="space-y-6 w-full max-w-[1600px] mx-auto pb-12">
+<x-sisig::layouts.editor title="Seguimiento y Reportes SISIG">
+    <div class="space-y-6 sm:space-y-8 animate-fade-in pb-12">
 
-        <!-- Banner Principal Editorial -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sena-green/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
-                            Panel Editorial
-                        </span>
-                    </div>
-
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-3">
-                        <i class="fas fa-chart-line text-sena-green"></i>
-                        <span>Seguimiento y Reportes</span>
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        Visualiza en tiempo real el desempeño de los aprendices en los quizzes. Consulta aprobados, no aprobados y detalle de respuestas.
-                    </p>
-
-                    <nav class="flex items-center gap-2 text-xs text-slate-400 pt-1">
-                        <a href="{{ route('sisig.editor.dashboard') }}" class="hover:text-white transition-colors">Inicio</a>
-                        <span class="text-slate-500">›</span>
-                        <span class="text-slate-300">Reportes</span>
-                        <span class="text-slate-500">›</span>
-                        <span class="text-sena-green font-semibold">Seguimiento y Reportes</span>
-                    </nav>
-                </div>
+        <!-- 1. Encabezado de la Sección -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-chart-line text-sena-green"></i>
+                    <span>Seguimiento y Reportes SISIG</span>
+                </h1>
             </div>
         </div>
 
-        <!-- Tarjetas de métricas superiores (4 KPIs) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            <!-- Total Evaluados -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#e8f7ee] text-[#198754] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['total'] ?? 0 }}
-                    </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Total evaluados
-                    </div>
-                </div>
-            </div>
+        <!-- 2. Tarjetas de Métricas (KPIs con estilo idéntico a Gestión de Usuarios) -->
+        @php
+            $kpis = [
+                [
+                    'title' => 'Total Evaluados',
+                    'value' => $metrics['total'] ?? 0,
+                    'sub'   => 'evaluaciones',
+                    'icon'  => 'fa-users text-slate-700',
+                    'bar'   => 'from-slate-600 to-slate-800',
+                ],
+                [
+                    'title' => 'Aprobaron',
+                    'value' => $metrics['aprobados'] ?? 0,
+                    'sub'   => 'competentes (≥70%)',
+                    'icon'  => 'fa-check-circle text-emerald-600',
+                    'bar'   => 'from-emerald-500 to-teal-600',
+                ],
+                [
+                    'title' => 'Pendientes',
+                    'value' => $metrics['pendientes'] ?? 0,
+                    'sub'   => 'sin presentar',
+                    'icon'  => 'fa-hourglass-half text-amber-500',
+                    'bar'   => 'from-amber-400 to-amber-600',
+                ],
+                [
+                    'title' => 'No Aprobaron',
+                    'value' => $metrics['no_aprobados'] ?? 0,
+                    'sub'   => 'por reforzar (<70%)',
+                    'icon'  => 'fa-times-circle text-rose-500',
+                    'bar'   => 'from-rose-500 to-rose-700',
+                ],
+            ];
+        @endphp
 
-            <!-- Aprobaron -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#e8f7ee] text-[#198754] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['aprobados'] ?? 0 }}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach($kpis as $kpi)
+                <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r {{ $kpi['bar'] }}"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">{{ $kpi['title'] }}</span>
+                        <i class="fas {{ $kpi['icon'] }} text-2xl group-hover:scale-110 transition-transform"></i>
                     </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Aprobaron
+                    <div class="mt-4">
+                        <div class="flex items-baseline gap-1.5">
+                            <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $kpi['value'] }}</h3>
+                            <span class="text-sm font-bold text-slate-400">{{ $kpi['sub'] }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
+        </div>
 
-            <!-- Pendientes -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#fef9e7] text-[#d97706] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-hourglass-half"></i>
+        <!-- 3. Barra de Búsqueda y Selector de Secciones SIG -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                
+                <!-- Buscador reactivo -->
+                <div class="relative flex-1 max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="reportes-search-input" value="{{ $buscar ?? '' }}" placeholder="Buscar aprendiz por nombre, documento o ficha..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none text-xs transition-all text-slate-800">
                 </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['pendientes'] ?? 0 }}
-                    </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Pendientes
-                    </div>
-                </div>
-            </div>
 
-            <!-- No Aprobaron -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#fdeeed] text-[#dc3545] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['no_aprobados'] ?? 0 }}
+                <!-- Pastillas de Selección de Sección SIG -->
+                <div class="flex flex-wrap items-center gap-3 text-xs">
+                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Sección SIG:</span>
+                        
+                        <!-- Calidad -->
+                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'calidad', 'buscar' => request('buscar')]) }}"
+                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'calidad' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            <i class="fas fa-certificate text-xs {{ $seccion === 'calidad' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
+                            <span>Calidad</span>
+                        </a>
+
+                        <!-- SST -->
+                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'sst', 'buscar' => request('buscar')]) }}"
+                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'sst' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            <i class="fas fa-hard-hat text-xs {{ $seccion === 'sst' ? 'text-amber-400' : 'text-slate-400' }}"></i>
+                            <span>SST</span>
+                        </a>
+
+                        <!-- Ambiental -->
+                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'ambiental', 'buscar' => request('buscar')]) }}"
+                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'ambiental' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            <i class="fas fa-leaf text-xs {{ $seccion === 'ambiental' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
+                            <span>Ambiental</span>
+                        </a>
                     </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        No aprobaron
-                    </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Pestañas de Selección de Sección SIG -->
-        <div class="space-y-2.5">
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <i class="fas fa-th-large text-sena-green"></i>
-                <span>Resultados por sección SIG</span>
-            </div>
-
-            <div class="flex items-center gap-2.5 flex-wrap">
-                <!-- Calidad -->
-                <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'calidad', 'buscar' => request('buscar')]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $seccion === 'calidad' ? 'bg-[#e8f7ee] text-[#198754] border border-[#c3e6cb] shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' }}">
-                    <i class="fas fa-check-circle {{ $seccion === 'calidad' ? 'text-[#198754]' : 'text-slate-400' }}"></i>
-                    <span>Calidad</span>
-                </a>
-
-                <!-- SST -->
-                <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'sst', 'buscar' => request('buscar')]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $seccion === 'sst' ? 'bg-[#e8f7ee] text-[#198754] border border-[#c3e6cb] shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' }}">
-                    <i class="fas fa-hard-hat {{ $seccion === 'sst' ? 'text-[#198754]' : 'text-slate-400' }}"></i>
-                    <span>SST</span>
-                </a>
-
-                <!-- Ambiental -->
-                <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'ambiental', 'buscar' => request('buscar')]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $seccion === 'ambiental' ? 'bg-[#e8f7ee] text-[#198754] border border-[#c3e6cb] shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' }}">
-                    <i class="fas fa-tree {{ $seccion === 'ambiental' ? 'text-[#198754]' : 'text-slate-400' }}"></i>
-                    <span>Ambiental</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- TABLA 1: Aprobados — Quiz {{ ucfirst($seccion) }} -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7 space-y-5">
-            <!-- Header de Aprobados -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#198754] inline-block shadow-xs"></span>
-                    <h2 class="text-base font-bold text-slate-800">
-                        Aprobados — Quiz {{ ucfirst($seccion) }}
+        <!-- 4. TABLA 1: Aprendices Aprobados -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
+                        <i class="fas fa-check-circle text-emerald-600"></i>
+                        <span>Aprobados — Quiz {{ ucfirst($seccion) }}</span>
                     </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Aprendices que alcanzaron o superaron el umbral mínimo del 70% en la evaluación</p>
                 </div>
-
-                <button type="button" onclick="exportarTablaCSV('tabla-aprobados', 'Aprobados_Quiz_{{ ucfirst($seccion) }}')"
-                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer self-start sm:self-auto">
-                    <i class="fas fa-file-excel text-emerald-600"></i>
-                    <span>Exportar</span>
-                </button>
+                
+                <div class="flex items-center gap-2.5 self-start sm:self-auto">
+                    <span id="counter-aprobados" class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-3 py-1 rounded-xl">
+                        Aprobados: {{ $aprobadosList->count() }}
+                    </span>
+                    <button type="button" onclick="exportarTablaCSV('tabla-aprobados', 'Aprobados_Quiz_{{ ucfirst($seccion) }}')"
+                            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-200 transition-all shadow-xs cursor-pointer">
+                        <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
+                        <span>Exportar</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Buscador para Aprobados -->
-            <form method="GET" action="{{ route('sisig.editor.reportes.index') }}" class="relative">
-                <input type="hidden" name="seccion" value="{{ $seccion }}">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" name="buscar" value="{{ $buscar }}" placeholder="Buscar aprendiz..."
-                       class="w-full pl-11 pr-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all">
-            </form>
-
-            <!-- Tabla de Aprobados -->
             <div class="overflow-x-auto">
-                <table id="tabla-aprobados" class="w-full text-left border-collapse">
+                <table id="tabla-aprobados" class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                            <th class="pb-3.5 pr-4">Aprendiz</th>
-                            <th class="pb-3.5 px-4">Ficha</th>
-                            <th class="pb-3.5 px-4">Puntaje</th>
-                            <th class="pb-3.5 px-4 text-center">Intentos</th>
-                            <th class="pb-3.5 px-4">Fecha</th>
-                            <th class="pb-3.5 pl-4 text-center">Req 3: Respuestas</th>
+                        <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
+                            <th class="py-3.5 px-4">Aprendiz / Persona</th>
+                            <th class="py-3.5 px-4">Documento</th>
+                            <th class="py-3.5 px-4">Ficha</th>
+                            <th class="py-3.5 px-4">Puntaje</th>
+                            <th class="py-3.5 px-4 text-center">Intentos</th>
+                            <th class="py-3.5 px-4">Fecha</th>
+                            <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100/80 text-sm">
+                    <tbody id="tbody-aprobados" class="divide-y divide-slate-100">
                         @forelse($aprobadosList as $item)
-                        <tr class="hover:bg-slate-50/80 transition-colors group">
-                            <!-- Aprendiz -->
-                            <td class="py-4 pr-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#001A29] to-[#003B5C] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm border border-slate-700/20">
-                                        {{ $item->iniciales }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-slate-800 leading-snug group-hover:text-sena-green transition-colors">
-                                            {{ $item->nombre }}
+                            <tr class="aprobado-row hover:bg-slate-50/80 transition-colors"
+                                data-name="{{ strtolower($item->nombre) }}"
+                                data-email="{{ strtolower($item->correo) }}"
+                                data-document="{{ strtolower(str_replace('.', '', $item->documento)) }}"
+                                data-ficha="{{ strtolower($item->ficha) }}">
+                                
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
+                                            {{ $item->iniciales }}
                                         </div>
-                                        <div class="text-xs text-slate-400 mt-0.5">
-                                            {{ $item->correo }}
+                                        <div>
+                                            <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->nombre }}</span>
+                                            <span class="text-[11px] text-slate-400 font-medium">{{ $item->correo }}</span>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <!-- Ficha -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-medium">
-                                {{ $item->ficha }}
-                            </td>
+                                <td class="py-3.5 px-4 text-slate-600 font-mono text-xs">
+                                    <span class="font-bold text-slate-700">{{ $item->documento }}</span>
+                                    <span class="text-[10px] text-slate-400 block">Cédula de ciudadanía</span>
+                                </td>
 
-                            <!-- Puntaje -->
-                            <td class="py-4 px-4 text-xs font-bold text-[#198754]">
-                                {{ $item->puntaje }}/100
-                            </td>
+                                <td class="py-3.5 px-4 text-slate-600">
+                                    <span class="font-medium text-slate-700">{{ $item->ficha }}</span>
+                                </td>
 
-                            <!-- Intentos -->
-                            <td class="py-4 px-4 text-center text-xs text-slate-700 font-medium">
-                                {{ $item->intentos }}
-                            </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="w-24">
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="font-bold text-emerald-600">{{ $item->puntaje }}%</span>
+                                            <span class="text-[10px] text-emerald-600 font-bold">Aprobado</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="bg-sena-green h-1.5 rounded-full" style="width: {{ $item->puntaje }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
 
-                            <!-- Fecha -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-normal">
-                                {{ $item->fecha }}
-                            </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">
+                                        {{ $item->intentos }} {{ $item->intentos == 1 ? 'intento' : 'intentos' }}
+                                    </span>
+                                </td>
 
-                            <!-- REQ 3: Respuestas -->
-                            <td class="py-4 pl-4 text-center">
-                                <button type="button"
-                                        onclick="abrirModalRespuestas({{ json_encode($item) }}, '{{ ucfirst($seccion) }}')"
-                                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#e8f7ee] text-[#198754] hover:bg-[#d1e7dd] transition-all cursor-pointer border border-[#c3e6cb] shadow-xs hover:shadow-sm">
-                                    <i class="fas fa-bars-staggered text-xs"></i>
-                                    <span>Ver respuestas</span>
-                                </button>
-                            </td>
-                        </tr>
+                                <td class="py-3.5 px-4 text-slate-500 font-medium text-xs">
+                                    {{ $item->fecha }}
+                                </td>
+
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <button type="button"
+                                                onclick="abrirModalRespuestas({{ json_encode($item) }}, '{{ ucfirst($seccion) }}')"
+                                                class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                                title="Ver detalle del intento">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-8 text-slate-400 text-xs">
-                                <i class="fas fa-info-circle text-sena-green mr-1.5"></i>
-                                No hay aprendices aprobados registrados para el Quiz de {{ ucfirst($seccion) }}.
-                            </td>
-                        </tr>
+                            <tr class="empty-row-aprobados">
+                                <td colspan="7" class="text-center py-10 text-slate-400">
+                                    <i class="fas fa-info-circle text-2xl mb-2 block text-slate-300"></i>
+                                    No hay aprendices aprobados registrados para el Quiz de {{ ucfirst($seccion) }}.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div id="no-results-aprobados" class="hidden text-center py-6 text-slate-400 text-xs">
+                <i class="fas fa-search text-xl mb-1.5 block text-slate-300"></i>
+                No se encontraron aprendices aprobados que coincidan con la búsqueda.
             </div>
         </div>
 
-        <!-- TABLA 2: No aprobados — Quiz {{ ucfirst($seccion) }} (Ubicada exactamente debajo de Aprobados) -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7 space-y-5">
-            <!-- Header de No Aprobados -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <i class="fas fa-times-circle text-[#dc3545] text-base"></i>
-                    <h2 class="text-base font-bold text-slate-800">
-                        No aprobados — Quiz {{ ucfirst($seccion) }}
+        <!-- 5. TABLA 2: Aprendices No Aprobados -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
+                        <i class="fas fa-times-circle text-rose-500"></i>
+                        <span>No aprobados — Quiz {{ ucfirst($seccion) }}</span>
                     </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Aprendices con puntaje menor al 70% que requieren refuerzo formativo</p>
                 </div>
-
-                <button type="button" onclick="exportarTablaCSV('tabla-no-aprobados', 'No_Aprobados_Quiz_{{ ucfirst($seccion) }}')"
-                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer self-start sm:self-auto">
-                    <i class="fas fa-file-excel text-emerald-600"></i>
-                    <span>Exportar</span>
-                </button>
+                
+                <div class="flex items-center gap-2.5 self-start sm:self-auto">
+                    <span id="counter-no-aprobados" class="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200/60 px-3 py-1 rounded-xl">
+                        No aprobados: {{ $noAprobadosList->count() }}
+                    </span>
+                    <button type="button" onclick="exportarTablaCSV('tabla-no-aprobados', 'No_Aprobados_Quiz_{{ ucfirst($seccion) }}')"
+                            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-rose-700 hover:border-rose-200 transition-all shadow-xs cursor-pointer">
+                        <i class="fas fa-file-excel text-rose-500 text-xs"></i>
+                        <span>Exportar</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Tabla de No Aprobados -->
             <div class="overflow-x-auto">
-                <table id="tabla-no-aprobados" class="w-full text-left border-collapse">
+                <table id="tabla-no-aprobados" class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                            <th class="pb-3.5 pr-4">Aprendiz</th>
-                            <th class="pb-3.5 px-4">Ficha</th>
-                            <th class="pb-3.5 px-4">Puntaje</th>
-                            <th class="pb-3.5 px-4 text-center">Intentos</th>
-                            <th class="pb-3.5 px-4">Fecha</th>
-                            <th class="pb-3.5 pl-4 text-center">Respuestas</th>
+                        <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
+                            <th class="py-3.5 px-4">Aprendiz / Persona</th>
+                            <th class="py-3.5 px-4">Documento</th>
+                            <th class="py-3.5 px-4">Ficha</th>
+                            <th class="py-3.5 px-4">Puntaje</th>
+                            <th class="py-3.5 px-4 text-center">Intentos</th>
+                            <th class="py-3.5 px-4">Fecha</th>
+                            <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100/80 text-sm">
+                    <tbody id="tbody-no-aprobados" class="divide-y divide-slate-100">
                         @forelse($noAprobadosList as $item)
-                        <tr class="hover:bg-slate-50/80 transition-colors group">
-                            <!-- Aprendiz -->
-                            <td class="py-4 pr-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#001A29] to-[#003B5C] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm border border-slate-700/20">
-                                        {{ $item->iniciales }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-slate-800 leading-snug group-hover:text-sena-green transition-colors">
-                                            {{ $item->nombre }}
+                            <tr class="no-aprobado-row hover:bg-slate-50/80 transition-colors"
+                                data-name="{{ strtolower($item->nombre) }}"
+                                data-email="{{ strtolower($item->correo) }}"
+                                data-document="{{ strtolower(str_replace('.', '', $item->documento)) }}"
+                                data-ficha="{{ strtolower($item->ficha) }}">
+                                
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
+                                            {{ $item->iniciales }}
                                         </div>
-                                        <div class="text-xs text-slate-400 mt-0.5">
-                                            {{ $item->correo }}
+                                        <div>
+                                            <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->nombre }}</span>
+                                            <span class="text-[11px] text-slate-400 font-medium">{{ $item->correo }}</span>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <!-- Ficha -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-medium">
-                                {{ $item->ficha }}
-                            </td>
+                                <td class="py-3.5 px-4 text-slate-600 font-mono text-xs">
+                                    <span class="font-bold text-slate-700">{{ $item->documento }}</span>
+                                    <span class="text-[10px] text-slate-400 block">Cédula de ciudadanía</span>
+                                </td>
 
-                            <!-- Puntaje (Rojo para no aprobados) -->
-                            <td class="py-4 px-4 text-xs font-bold text-[#dc3545]">
-                                {{ $item->puntaje }}/100
-                            </td>
+                                <td class="py-3.5 px-4 text-slate-600">
+                                    <span class="font-medium text-slate-700">{{ $item->ficha }}</span>
+                                </td>
 
-                            <!-- Intentos -->
-                            <td class="py-4 px-4 text-center text-xs text-slate-700 font-medium">
-                                {{ $item->intentos }}
-                            </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="w-24">
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="font-bold text-rose-600">{{ $item->puntaje }}%</span>
+                                            <span class="text-[10px] text-rose-500 font-semibold">Reprobado</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="bg-rose-500 h-1.5 rounded-full" style="width: {{ $item->puntaje }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
 
-                            <!-- Fecha -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-normal">
-                                {{ $item->fecha }}
-                            </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">
+                                        {{ $item->intentos }} {{ $item->intentos == 1 ? 'intento' : 'intentos' }}
+                                    </span>
+                                </td>
 
-                            <!-- Respuestas -->
-                            <td class="py-4 pl-4 text-center">
-                                <button type="button"
-                                        onclick="abrirModalRespuestas({{ json_encode($item) }}, '{{ ucfirst($seccion) }}')"
-                                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#e8f7ee] text-[#198754] hover:bg-[#d1e7dd] transition-all cursor-pointer border border-[#c3e6cb] shadow-xs hover:shadow-sm">
-                                    <i class="fas fa-bars-staggered text-xs"></i>
-                                    <span>Ver respuestas</span>
-                                </button>
-                            </td>
-                        </tr>
+                                <td class="py-3.5 px-4 text-slate-500 font-medium text-xs">
+                                    {{ $item->fecha }}
+                                </td>
+
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <button type="button"
+                                                onclick="abrirModalRespuestas({{ json_encode($item) }}, '{{ ucfirst($seccion) }}')"
+                                                class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                                title="Ver detalle del intento">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-8 text-slate-400 text-xs">
-                                <i class="fas fa-info-circle text-sena-green mr-1.5"></i>
-                                No hay aprendices reprobados registrados para el Quiz de {{ ucfirst($seccion) }}.
-                            </td>
-                        </tr>
+                            <tr class="empty-row-no-aprobados">
+                                <td colspan="7" class="text-center py-10 text-slate-400">
+                                    <i class="fas fa-info-circle text-2xl mb-2 block text-slate-300"></i>
+                                    No hay aprendices reprobados registrados para el Quiz de {{ ucfirst($seccion) }}.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div id="no-results-no-aprobados" class="hidden text-center py-6 text-slate-400 text-xs">
+                <i class="fas fa-search text-xl mb-1.5 block text-slate-300"></i>
+                No se encontraron aprendices reprobados que coincidan con la búsqueda.
             </div>
         </div>
 
     </div>
 
-    <!-- Modal Detalle de Respuestas -->
-    <div id="modal-respuestas-aprendiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-fade-in">
-            <!-- Modal Header -->
-            <div class="relative overflow-hidden p-6 pb-4 border-b border-slate-700/50 flex items-center justify-between bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] text-white">
-                <div class="relative z-10 flex items-center gap-3">
-                    <div id="modal-avatar" class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-sena-green font-extrabold text-sm flex items-center justify-center shadow-inner">
+    <!-- MODAL DETALLE DE RESPUESTAS (ESTILO UNIFICADO SISIG) -->
+    <div id="modal-respuestas-aprendiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in relative">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div id="modal-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
                         --
                     </div>
                     <div>
-                        <h3 id="modal-nombre" class="font-extrabold text-base leading-snug text-white">Nombre Aprendiz</h3>
-                        <p id="modal-info-sub" class="text-xs text-slate-300 mt-0.5">Quiz --</p>
+                        <h3 id="modal-nombre" class="text-base font-bold text-slate-800">Nombre Aprendiz</h3>
+                        <p id="modal-info-sub" class="text-xs text-slate-500 mt-0.5">Quiz --</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalRespuestas()" class="relative z-10 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+                <button type="button" onclick="cerrarModalRespuestas()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
 
-            <!-- Modal Body -->
-            <div class="p-6 space-y-5 text-sm">
-                <!-- Info del Intento -->
-                <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+            <div class="mt-5 space-y-4 text-xs">
+                <!-- Información del Intento -->
+                <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
                     <div>
-                        <span class="text-slate-400 block font-medium">Puntaje Final</span>
+                        <span class="text-slate-400 block font-medium">Puntaje Obtenido</span>
                         <span id="modal-puntaje" class="text-base font-extrabold text-slate-800">--</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block font-medium">Resultado</span>
-                        <span id="modal-estado-badge" class="font-bold text-xs inline-block mt-0.5">--</span>
+                        <span id="modal-estado-badge" class="inline-flex items-center gap-1.5 font-bold text-xs mt-1">--</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block font-medium">Número de Intentos</span>
@@ -367,42 +383,95 @@
                     </div>
                 </div>
 
-                <!-- Detalle de Respuestas -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Resumen de Evaluación</h4>
-                    <div class="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 text-xs text-emerald-800 leading-relaxed">
-                        <i class="fas fa-check-double text-emerald-600 mr-1.5"></i>
-                        Las respuestas del aprendiz fueron evaluadas automáticamente por la plataforma SISIG bajo el umbral mínimo del 70%.
+                <!-- Resumen Evaluativo -->
+                <div class="space-y-2">
+                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Validación Institucional</span>
+                    <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 text-emerald-900 flex items-start gap-2.5">
+                        <i class="fas fa-check-double text-emerald-600 mt-0.5 flex-shrink-0"></i>
+                        <span class="leading-relaxed">Las respuestas de la evaluación fueron calificadas de manera automatizada conforme al banco de preguntas del módulo bajo el umbral mínimo institucional del 70%.</span>
                     </div>
                 </div>
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button type="button" onclick="cerrarModalRespuestas()" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 transition-colors cursor-pointer">
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end mt-5">
+                <button type="button" onclick="cerrarModalRespuestas()" class="px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
                     Cerrar
                 </button>
             </div>
+
         </div>
     </div>
 
-    <!-- Scripts de Interacción y Exportación CSV -->
+    <!-- SCRIPTS DE INTERACCIÓN REACTIVA Y EXPORTACIÓN CSV -->
     <script>
+        const searchInput = document.getElementById('reportes-search-input');
+        const rowsAprobados = document.querySelectorAll('.aprobado-row');
+        const rowsNoAprobados = document.querySelectorAll('.no-aprobado-row');
+        const counterAprobados = document.getElementById('counter-aprobados');
+        const counterNoAprobados = document.getElementById('counter-no-aprobados');
+        const noResultsAprobados = document.getElementById('no-results-aprobados');
+        const noResultsNoAprobados = document.getElementById('no-results-no-aprobados');
+
+        // Filtrado en vivo sobre ambas tablas
+        function applySearch() {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            // 1. Filtrar Aprobados
+            let countAprobados = 0;
+            rowsAprobados.forEach(row => {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const doc = row.dataset.document || '';
+                const ficha = row.dataset.ficha || '';
+
+                const matches = !query || name.includes(query) || email.includes(query) || doc.includes(query) || ficha.includes(query);
+                row.style.display = matches ? '' : 'none';
+                if (matches) countAprobados++;
+            });
+            if (counterAprobados) {
+                counterAprobados.textContent = `Aprobados: ${countAprobados}`;
+            }
+            if (noResultsAprobados) {
+                noResultsAprobados.classList.toggle('hidden', countAprobados > 0 || rowsAprobados.length === 0);
+            }
+
+            // 2. Filtrar No Aprobados
+            let countNoAprobados = 0;
+            rowsNoAprobados.forEach(row => {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const doc = row.dataset.document || '';
+                const ficha = row.dataset.ficha || '';
+
+                const matches = !query || name.includes(query) || email.includes(query) || doc.includes(query) || ficha.includes(query);
+                row.style.display = matches ? '' : 'none';
+                if (matches) countNoAprobados++;
+            });
+            if (counterNoAprobados) {
+                counterNoAprobados.textContent = `No aprobados: ${countNoAprobados}`;
+            }
+            if (noResultsNoAprobados) {
+                noResultsNoAprobados.classList.toggle('hidden', countNoAprobados > 0 || rowsNoAprobados.length === 0);
+            }
+        }
+
+        searchInput.addEventListener('input', applySearch);
+
+        // Control del Modal de Respuestas
         function abrirModalRespuestas(item, seccion) {
             document.getElementById('modal-avatar').textContent = item.iniciales || 'AP';
             document.getElementById('modal-nombre').textContent = item.nombre || 'Sin nombre';
-            document.getElementById('modal-info-sub').textContent = 'Quiz ' + seccion + ' · Ficha ' + (item.ficha || 'N/A');
-            document.getElementById('modal-puntaje').textContent = item.puntaje + '/100';
-            document.getElementById('modal-intentos').textContent = item.intentos || 1;
+            document.getElementById('modal-info-sub').textContent = 'Quiz ' + seccion + ' · Ficha ' + (item.ficha || 'Sin asignar');
+            document.getElementById('modal-puntaje').textContent = item.puntaje + '%';
+            document.getElementById('modal-intentos').textContent = (item.intentos || 1) + ((item.intentos == 1) ? ' intento' : ' intentos');
             document.getElementById('modal-fecha').textContent = item.fecha || 'N/A';
 
             const badge = document.getElementById('modal-estado-badge');
             if (item.aprobado) {
-                badge.textContent = '● Aprobado';
-                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-[#e8f7ee] text-[#198754] inline-block';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-emerald-600">Aprobado</span>';
             } else {
-                badge.textContent = '● No aprobado';
-                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-[#fdeeed] text-[#dc3545] inline-block';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-rose-600">No aprobado</span>';
             }
 
             document.getElementById('modal-respuestas-aprendiz').classList.remove('hidden');
@@ -418,7 +487,7 @@
             }
         });
 
-        // Función para exportar tabla HTML a CSV compatible con Microsoft Excel
+        // Exportación de tabla a CSV compatible con Microsoft Excel (BOM UTF-8)
         function exportarTablaCSV(tablaId, nombreArchivo) {
             const tabla = document.getElementById(tablaId);
             if (!tabla) return;
@@ -427,6 +496,9 @@
             const filas = tabla.querySelectorAll('tr');
 
             filas.forEach(fila => {
+                // Omitir filas ocultas por el filtro o filas de mensajes de vacío
+                if (fila.style.display === 'none' || fila.classList.contains('empty-row-aprobados') || fila.classList.contains('empty-row-no-aprobados')) return;
+
                 const columnas = fila.querySelectorAll('th, td');
                 let filaDatos = [];
 
