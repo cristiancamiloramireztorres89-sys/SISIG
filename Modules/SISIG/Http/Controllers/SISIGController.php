@@ -16,6 +16,14 @@ class SISIGController extends Controller
     }
 
     /**
+     * Muestra la vista del equipo de desarrolladores de SISIG.
+     */
+    public function desarrolladores()
+    {
+        return view('sisig::desarrolladores');
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
