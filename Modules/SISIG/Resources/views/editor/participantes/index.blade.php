@@ -1,311 +1,276 @@
-<x-sisig::layouts.editor title="Participantes">
-    <div class="space-y-6 w-full max-w-[1600px] mx-auto pb-10">
+<x-sisig::layouts.editor title="Gestión de Participantes SISIG">
+    <div class="space-y-6 sm:space-y-8 animate-fade-in pb-12">
 
-        <!-- Banner Principal Editorial -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sena-green/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
-                            Panel Editorial
-                        </span>
-                    </div>
-
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-3">
-                        <i class="fas fa-users text-sena-green"></i>
-                        <span>Participantes</span>
-                    </h1>
-
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl font-normal leading-relaxed">
-                        Consulta el listado de aprendices, su estado de avance por sección y filtra por resultado de evaluación.
-                    </p>
-
-                    <nav class="flex items-center gap-2 text-xs text-slate-400 pt-1">
-                        <a href="{{ route('sisig.editor.dashboard') }}" class="hover:text-white transition-colors">Inicio</a>
-                        <span class="text-slate-500">›</span>
-                        <span class="text-slate-300">Contenido</span>
-                        <span class="text-slate-500">›</span>
-                        <span class="text-sena-green font-semibold">Participantes</span>
-                    </nav>
-                </div>
+        <!-- 1. Encabezado de la Sección -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-users text-sena-green"></i>
+                    <span>Gestión de Participantes SISIG</span>
+                </h1>
             </div>
         </div>
 
-        <!-- Tarjetas de métricas superiores (4 KPIs) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            <!-- Total Aprendices -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#e8f7ee] text-[#198754] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-user-friends"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['total'] ?? 0 }}
-                    </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Total aprendices
-                    </div>
-                </div>
-            </div>
+        <!-- 2. Tarjetas de Métricas (KPIs con estilo idéntico a Gestión de Usuarios) -->
+        @php
+            $kpis = [
+                [
+                    'title' => 'Total Aprendices',
+                    'value' => $metrics['total'] ?? 0,
+                    'sub'   => 'registrados',
+                    'icon'  => 'fa-users text-slate-700',
+                    'bar'   => 'from-slate-600 to-slate-800',
+                ],
+                [
+                    'title' => 'Aprobados',
+                    'value' => $metrics['aprobados'] ?? 0,
+                    'sub'   => 'competentes',
+                    'icon'  => 'fa-user-check text-emerald-600',
+                    'bar'   => 'from-emerald-500 to-teal-600',
+                ],
+                [
+                    'title' => 'Pendientes',
+                    'value' => $metrics['pendientes'] ?? 0,
+                    'sub'   => 'en proceso',
+                    'icon'  => 'fa-hourglass-half text-amber-500',
+                    'bar'   => 'from-amber-400 to-amber-600',
+                ],
+                [
+                    'title' => 'No Aprobados',
+                    'value' => $metrics['no_aprobados'] ?? 0,
+                    'sub'   => 'por reforzar',
+                    'icon'  => 'fa-times-circle text-rose-500',
+                    'bar'   => 'from-rose-500 to-rose-700',
+                ],
+            ];
+        @endphp
 
-            <!-- Aprobados -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#e8f7ee] text-[#198754] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['aprobados'] ?? 0 }}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach($kpis as $kpi)
+                <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r {{ $kpi['bar'] }}"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">{{ $kpi['title'] }}</span>
+                        <i class="fas {{ $kpi['icon'] }} text-2xl group-hover:scale-110 transition-transform"></i>
                     </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Aprobados
+                    <div class="mt-4">
+                        <div class="flex items-baseline gap-1.5">
+                            <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $kpi['value'] }}</h3>
+                            <span class="text-sm font-bold text-slate-400">{{ $kpi['sub'] }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
+        </div>
 
-            <!-- Pendientes -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#fef9e7] text-[#d97706] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-hourglass-half"></i>
+        <!-- 3. Barra de Búsqueda y Filtros Rápidos -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                
+                <div class="relative flex-1 max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="participante-search-input" value="{{ $buscar ?? '' }}" placeholder="Buscar por nombre, documento, correo o ficha..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none text-xs transition-all text-slate-800">
                 </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['pendientes'] ?? 0 }}
-                    </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        Pendientes
-                    </div>
-                </div>
-            </div>
 
-            <!-- No Aprobados -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-                <div class="w-14 h-14 rounded-2xl bg-[#fdeeed] text-[#dc3545] flex items-center justify-center text-xl shrink-0">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
-                        {{ $metrics['no_aprobados'] ?? 0 }}
+                <!-- Filtros combinados en pastillas -->
+                <div class="flex flex-wrap items-center gap-3 text-xs">
+                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Estado:</span>
+                        <button type="button" onclick="filterByStatus('todos')" class="status-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm" data-status="todos">Todos</button>
+                        <button type="button" onclick="filterByStatus('Aprobado')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="Aprobado">Aprobados</button>
+                        <button type="button" onclick="filterByStatus('Pendiente')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="Pendiente">Pendientes</button>
+                        <button type="button" onclick="filterByStatus('No aprobado')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="No aprobado">No aprobados</button>
                     </div>
-                    <div class="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                        No aprobados
+
+                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Sección:</span>
+                        <button type="button" onclick="filterBySeccion('todas')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm" data-seccion="todas">Todas</button>
+                        <button type="button" onclick="filterBySeccion('calidad')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="calidad">Calidad</button>
+                        <button type="button" onclick="filterBySeccion('sst')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="sst">SST</button>
+                        <button type="button" onclick="filterBySeccion('ambiental')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="ambiental">Ambiental</button>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Contenedor Principal: Filtros y Tabla -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-7 space-y-6">
-
-            <!-- Subtítulo de sección -->
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <i class="fas fa-table-list text-sena-green"></i>
-                <span>Listado de aprendices registrados</span>
-            </div>
-
-            <!-- Barra de Filtros -->
-            <form method="GET" action="{{ route('sisig.editor.participantes.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                <!-- Buscador -->
-                <div class="md:col-span-6 relative">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre o correo..."
-                           class="w-full pl-11 pr-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all">
+        <!-- 4. Tabla Principal de Participantes -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
+                        <i class="fas fa-address-book text-sena-green"></i>
+                        <span>Directorio de Participantes de SISIG</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Listado institucional con roles, estado de cuenta y avance formativo</p>
                 </div>
-
-                <!-- Filtro de Estados -->
-                <div class="md:col-span-3">
-                    <select name="estado" onchange="this.form.submit()"
-                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all cursor-pointer">
-                        <option value="">Todos los estados</option>
-                        <option value="Aprobado" {{ request('estado') === 'Aprobado' ? 'selected' : '' }}>Aprobado</option>
-                        <option value="Pendiente" {{ request('estado') === 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                        <option value="No aprobado" {{ request('estado') === 'No aprobado' ? 'selected' : '' }}>No aprobado</option>
-                    </select>
-                </div>
-
-                <!-- Filtro de Secciones -->
-                <div class="md:col-span-3">
-                    <select name="seccion" onchange="this.form.submit()"
-                            class="w-full px-4 py-2.5 bg-[#fcfdfd] border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sena-green/20 focus:border-sena-green transition-all cursor-pointer">
-                        <option value="">Todas las secciones</option>
-                        <option value="calidad" {{ request('seccion') === 'calidad' ? 'selected' : '' }}>Calidad</option>
-                        <option value="sst" {{ request('seccion') === 'sst' ? 'selected' : '' }}>SST</option>
-                        <option value="ambiental" {{ request('seccion') === 'ambiental' ? 'selected' : '' }}>Ambiental</option>
-                    </select>
-                </div>
-            </form>
-
-            <!-- Encabezado secundario de la tabla -->
-            <div class="flex items-center justify-between pt-2 border-t border-slate-50">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-list text-sena-green"></i>
-                    <h2 class="text-sm font-bold text-slate-800">Aprendices registrados</h2>
-                </div>
-                <span class="text-xs text-slate-400 font-medium">
-                    {{ count($participantesList) }} {{ count($participantesList) === 1 ? 'aprendiz' : 'aprendices' }}
+                <span id="filtered-counter" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-auto">
+                    Participantes: {{ count($participantesList) }}
                 </span>
             </div>
 
-            <!-- Tabla de Aprendices -->
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                            <th class="pb-3.5 pr-4">Aprendiz</th>
-                            <th class="pb-3.5 px-4">Correo</th>
-                            <th class="pb-3.5 px-4">Ficha / Área</th>
-                            <th class="pb-3.5 px-4 text-center">Calidad</th>
-                            <th class="pb-3.5 px-4 text-center">SST</th>
-                            <th class="pb-3.5 px-4 text-center">Ambiental</th>
-                            <th class="pb-3.5 px-4 text-center">Estado General</th>
-                            <th class="pb-3.5 pl-4 text-center">Acciones</th>
+                        <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
+                            <th class="py-3.5 px-4">Aprendiz / Persona</th>
+                            <th class="py-3.5 px-4">Documento</th>
+                            <th class="py-3.5 px-4">Correo Electrónico</th>
+                            <th class="py-3.5 px-4 text-center">Calidad</th>
+                            <th class="py-3.5 px-4 text-center">SST</th>
+                            <th class="py-3.5 px-4 text-center">Ambiental</th>
+                            <th class="py-3.5 px-4">Estado</th>
+                            <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100/80 text-sm">
+                    <tbody id="participantes-table-body" class="divide-y divide-slate-100">
                         @forelse($participantesList as $participante)
-                        <tr class="hover:bg-slate-50/80 transition-colors group">
-                            <!-- Aprendiz -->
-                            <td class="py-4 pr-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#001A29] to-[#003B5C] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm border border-slate-700/20">
-                                        {{ $participante->iniciales }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-slate-800 leading-snug group-hover:text-sena-green transition-colors">
-                                            {{ $participante->nombre }}
+                            <tr class="participante-row hover:bg-slate-50/80 transition-colors"
+                                data-name="{{ strtolower($participante->nombre) }}"
+                                data-email="{{ strtolower($participante->correo) }}"
+                                data-document="{{ strtolower(str_replace('.', '', $participante->documento)) }}"
+                                data-ficha="{{ strtolower($participante->ficha) }}"
+                                data-status="{{ $participante->estado }}"
+                                data-calidad="{{ $participante->calidad }}"
+                                data-sst="{{ $participante->sst }}"
+                                data-ambiental="{{ $participante->ambiental }}">
+                                
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
+                                            {{ $participante->iniciales }}
                                         </div>
-                                        <div class="text-xs text-slate-400 mt-0.5">
-                                            CC - {{ $participante->documento }}
+                                        <div>
+                                            <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $participante->nombre }}</span>
+                                            <span class="text-[11px] text-slate-400 font-medium">Ficha: {{ $participante->ficha }}</span>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <!-- Correo -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-normal">
-                                {{ $participante->correo }}
-                            </td>
+                                <td class="py-3.5 px-4 text-slate-600 font-mono text-xs">
+                                    <span class="font-bold text-slate-700">{{ $participante->documento }}</span>
+                                    <span class="text-[10px] text-slate-400 block">Cédula de ciudadanía</span>
+                                </td>
 
-                            <!-- Ficha / Área -->
-                            <td class="py-4 px-4 text-xs text-slate-500 font-normal">
-                                {{ $participante->ficha }}
-                            </td>
-
-                            <!-- Calidad -->
-                            <td class="py-4 px-4 text-center">
-                                <div class="flex flex-col items-center gap-1.5 w-24 mx-auto">
-                                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="h-1.5 rounded-full {{ $participante->calidad >= 70 ? 'bg-[#10b981]' : ($participante->calidad > 0 ? 'bg-amber-400' : 'bg-slate-200') }}"
-                                             style="width: {{ $participante->calidad }}%;"></div>
-                                    </div>
-                                    <span class="text-[11px] font-bold text-slate-700">{{ $participante->calidad }}%</span>
-                                </div>
-                            </td>
-
-                            <!-- SST -->
-                            <td class="py-4 px-4 text-center">
-                                <div class="flex flex-col items-center gap-1.5 w-24 mx-auto">
-                                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="h-1.5 rounded-full {{ $participante->sst >= 70 ? 'bg-[#10b981]' : ($participante->sst > 0 ? 'bg-amber-400' : 'bg-slate-200') }}"
-                                             style="width: {{ $participante->sst }}%;"></div>
-                                    </div>
-                                    <span class="text-[11px] font-bold text-slate-700">{{ $participante->sst }}%</span>
-                                </div>
-                            </td>
-
-                            <!-- Ambiental -->
-                            <td class="py-4 px-4 text-center">
-                                <div class="flex flex-col items-center gap-1.5 w-24 mx-auto">
-                                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="h-1.5 rounded-full {{ $participante->ambiental >= 70 ? 'bg-[#10b981]' : ($participante->ambiental > 0 ? 'bg-amber-400' : 'bg-slate-200') }}"
-                                             style="width: {{ $participante->ambiental }}%;"></div>
-                                    </div>
-                                    <span class="text-[11px] font-bold text-slate-700">{{ $participante->ambiental }}%</span>
-                                </div>
-                            </td>
-
-                            <!-- Estado General -->
-                            <td class="py-4 px-4 text-center">
-                                @if($participante->estado === 'Aprobado')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#e8f7ee] text-[#198754]">
-                                        ● Aprobado
-                                    </span>
-                                @elseif($participante->estado === 'Pendiente')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#fef9e7] text-[#d97706]">
-                                        ● Pendiente
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#fdeeed] text-[#dc3545]">
-                                        ● No aprobado
-                                    </span>
-                                @endif
-                            </td>
-
-                            <!-- Acciones -->
-                            <td class="py-4 pl-4 text-center">
-                                <button type="button"
-                                        onclick="abrirModalDetalle({{ json_encode($participante) }})"
-                                        class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8f7ee] text-[#198754] hover:bg-[#d1e7dd] transition-all cursor-pointer border border-[#c3e6cb] shadow-xs hover:shadow-sm">
-                                    <i class="fas fa-eye text-xs"></i>
-                                    <span>Ver</span>
-                                </button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-12 px-4">
-                                <div class="max-w-sm mx-auto flex flex-col items-center">
-                                    <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mb-3">
-                                        <i class="fas fa-users-slash"></i>
-                                    </div>
-                                    <h3 class="text-base font-bold text-slate-700">No hay aprendices disponibles</h3>
-                                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                                        No se encontraron participantes registrados que coincidan con los filtros de búsqueda aplicados.
-                                    </p>
-                                    @if(request('buscar') || request('estado') || request('seccion'))
-                                    <a href="{{ route('sisig.editor.participantes.index') }}"
-                                       class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-sena-green text-white hover:bg-sena-green-hover transition-colors shadow-sm">
-                                        <i class="fas fa-sync-alt"></i> Limpiar filtros
-                                    </a>
+                                <td class="py-3.5 px-4 text-slate-600">
+                                    <span class="font-medium text-slate-700">{{ $participante->correo }}</span>
+                                    @if($participante->ficha && $participante->ficha !== 'Sin asignar')
+                                        <span class="text-[10px] text-sena-green font-bold block">Ficha: {{ $participante->ficha }}</span>
                                     @endif
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+
+                                <td class="py-3.5 px-4">
+                                    <div class="w-24 mx-auto">
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="font-bold text-slate-700">{{ $participante->calidad }}%</span>
+                                            <span class="text-[10px] {{ $participante->calidad >= 70 ? 'text-emerald-600 font-bold' : ($participante->calidad > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
+                                                {{ $participante->calidad >= 70 ? 'Aprobado' : ($participante->calidad > 0 ? 'En curso' : '0%') }}
+                                            </span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="h-1.5 rounded-full {{ $participante->calidad >= 70 ? 'bg-sena-green' : ($participante->calidad > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->calidad }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="py-3.5 px-4">
+                                    <div class="w-24 mx-auto">
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="font-bold text-slate-700">{{ $participante->sst }}%</span>
+                                            <span class="text-[10px] {{ $participante->sst >= 70 ? 'text-emerald-600 font-bold' : ($participante->sst > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
+                                                {{ $participante->sst >= 70 ? 'Aprobado' : ($participante->sst > 0 ? 'En curso' : '0%') }}
+                                            </span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="h-1.5 rounded-full {{ $participante->sst >= 70 ? 'bg-sena-green' : ($participante->sst > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->sst }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="py-3.5 px-4">
+                                    <div class="w-24 mx-auto">
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="font-bold text-slate-700">{{ $participante->ambiental }}%</span>
+                                            <span class="text-[10px] {{ $participante->ambiental >= 70 ? 'text-emerald-600 font-bold' : ($participante->ambiental > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
+                                                {{ $participante->ambiental >= 70 ? 'Aprobado' : ($participante->ambiental > 0 ? 'En curso' : '0%') }}
+                                            </span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="h-1.5 rounded-full {{ $participante->ambiental >= 70 ? 'bg-sena-green' : ($participante->ambiental > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->ambiental }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="py-3.5 px-4">
+                                    @php
+                                        $estadoColors = match($participante->estado) {
+                                            'Aprobado' => ['text-emerald-600', 'bg-emerald-500'],
+                                            'Pendiente' => ['text-amber-600', 'bg-amber-500'],
+                                            default => ['text-rose-600', 'bg-rose-500'],
+                                        };
+                                    @endphp
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold {{ $estadoColors[0] }}">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $estadoColors[1] }}"></span>
+                                        <span>{{ $participante->estado }}</span>
+                                    </span>
+                                </td>
+
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <button type="button" onclick="abrirModalDetalle({{ json_encode($participante) }})"
+                                                class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                                title="Ver detalle del participante">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center py-12 text-slate-400">
+                                    <i class="fas fa-users-slash text-3xl mb-2 block text-slate-300"></i>
+                                    No hay participantes registrados en el sistema.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
+            <div id="no-results-msg" class="hidden text-center py-8 text-slate-400 text-xs">
+                <i class="fas fa-search text-2xl mb-2 block text-slate-300"></i>
+                No se encontraron participantes que coincidan con la búsqueda o filtros aplicados.
+            </div>
         </div>
 
     </div>
 
-    <!-- Modal Detalle del Aprendiz -->
-    <div id="modal-detalle-aprendiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-fade-in">
-            <!-- Modal Header -->
-            <div class="relative overflow-hidden p-6 pb-4 border-b border-slate-700/50 flex items-center justify-between bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] text-white">
-                <div class="relative z-10 flex items-center gap-3">
-                    <div id="modal-avatar" class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-sena-green font-extrabold text-sm flex items-center justify-center shadow-inner">
+    <!-- MODAL DETALLE DEL PARTICIPANTE (ESTILO UNIFICADO SISIG) -->
+    <div id="modal-detalle-aprendiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in relative">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div id="modal-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
                         --
                     </div>
                     <div>
-                        <h3 id="modal-nombre" class="font-extrabold text-base leading-snug text-white">Nombre Aprendiz</h3>
-                        <p id="modal-documento" class="text-xs text-slate-300 mt-0.5">CC - --</p>
+                        <h3 id="modal-nombre" class="text-base font-bold text-slate-800">Nombre Aprendiz</h3>
+                        <p id="modal-documento" class="text-xs text-slate-500 mt-0.5">CC - --</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalDetalle()" class="relative z-10 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+                <button type="button" onclick="cerrarModalDetalle()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
 
-            <!-- Modal Body -->
-            <div class="p-6 space-y-5 text-sm">
-                <!-- Info general -->
-                <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+            <div class="mt-5 space-y-4 text-xs">
+                <!-- Información General -->
+                <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
                     <div>
                         <span class="text-slate-400 block font-medium">Correo Electrónico</span>
                         <span id="modal-correo" class="text-slate-700 font-bold break-all">--</span>
@@ -316,14 +281,14 @@
                     </div>
                 </div>
 
-                <!-- Detalle por módulo formativo -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Rendimiento por Sección</h4>
+                <!-- Rendimiento por sección formativa -->
+                <div class="space-y-2.5">
+                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Rendimiento por Sección</span>
 
                     <!-- Calidad -->
-                    <div class="p-3.5 rounded-2xl border border-slate-100 bg-[#fbfdfc] flex items-center justify-between gap-4">
+                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold">
+                            <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold">
                                 <i class="fas fa-certificate"></i>
                             </div>
                             <div>
@@ -338,7 +303,7 @@
                     </div>
 
                     <!-- SST -->
-                    <div class="p-3.5 rounded-2xl border border-slate-100 bg-[#fbfdfc] flex items-center justify-between gap-4">
+                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">
                                 <i class="fas fa-hard-hat"></i>
@@ -355,7 +320,7 @@
                     </div>
 
                     <!-- Ambiental -->
-                    <div class="p-3.5 rounded-2xl border border-slate-100 bg-[#fbfdfc] flex items-center justify-between gap-4">
+                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">
                                 <i class="fas fa-leaf"></i>
@@ -372,24 +337,103 @@
                     </div>
                 </div>
 
-                <!-- Estado General Final -->
-                <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <!-- Estado Consolidado Final -->
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
                     <span class="text-xs font-bold text-slate-500">Estado Consolidado</span>
-                    <span id="modal-estado-pill" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600">--</span>
+                    <span id="modal-estado-pill" class="inline-flex items-center gap-1.5 text-xs font-bold">--</span>
                 </div>
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button type="button" onclick="cerrarModalDetalle()" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 transition-colors cursor-pointer">
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end mt-5">
+                <button type="button" onclick="cerrarModalDetalle()" class="px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
                     Cerrar
                 </button>
             </div>
+
         </div>
     </div>
 
-    <!-- Script de control del Modal -->
+    <!-- SCRIPTS DE INTERACCIÓN REACTIVA Y FILTROS -->
     <script>
+        let currentStatusFilter = '{{ $filtroEstado ?: "todos" }}';
+        let currentSeccionFilter = '{{ $filtroSeccion ?: "todas" }}';
+        const searchInput = document.getElementById('participante-search-input');
+        const tableBody = document.getElementById('participantes-table-body');
+        const counter = document.getElementById('filtered-counter');
+        const noResults = document.getElementById('no-results-msg');
+
+        function getRows() {
+            return Array.from(document.querySelectorAll('.participante-row'));
+        }
+
+        // 1. Filtrado y Búsqueda Reactiva en Vivo
+        function applyFilters() {
+            const query = searchInput.value.toLowerCase().trim();
+            const rows = getRows();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const doc = row.dataset.document || '';
+                const ficha = row.dataset.ficha || '';
+                const status = row.dataset.status || '';
+
+                const matchesSearch = !query || name.includes(query) || email.includes(query) || doc.includes(query) || ficha.includes(query);
+                const matchesStatus = currentStatusFilter === 'todos' || (status === currentStatusFilter);
+
+                const isVisible = matchesSearch && matchesStatus;
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            counter.textContent = `Participantes: ${visibleCount}`;
+            noResults.classList.toggle('hidden', visibleCount > 0);
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+
+        // 2. Filtro por Estado
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.status-filter-btn').forEach(btn => {
+                btn.className = btn.dataset.status === status 
+                    ? 'status-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm'
+                    : 'status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200';
+            });
+            applyFilters();
+        }
+
+        // 3. Filtro / Ordenación por Sección
+        function filterBySeccion(seccion) {
+            currentSeccionFilter = seccion;
+            document.querySelectorAll('.seccion-filter-btn').forEach(btn => {
+                btn.className = btn.dataset.seccion === seccion 
+                    ? 'seccion-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm'
+                    : 'seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200';
+            });
+
+            // Si se selecciona una sección específica, ordenar la tabla de mayor a menor porcentaje en esa sección
+            if (seccion !== 'todas') {
+                const rows = getRows();
+                rows.sort((a, b) => {
+                    const valA = parseFloat(a.dataset[seccion] || 0);
+                    const valB = parseFloat(b.dataset[seccion] || 0);
+                    return valB - valA;
+                });
+                rows.forEach(row => tableBody.appendChild(row));
+            } else {
+                // Volver a ordenar alfabéticamente por nombre
+                const rows = getRows();
+                rows.sort((a, b) => (a.dataset.name || '').localeCompare(b.dataset.name || ''));
+                rows.forEach(row => tableBody.appendChild(row));
+            }
+
+            applyFilters();
+        }
+
+        // 4. Modal Detalle del Participante
         function abrirModalDetalle(aprendiz) {
             document.getElementById('modal-avatar').textContent = aprendiz.iniciales || 'AP';
             document.getElementById('modal-nombre').textContent = aprendiz.nombre || 'Sin nombre';
@@ -400,32 +444,32 @@
             // Calidad
             const cal = aprendiz.calidad || 0;
             document.getElementById('modal-calidad').textContent = cal + '%';
-            document.getElementById('modal-calidad-badge').textContent = cal >= 70 ? 'Aprobado' : (cal > 0 ? 'En progreso' : 'Sin iniciar');
-            document.getElementById('modal-calidad-badge').className = cal >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (cal > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+            const calBadge = document.getElementById('modal-calidad-badge');
+            calBadge.textContent = cal >= 70 ? 'Aprobado' : (cal > 0 ? 'En progreso' : 'Sin iniciar');
+            calBadge.className = cal >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (cal > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
 
             // SST
             const sst = aprendiz.sst || 0;
             document.getElementById('modal-sst').textContent = sst + '%';
-            document.getElementById('modal-sst-badge').textContent = sst >= 70 ? 'Aprobado' : (sst > 0 ? 'En progreso' : 'Sin iniciar');
-            document.getElementById('modal-sst-badge').className = sst >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (sst > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+            const sstBadge = document.getElementById('modal-sst-badge');
+            sstBadge.textContent = sst >= 70 ? 'Aprobado' : (sst > 0 ? 'En progreso' : 'Sin iniciar');
+            sstBadge.className = sst >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (sst > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
 
             // Ambiental
             const amb = aprendiz.ambiental || 0;
             document.getElementById('modal-ambiental').textContent = amb + '%';
-            document.getElementById('modal-ambiental-badge').textContent = amb >= 70 ? 'Aprobado' : (amb > 0 ? 'En progreso' : 'Sin iniciar');
-            document.getElementById('modal-ambiental-badge').className = amb >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (amb > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+            const ambBadge = document.getElementById('modal-ambiental-badge');
+            ambBadge.textContent = amb >= 70 ? 'Aprobado' : (amb > 0 ? 'En progreso' : 'Sin iniciar');
+            ambBadge.className = amb >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (amb > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
 
             // Estado general pill
             const pill = document.getElementById('modal-estado-pill');
             if (aprendiz.estado === 'Aprobado') {
-                pill.textContent = '● Aprobado';
-                pill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-[#e8f7ee] text-[#198754]';
+                pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-emerald-600">Aprobado</span>';
             } else if (aprendiz.estado === 'Pendiente') {
-                pill.textContent = '● Pendiente';
-                pill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-[#fef9e7] text-[#d97706]';
+                pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-amber-600">Pendiente</span>';
             } else {
-                pill.textContent = '● No aprobado';
-                pill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-[#fdeeed] text-[#dc3545]';
+                pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-rose-600">No aprobado</span>';
             }
 
             document.getElementById('modal-detalle-aprendiz').classList.remove('hidden');
@@ -435,11 +479,19 @@
             document.getElementById('modal-detalle-aprendiz').classList.add('hidden');
         }
 
-        // Cerrar modal al hacer click fuera del contenedor
+        // Cerrar modal al hacer click en el backdrop
         document.getElementById('modal-detalle-aprendiz')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 cerrarModalDetalle();
             }
         });
+
+        // Inicializar filtros activos si venían de query params
+        @if($filtroEstado)
+            filterByStatus('{{ $filtroEstado }}');
+        @endif
+        @if($filtroSeccion)
+            filterBySeccion('{{ $filtroSeccion }}');
+        @endif
     </script>
 </x-sisig::layouts.editor>
