@@ -95,7 +95,7 @@
                 
                 <!-- Logo & Brand -->
                 <div class="flex items-center gap-3">
-                    <a href="#inicio" class="flex items-center gap-3 group">
+                    <a href="{{ route('sisig.index') }}" class="flex items-center gap-3 group">
                         <div class="w-12 h-12 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                             <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow-md">
                         </div>
@@ -111,25 +111,25 @@
 
                 <!-- Nav Navigation Links (Sin cuadros / resaltado de palabra dinámico) -->
                 <nav class="hidden lg:flex items-center gap-7">
-                    <a href="#inicio" class="nav-spy-item active text-sm flex items-center gap-1.5" data-section="inicio">
+                    <a href="{{ route('sisig.index') }}#inicio" class="nav-spy-item {{ request()->routeIs('sisig.index') ? 'active' : '' }} text-sm flex items-center gap-1.5" data-section="inicio">
                         <i class="fas fa-home text-sm"></i>
                         <span>Inicio</span>
                     </a>
-                    <a href="#submodulos" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="submodulos">
+                    <a href="{{ route('sisig.index') }}#submodulos" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="submodulos">
                         <i class="fas fa-layer-group text-sm"></i>
                         <span>Submódulos</span>
                     </a>
-                    <a href="#areas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="areas">
+                    <a href="{{ route('sisig.index') }}#areas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="areas">
                         <i class="fas fa-shield-alt text-sm"></i>
                         <span>Ejes SIG</span>
                     </a>
-                    <a href="#caracteristicas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="caracteristicas">
+                    <a href="{{ route('sisig.index') }}#caracteristicas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="caracteristicas">
                         <i class="fas fa-bolt text-sm"></i>
                         <span>Funciones</span>
                     </a>
-                    <a href="#faq" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="faq">
-                        <i class="fas fa-question-circle text-sm"></i>
-                        <span>Preguntas</span>
+                    <a href="{{ route('sisig.desarrolladores') }}" class="nav-spy-item text-sm flex items-center gap-1.5 {{ request()->routeIs('sisig.desarrolladores') ? 'active' : '' }}">
+                        <i class="fas fa-code text-sm"></i>
+                        <span>Desarrolladores</span>
                     </a>
                 </nav>
 

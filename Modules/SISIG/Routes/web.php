@@ -12,6 +12,7 @@ use Modules\SISIG\Http\Controllers\editor\ContenidoController;
 Route::prefix('sisig')->name('sisig.')->group(function () {
     // Portal Informativo Público
     Route::get('/', [SISIGController::class, 'index'])->name('index');
+    Route::get('/desarrolladores', [SISIGController::class, 'desarrolladores'])->name('desarrolladores');
 
     // Módulo de Administración (Exclusivo admin_sisig)
     Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
@@ -81,6 +82,18 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
     // Módulo del Aprendiz (Seguimiento, Inducción y Evaluaciones)
     Route::prefix('aprendiz')->name('aprendiz.')->middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardControllerAprendiz::class, 'index'])->name('dashboard');
+        
+        // Módulos de Inducción y Contenido Didáctico Interactivo
+        Route::get('/induccion', [\Modules\SISIG\Http\Controllers\Aprendiz\InduccionAprendizController::class, 'index'])->name('induccion.index');
+        Route::get('/induccion/{id}', [\Modules\SISIG\Http\Controllers\Aprendiz\InduccionAprendizController::class, 'show'])->name('induccion.show');
+
+        // Mis Evaluaciones y Quices Interactivos
+        Route::get('/evaluaciones', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'index'])->name('evaluaciones.index');
+        Route::get('/evaluaciones/{id_quiz}/iniciar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'iniciar'])->name('evaluaciones.iniciar');
+        Route::post('/evaluaciones/{id_quiz}/calificar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'calificar'])->name('evaluaciones.calificar');
+
+        // Historial y Calificaciones (Mis Resultados)
+        Route::get('/historial', [\Modules\SISIG\Http\Controllers\Aprendiz\HistorialAprendizController::class, 'index'])->name('historial.index');
     });
 
     // Módulo de Perfil de Usuario (Reutilizable para cualquier rol autenticado en SISIG)
