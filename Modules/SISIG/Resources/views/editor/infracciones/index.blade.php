@@ -5,9 +5,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
             <div>
                 <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-shield-alt text-lg"></i>
-                    </div>
+                    <i class="fas fa-shield-alt text-sena-green"></i>
                     <span>Auditoría de Infracciones y Anti-Trampa</span>
                 </h1>
                 <p class="text-xs text-slate-500 mt-1 font-medium">
@@ -68,55 +66,21 @@
             @endforeach
         </div>
 
-        <!-- 3. Barra de Búsqueda y Selector de Secciones SIG -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm space-y-4">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                
-                <!-- Buscador reactivo -->
+        <!-- 3. Barra de Filtros y Acciones (Estilo Unificado Admin) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-20">
+            <form action="{{ route('sisig.editor.infracciones.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 w-full">
                 <div class="relative flex-1 max-w-md">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" id="infracciones-search-input" value="{{ $buscar ?? '' }}" placeholder="Buscar por aprendiz, documento, ficha o quiz..." 
-                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none text-xs transition-all text-slate-800">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" name="buscar" id="infracciones-search-input" value="{{ $buscar ?? '' }}" placeholder="Buscar por aprendiz, documento, ficha o quiz..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                 </div>
-
-                <!-- Pastillas de Selección de Sección SIG -->
-                <div class="flex flex-wrap items-center gap-3 text-xs">
-                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Módulo SIG:</span>
-                        
-                        <!-- Todas -->
-                        <a href="{{ route('sisig.editor.infracciones.index', ['seccion' => 'todas', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'todas' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-layer-group text-xs {{ $seccion === 'todas' ? 'text-rose-400' : 'text-slate-400' }}"></i>
-                            <span>Todos</span>
-                        </a>
-
-                        <!-- Calidad -->
-                        <a href="{{ route('sisig.editor.infracciones.index', ['seccion' => 'calidad', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'calidad' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-certificate text-xs {{ $seccion === 'calidad' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
-                            <span>Calidad</span>
-                        </a>
-
-                        <!-- SST -->
-                        <a href="{{ route('sisig.editor.infracciones.index', ['seccion' => 'sst', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'sst' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-hard-hat text-xs {{ $seccion === 'sst' ? 'text-amber-400' : 'text-slate-400' }}"></i>
-                            <span>SST</span>
-                        </a>
-
-                        <!-- Ambiental -->
-                        <a href="{{ route('sisig.editor.infracciones.index', ['seccion' => 'ambiental', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'ambiental' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-leaf text-xs {{ $seccion === 'ambiental' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
-                            <span>Ambiental</span>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
+                <select name="seccion" id="infracciones-seccion-select" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[180px]" onchange="this.form.submit()">
+                    <option value="todas" {{ $seccion === 'todas' ? 'selected' : '' }}>Todos los módulos</option>
+                    <option value="calidad" {{ $seccion === 'calidad' ? 'selected' : '' }}>Calidad (ISO 9001)</option>
+                    <option value="sst" {{ $seccion === 'sst' ? 'selected' : '' }}>SST (ISO 45001)</option>
+                    <option value="ambiental" {{ $seccion === 'ambiental' ? 'selected' : '' }}>Ambiental (ISO 14001)</option>
+                </select>
+            </form>
         </div>
 
         <!-- 4. TABLA: Listado de Quices Anulados e Infracciones Registradas -->
@@ -131,12 +95,12 @@
                 </div>
                 
                 <div class="flex items-center gap-2.5 self-start sm:self-auto">
-                    <span id="counter-infracciones" class="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200/60 px-3 py-1 rounded-xl">
-                        Registros: {{ $infraccionesList->count() }}
+                    <span id="counter-infracciones" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                        Registros: <strong class="text-slate-800">{{ $infraccionesList->count() }}</strong>
                     </span>
                     <button type="button" onclick="exportarTablaExcel('tabla-infracciones', 'Auditoria_Infracciones_SISIG_{{ ucfirst($seccion) }}')"
-                            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-rose-700 hover:border-rose-200 transition-all shadow-xs cursor-pointer">
-                        <i class="fas fa-file-excel text-rose-600 text-xs"></i>
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all cursor-pointer">
+                        <i class="fas fa-file-excel text-xs"></i>
                         <span>Exportar Excel</span>
                     </button>
                 </div>
@@ -355,7 +319,7 @@
             });
 
             if (counterInfracciones) {
-                counterInfracciones.textContent = `Registros: ${count}`;
+                counterInfracciones.innerHTML = `Registros: <strong class="text-slate-800">${count}</strong>`;
             }
             if (noResultsInfracciones) {
                 noResultsInfracciones.classList.toggle('hidden', count > 0 || rowsInfracciones.length === 0);

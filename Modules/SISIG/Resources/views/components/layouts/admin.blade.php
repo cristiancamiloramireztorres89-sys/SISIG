@@ -176,7 +176,7 @@
             width: 4px;
         }
         #sidebar-menu::-webkit-scrollbar-track {
-            background: #001A29;
+            background: var(--color-sidebar, #001A29);
         }
         #sidebar-menu::-webkit-scrollbar-thumb {
             background: #1e293b;

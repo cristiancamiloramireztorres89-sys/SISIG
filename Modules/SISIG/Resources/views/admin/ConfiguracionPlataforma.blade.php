@@ -4,14 +4,10 @@
         <!-- 1. Encabezado de la Sección -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5 border-b border-slate-200">
             <div>
-                <div class="flex items-center gap-2.5">
-                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-sena-green/10 text-sena-green">
-                        <i class="fas fa-sliders-h text-sm"></i>
-                    </span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                        Configuración de la Plataforma
-                    </h1>
-                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-sliders-h text-sena-green"></i>
+                    <span>Configuración de la Plataforma</span>
+                </h1>
                 <p class="text-xs text-slate-500 font-medium mt-1.5 max-w-2xl">
                     Espacio donde el administrador ajusta la identidad visual, restricciones de edición para los editores y políticas generales del sistema.
                 </p>
@@ -234,8 +230,10 @@
                                                    value="{{ old('color_primario', sisig_config('color_primario', '#39A900')) }}"
                                                    class="w-24 px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 uppercase text-center focus:outline-none focus:ring-2 focus:ring-sena-green shadow-xs">
                                             
-                                            <div class="px-3 py-1.5 rounded-xl text-white text-[11px] font-bold shadow-xs transition-colors duration-200 select-none flex items-center gap-1.5" 
+                                            <div class="px-3 py-1.5 rounded-xl text-white text-[11px] font-bold shadow-xs transition-colors duration-200 select-none flex items-center gap-1.5 cursor-pointer hover:scale-105" 
                                                  id="color_preview_btn" 
+                                                 onclick="document.getElementById('color_primario_picker').click()"
+                                                 title="Clic para abrir selector de color"
                                                  style="background-color: {{ sisig_config('color_primario', '#39A900') }}">
                                                 <i class="fas fa-check text-[10px]"></i>
                                                 <span>Botón</span>
@@ -281,8 +279,10 @@
                                                    value="{{ old('color_sidebar', sisig_config('color_sidebar', '#001A29')) }}"
                                                    class="w-24 px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-800 uppercase text-center focus:outline-none focus:ring-2 focus:ring-sena-green shadow-xs">
                                             
-                                            <div class="w-8 h-8 rounded-xl border border-slate-300 shadow-xs flex items-center justify-center text-white transition-colors duration-200 select-none" 
+                                            <div class="w-8 h-8 rounded-xl border border-slate-300 shadow-xs flex items-center justify-center text-white transition-colors duration-200 select-none cursor-pointer hover:scale-105" 
                                                  id="color_sidebar_preview" 
+                                                 onclick="document.getElementById('color_sidebar_picker').click()"
+                                                 title="Clic para abrir selector de color"
                                                  style="background-color: {{ sisig_config('color_sidebar', '#001A29') }}">
                                                 <i class="fas fa-bars text-xs"></i>
                                             </div>
@@ -318,49 +318,14 @@
 
                     </div>
 
-                    <!-- Sección de Subida de Logotipo y Favicon -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-slate-200">
-                        
-                        <!-- Logotipo -->
-                        <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h4 class="text-xs font-extrabold text-slate-800">Logotipo Principal</h4>
-                                    <p class="text-[11px] text-slate-500">Visible en la parte superior del menú y login</p>
-                                </div>
-                                @if(sisig_config('app_logo'))
-                                    <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">Personalizado</span>
-                                @else
-                                    <span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">Por Defecto</span>
-                                @endif
-                            </div>
-
-                            <div class="flex items-center gap-4">
-                                <div class="w-20 h-20 rounded-2xl bg-[#001A29] p-2 flex items-center justify-center border border-slate-800 flex-shrink-0 shadow-sm">
-                                    <img id="preview-logo" 
-                                         src="{{ sisig_config('app_logo') ? asset(sisig_config('app_logo')) : asset('modules/sisig/images/logo.png') }}" 
-                                         alt="Logo Previsualización" 
-                                         class="max-w-full max-h-full object-contain">
-                                </div>
-
-                                <div class="flex-1 space-y-2">
-                                    <label class="block">
-                                        <span class="sr-only">Seleccionar Logotipo</span>
-                                        <input type="file" name="app_logo" id="input-logo" accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                                               onchange="previsualizarImagen(this, 'preview-logo')"
-                                               class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sena-green file:text-white hover:file:bg-emerald-600 file:cursor-pointer cursor-pointer">
-                                    </label>
-                                    <p class="text-[10px] text-slate-400">Recomendado: PNG o SVG transparente (Máx. 3MB)</p>
-                                </div>
-                            </div>
-                        </div>
-
+                    <!-- Sección de Subida de Favicon (El logotipo oficial de SENA Empresa se preserva de forma institucional sin modificación) -->
+                    <div class="pt-6 border-t border-slate-200 max-w-xl">
                         <!-- Favicon -->
                         <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-4">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h4 class="text-xs font-extrabold text-slate-800">Favicon (Icono Navegador)</h4>
-                                    <p class="text-[11px] text-slate-500">Icono mostrado en la pestaña del navegador</p>
+                                    <h4 class="text-xs font-extrabold text-slate-800">Favicon (Icono del Navegador)</h4>
+                                    <p class="text-[11px] text-slate-500">Icono mostrado en la pestaña del navegador para SISIG</p>
                                 </div>
                                 @if(sisig_config('app_favicon'))
                                     <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">Personalizado</span>
@@ -388,7 +353,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                 </div>
@@ -416,10 +380,8 @@
                             <!-- Cabecera de la Tarjeta Cuadrada -->
                             <div>
                                 <div class="flex items-center justify-between mb-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-105 transition-transform">
-                                        <i class="fas fa-users-cog"></i>
-                                    </div>
-                                    <span class="px-2.5 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-[10px] font-extrabold tracking-wide">
+                                    <i class="fas fa-users-cog text-2xl text-sena-green group-hover:scale-105 transition-transform"></i>
+                                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">
                                         {{ isset($editores) ? $editores->count() : 0 }} {{ (isset($editores) && $editores->count() === 1) ? 'Editor' : 'Editores' }}
                                     </span>
                                 </div>
@@ -722,8 +684,11 @@
             if (picker) picker.value = hex;
 
             if (isSidebar) {
+                document.documentElement.style.setProperty('--color-sidebar', hex);
                 const sidebarEl = document.getElementById('sidebar-menu');
                 if (sidebarEl) sidebarEl.style.backgroundColor = hex;
+            } else {
+                document.documentElement.style.setProperty('--color-primario', hex);
             }
 
             // Actualizar el estado visual del swatch seleccionado
@@ -786,31 +751,6 @@
                     const form = document.getElementById('form-reset-defaults');
                     if (form) form.submit();
                 }
-            }
-        }
-
-        // Control de la Ventana Modal de Permisos de Editores
-        function abrirModalPermisos(nombre = 'Editor de Contenidos SISIG', email = 'editor@sena.edu.co', id = '') {
-            const modal = document.getElementById('modal-permisos-editor');
-            const lblNombre = document.getElementById('modal-editor-nombre');
-            const lblEmail = document.getElementById('modal-editor-email');
-            const inputId = document.getElementById('modal-editor-id');
-
-            if (lblNombre) lblNombre.textContent = nombre;
-            if (lblEmail) lblEmail.textContent = email;
-            if (inputId && id) inputId.value = id;
-
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            }
-        }
-
-        function cerrarModalPermisos() {
-            const modal = document.getElementById('modal-permisos-editor');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
             }
         }
 
