@@ -263,6 +263,7 @@
                                     <th class="py-4 px-4 text-center">Resultado</th>
                                     <th class="py-4 px-4 text-center">Validez</th>
                                     <th class="py-4 px-6 text-right">Fecha y Hora</th>
+                                    <th class="py-4 px-4 text-center">Detalle</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
@@ -305,6 +306,14 @@
                                         </td>
                                         <td class="py-4 px-6 text-right text-slate-500 font-medium whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($h->fecha_presentacion ?? $h->created_at)->format('d/m/Y - h:i A') }}
+                                        </td>
+                                        <td class="py-4 px-4 text-center whitespace-nowrap">
+                                            <a href="{{ route('sisig.aprendiz.evaluaciones.resultado', $h->id_resultado) }}" 
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold transition-all text-xs" 
+                                               title="Ver detalle y auditoría del intento">
+                                                <i class="fas fa-eye text-xs"></i>
+                                                <span>Ver</span>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

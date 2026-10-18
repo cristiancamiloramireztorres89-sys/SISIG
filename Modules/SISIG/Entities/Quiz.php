@@ -29,4 +29,9 @@ class Quiz extends Model
     {
         return $this->hasMany(Pregunta::class, 'id_quiz', 'id_quiz');
     }
+
+    public function resultados()
+    {
+        return $this->hasMany(Resultado::class, 'id_quiz', 'id_quiz');
+    }
 }

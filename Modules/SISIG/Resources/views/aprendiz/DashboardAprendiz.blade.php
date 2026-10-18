@@ -101,7 +101,86 @@
             </div>
         </div>
 
-        <!-- 4. Historial de Evaluaciones y Calificaciones -->
+        <!-- 4. Módulos Temáticos y Evaluaciones Disponibles -->
+        <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2.5">
+                        <i class="fas fa-layer-group text-sena-green"></i>
+                        <span>Módulos de Inducción y Evaluaciones</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Accede a las evaluaciones de conocimiento protegidas por el sistema anti-trampa</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                @forelse($secciones as $sec)
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                                    {{ $sec->badge }}
+                                </span>
+                                <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-sena-green flex items-center justify-center text-sm font-bold">
+                                    <i class="{{ $sec->icono }}"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-extrabold text-slate-800 leading-snug">
+                                    {{ $sec->titulo }}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+                                    {{ $sec->descripcion ?? 'Módulo formativo del Sistema Integrado de Gestión.' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Estado del Quiz / Botón de Presentación -->
+                        <div class="pt-3 border-t border-slate-100 space-y-3">
+                            @if($sec->quiz)
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-slate-400 font-medium">Evaluación:</span>
+                                    <span class="font-bold text-slate-700 truncate max-w-[140px]">{{ $sec->quiz->titulo }}</span>
+                                </div>
+
+                                @if($sec->quiz->aprobado)
+                                    <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2 text-emerald-800 text-xs font-black">
+                                            <i class="fas fa-check-circle text-emerald-600"></i>
+                                            <span>Aprobado ({{ number_format($sec->quiz->mejor_puntaje, 0) }}%)</span>
+                                        </div>
+                                        @if($sec->quiz->ultimo_intento)
+                                            <a href="{{ route('sisig.aprendiz.evaluaciones.resultado', $sec->quiz->ultimo_intento->id_resultado) }}" class="text-[11px] font-bold text-emerald-700 hover:underline">
+                                                Ver detalle
+                                            </a>
+                                        @endif
+                                    </div>
+                                @elseif($sec->quiz->puede_presentar)
+                                    <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $sec->quiz->id_quiz) }}" class="w-full py-2.5 px-4 rounded-2xl bg-sena-green hover:bg-emerald-600 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2">
+                                        <i class="fas fa-play text-[10px]"></i>
+                                        <span>Presentar Evaluación (Intento {{ $sec->quiz->intentos_realizados + 1 }}/{{ $sec->quiz->intentos_permitidos }})</span>
+                                    </a>
+                                @else
+                                    <div class="p-3 rounded-2xl bg-slate-100 text-slate-500 text-xs font-bold text-center">
+                                        Intentos agotados ({{ $sec->quiz->intentos_realizados }}/{{ $sec->quiz->intentos_permitidos }})
+                                    </div>
+                                @endif
+                            @else
+                                <div class="text-[11px] text-slate-400 italic py-1">
+                                    Sin evaluación configurada actualmente
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full py-8 text-center bg-white rounded-3xl border border-slate-200 text-xs text-slate-500">
+                        No hay módulos temáticos registrados.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- 5. Historial de Evaluaciones y Calificaciones -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div>
@@ -128,6 +207,7 @@
                                 <th class="py-3.5 px-4 text-center">Mínimo</th>
                                 <th class="py-3.5 px-4 text-center">Estado</th>
                                 <th class="py-3.5 px-4 text-right">Fecha</th>
+                                <th class="py-3.5 px-4 text-center">Detalle</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -167,6 +247,12 @@
                                     </td>
                                     <td class="py-3.5 px-4 text-right text-slate-400 font-medium">
                                         {{ \Carbon\Carbon::parse($h->created_at)->format('d/m/Y H:i') }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        <a href="{{ route('sisig.aprendiz.evaluaciones.resultado', $h->id_resultado) }}" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold transition-all" title="Ver reporte de auditoría e incidentes">
+                                            <i class="fas fa-eye text-xs"></i>
+                                            <span>Ver</span>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
