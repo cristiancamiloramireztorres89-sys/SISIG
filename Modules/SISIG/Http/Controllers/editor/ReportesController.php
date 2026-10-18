@@ -99,9 +99,10 @@ class ReportesController extends Controller
             // Documento de identidad
             $documento = 'N/A';
             if (isset($aprendiz->person) && !empty($aprendiz->person->document_number)) {
-                $documento = number_format($aprendiz->person->document_number, 0, '', '.');
+                $docNum = $aprendiz->person->document_number;
+                $documento = is_numeric($docNum) ? number_format((float) $docNum, 0, '', '.') : (string) $docNum;
             } elseif (!empty($aprendiz->documento)) {
-                $documento = $aprendiz->documento;
+                $documento = (string) $aprendiz->documento;
             }
 
             // Ficha de formación
@@ -131,28 +132,34 @@ class ReportesController extends Controller
                 $resultado = DB::table('sisig_resultados')
                     ->where('user_id', $aprendiz->id)
                     ->whereIn('id_quiz', $quizIds)
-                    ->orderByDesc('puntaje')
+                    ->orderByDesc('id_resultado')
                     ->first();
             }
 
             if ($resultado) {
                 $puntaje = (int) round($resultado->puntaje ?? 0);
                 $intentos = $resultado->intento ?? 1;
+                $fueAnulado = (bool) ($resultado->fue_anulado ?? false);
+                $esAprobado = !$fueAnulado && ($puntaje >= 70 || $resultado->aprobado == 1);
                 $fechaRaw = $resultado->fecha_presentacion ?? $resultado->created_at ?? now();
                 $fecha = Carbon::parse($fechaRaw)->translatedFormat('d M Y');
 
                 $item = (object) [
-                    'id'         => $aprendiz->id,
-                    'nombre'     => $nombreLimpio,
-                    'iniciales'  => $iniciales,
-                    'documento'  => $documento,
-                    'correo'     => $aprendiz->email ?? 'N/A',
-                    'ficha'      => $ficha,
-                    'puntaje'    => $puntaje,
-                    'intentos'   => $intentos,
-                    'fecha'      => $fecha,
-                    'aprobado'   => ($puntaje >= 70 || $resultado->aprobado == 1),
-                    'quiz_id'    => $resultado->id_quiz,
+                    'id'                     => $aprendiz->id,
+                    'nombre'                 => $nombreLimpio,
+                    'iniciales'              => $iniciales,
+                    'documento'              => $documento,
+                    'correo'                 => $aprendiz->email ?? 'N/A',
+                    'ficha'                  => $ficha,
+                    'puntaje'                => $puntaje,
+                    'intentos'               => $intentos,
+                    'fecha'                  => $fecha,
+                    'aprobado'               => $esAprobado,
+                    'fue_anulado'            => $fueAnulado,
+                    'motivo_anulacion'       => $resultado->motivo_anulacion ?? null,
+                    'infracciones_detectadas'=> (int) ($resultado->infracciones_detectadas ?? 0),
+                    'motivo_no_aprobado'     => $fueAnulado ? 'Anulado por Trampa (Infracciones)' : 'Respuestas incorrectas (Puntaje bajo)',
+                    'quiz_id'                => $resultado->id_quiz,
                 ];
 
                 if ($item->aprobado) {

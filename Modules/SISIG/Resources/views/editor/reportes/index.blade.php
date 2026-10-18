@@ -122,10 +122,10 @@
                     <span id="counter-aprobados" class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-3 py-1 rounded-xl">
                         Aprobados: {{ $aprobadosList->count() }}
                     </span>
-                    <button type="button" onclick="exportarTablaCSV('tabla-aprobados', 'Aprobados_Quiz_{{ ucfirst($seccion) }}')"
+                    <button type="button" onclick="exportarTablaExcel('tabla-aprobados', 'Aprobados_Quiz_{{ ucfirst($seccion) }}')"
                             class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-200 transition-all shadow-xs cursor-pointer">
                         <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
-                        <span>Exportar</span>
+                        <span>Exportar Excel</span>
                     </button>
                 </div>
             </div>
@@ -239,10 +239,10 @@
                     <span id="counter-no-aprobados" class="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200/60 px-3 py-1 rounded-xl">
                         No aprobados: {{ $noAprobadosList->count() }}
                     </span>
-                    <button type="button" onclick="exportarTablaCSV('tabla-no-aprobados', 'No_Aprobados_Quiz_{{ ucfirst($seccion) }}')"
+                    <button type="button" onclick="exportarTablaExcel('tabla-no-aprobados', 'No_Aprobados_Quiz_{{ ucfirst($seccion) }}')"
                             class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-rose-700 hover:border-rose-200 transition-all shadow-xs cursor-pointer">
                         <i class="fas fa-file-excel text-rose-500 text-xs"></i>
-                        <span>Exportar</span>
+                        <span>Exportar Excel</span>
                     </button>
                 </div>
             </div>
@@ -290,15 +290,27 @@
                                 </td>
 
                                 <td class="py-3.5 px-4">
-                                    <div class="w-24">
-                                        <div class="flex items-center justify-between text-[11px] mb-1">
-                                            <span class="font-bold text-rose-600">{{ $item->puntaje }}%</span>
-                                            <span class="text-[10px] text-rose-500 font-semibold">Reprobado</span>
+                                    @if($item->fue_anulado)
+                                        <div class="inline-flex flex-col items-start gap-1">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-200" title="{{ $item->motivo_anulacion }}">
+                                                <i class="fas fa-ban text-[9px] text-rose-600"></i>
+                                                <span>Anulado (Trampa)</span>
+                                            </span>
+                                            <span class="text-[10px] text-rose-500 font-bold ml-0.5">
+                                                {{ $item->infracciones_detectadas > 0 ? $item->infracciones_detectadas . ' infracciones' : 'Faltas de seguridad' }}
+                                            </span>
                                         </div>
-                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                            <div class="bg-rose-500 h-1.5 rounded-full" style="width: {{ $item->puntaje }}%"></div>
+                                    @else
+                                        <div class="w-24">
+                                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                                <span class="font-bold text-rose-600">{{ $item->puntaje }}%</span>
+                                                <span class="text-[10px] text-slate-500 font-medium" title="Contestó mal">Puntaje bajo</span>
+                                            </div>
+                                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                                <div class="bg-rose-500 h-1.5 rounded-full" style="width: {{ $item->puntaje }}%"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 </td>
 
                                 <td class="py-3.5 px-4 text-center">
@@ -383,12 +395,12 @@
                     </div>
                 </div>
 
-                <!-- Resumen Evaluativo -->
+                <!-- Resumen Evaluativo / Diagnóstico Institucional -->
                 <div class="space-y-2">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Validación Institucional</span>
-                    <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 text-emerald-900 flex items-start gap-2.5">
-                        <i class="fas fa-check-double text-emerald-600 mt-0.5 flex-shrink-0"></i>
-                        <span class="leading-relaxed">Las respuestas de la evaluación fueron calificadas de manera automatizada conforme al banco de preguntas del módulo bajo el umbral mínimo institucional del 70%.</span>
+                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Diagnóstico de Evaluación</span>
+                    <div id="modal-diagnostico-box" class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 text-emerald-900 flex items-start gap-2.5">
+                        <i id="modal-diagnostico-icon" class="fas fa-check-double text-emerald-600 mt-0.5 flex-shrink-0"></i>
+                        <span id="modal-diagnostico-texto" class="leading-relaxed">Las respuestas de la evaluación fueron calificadas de manera automatizada conforme al banco de preguntas del módulo bajo el umbral mínimo institucional del 70%.</span>
                     </div>
                 </div>
             </div>
@@ -468,10 +480,31 @@
             document.getElementById('modal-fecha').textContent = item.fecha || 'N/A';
 
             const badge = document.getElementById('modal-estado-badge');
-            if (item.aprobado) {
-                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-emerald-600">Aprobado</span>';
+            const diagBox = document.getElementById('modal-diagnostico-box');
+            const diagIcon = document.getElementById('modal-diagnostico-icon');
+            const diagTexto = document.getElementById('modal-diagnostico-texto');
+
+            if (item.fue_anulado) {
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-rose-600 font-black">Anulado por Trampa</span>';
+                if (diagBox) {
+                    diagBox.className = 'p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 flex items-start gap-2.5';
+                    diagIcon.className = 'fas fa-ban text-rose-600 mt-0.5 flex-shrink-0';
+                    diagTexto.innerHTML = `<strong>Examen Anulado por Trampa / Infracciones de Seguridad:</strong> ${item.motivo_anulacion || 'El aprendiz perdió sus vidas de seguridad o cometió faltas anti-trampa'}. Faltas detectadas: ${item.infracciones_detectadas || 0}.`;
+                }
+            } else if (item.aprobado) {
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-emerald-600 font-black">Aprobado</span>';
+                if (diagBox) {
+                    diagBox.className = 'p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 text-emerald-900 flex items-start gap-2.5';
+                    diagIcon.className = 'fas fa-check-double text-emerald-600 mt-0.5 flex-shrink-0';
+                    diagTexto.innerHTML = '<strong>Aprobado con éxito:</strong> El aprendiz contestó correctamente y superó el umbral mínimo institucional del 70%.';
+                }
             } else {
-                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-rose-600">No aprobado</span>';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-amber-700 font-black">No aprobado</span>';
+                if (diagBox) {
+                    diagBox.className = 'p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-2.5';
+                    diagIcon.className = 'fas fa-times-circle text-amber-600 mt-0.5 flex-shrink-0';
+                    diagTexto.innerHTML = '<strong>No Aprobado por Respuestas:</strong> El aprendiz completó la prueba normalmente sin faltas de seguridad, pero contestó mal preguntas y obtuvo un puntaje menor al 70%.';
+                }
             }
 
             document.getElementById('modal-respuestas-aprendiz').classList.remove('hidden');
@@ -487,46 +520,65 @@
             }
         });
 
-        // Exportación de tabla a CSV compatible con Microsoft Excel (BOM UTF-8)
-        function exportarTablaCSV(tablaId, nombreArchivo) {
-            const tabla = document.getElementById(tablaId);
-            if (!tabla) return;
+    <!-- Librería SheetJS para exportación nativa a Microsoft Excel (.xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        // Función de exportación a archivo nativo .xlsx
+        function exportarTablaExcel(tablaId, nombreArchivo) {
+            const tablaOriginal = document.getElementById(tablaId);
+            if (!tablaOriginal) return;
 
-            let csv = [];
-            const filas = tabla.querySelectorAll('tr');
+            // Clonar la tabla para preparar datos limpios
+            const tablaClon = tablaOriginal.cloneNode(true);
 
+            // Eliminar filas que estén ocultas por el buscador
+            const filas = tablaClon.querySelectorAll('tr');
             filas.forEach(fila => {
-                // Omitir filas ocultas por el filtro o filas de mensajes de vacío
-                if (fila.style.display === 'none' || fila.classList.contains('empty-row-aprobados') || fila.classList.contains('empty-row-no-aprobados')) return;
-
-                const columnas = fila.querySelectorAll('th, td');
-                let filaDatos = [];
-
-                columnas.forEach((columna, index) => {
-                    // Omitir la última columna de acciones
-                    if (index === columnas.length - 1) return;
-
-                    let texto = columna.innerText.replace(/(\r\n|\n|\r)/gm, ' ').trim();
-                    texto = texto.replace(/"/g, '""');
-                    filaDatos.push('"' + texto + '"');
-                });
-
-                if (filaDatos.length > 0) {
-                    csv.push(filaDatos.join(';'));
+                if (fila.style.display === 'none' || fila.classList.contains('empty-row-aprobados') || fila.classList.contains('empty-row-no-aprobados')) {
+                    fila.remove();
+                    return;
                 }
+
+                // Omitir última columna de acciones
+                const celdas = fila.querySelectorAll('th, td');
+                if (celdas.length > 0) {
+                    celdas[celdas.length - 1].remove();
+                }
+
+                // Limpiar saltos de línea de las celdas restantes
+                fila.querySelectorAll('th, td').forEach(celda => {
+                    let texto = celda.innerText.replace(/(\r\n|\n|\r)/gm, ' ').replace(/\s+/g, ' ').trim();
+                    celda.innerText = texto;
+                });
             });
 
-            const csvString = '\uFEFF' + csv.join('\r\n');
-            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
+            // Convertir tabla a libro Excel nativo
+            const libroExcel = XLSX.utils.table_to_book(tablaClon, { 
+                sheet: "Reporte Editor", 
+                raw: true 
+            });
 
-            link.setAttribute('href', url);
-            link.setAttribute('download', nombreArchivo + '.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // Autoajustar el ancho de las columnas
+            const hoja = libroExcel.Sheets["Reporte Editor"];
+            if (hoja && hoja['!ref']) {
+                const rango = XLSX.utils.decode_range(hoja['!ref']);
+                let anchos = [];
+                for (let C = rango.s.c; C <= rango.e.c; ++C) {
+                    let maxLong = 12;
+                    for (let R = rango.s.r; R <= rango.e.r; ++R) {
+                        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                        const celda = hoja[cellAddress];
+                        if (celda && celda.v) {
+                            maxLong = Math.max(maxLong, String(celda.v).length + 3);
+                        }
+                    }
+                    anchos.push({ wch: Math.min(maxLong, 40) });
+                }
+                hoja['!cols'] = anchos;
+            }
+
+            // Descargar el archivo con extensión .xlsx
+            XLSX.writeFile(libroExcel, nombreArchivo + '.xlsx');
         }
     </script>
 </x-sisig::layouts.editor>
