@@ -19,4 +19,14 @@ class Modulo extends Model
         'icon_bg',
         'border_class'
     ];
+
+    public function editores()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'editor_modulos', 'modulo_id', 'user_id');
+    }
+
+    public function quices()
+    {
+        return $this->hasMany(Quiz::class, 'modulo_id', 'id');
+    }
 }

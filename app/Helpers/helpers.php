@@ -76,3 +76,17 @@ if (!function_exists('currentUserPrimaryRole')) {
         return 'Usuario';
     }
 }
+
+if (!function_exists('sisig_config')) {
+    /**
+     * Obtener el valor de una configuración del sistema SISIG.
+     *
+     * @param string $clave
+     * @param mixed $default
+     * @return mixed
+     */
+    function sisig_config(string $clave, $default = null)
+    {
+        return \Modules\SISIG\Entities\Configuracion::get($clave, $default);
+    }
+}

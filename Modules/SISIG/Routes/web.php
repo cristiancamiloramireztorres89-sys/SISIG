@@ -48,6 +48,15 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         // Módulo de Seguridad y Accesos
         Route::get('/seguridad', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'index'])->name('seguridad.index');
         Route::delete('/seguridad/sesiones/{id}', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'cerrarSesion'])->name('seguridad.sesiones.destroy');
+
+        // Módulo de Reportes y Métricas
+        Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Admin\ReportesController::class, 'index'])->name('reportes.index');
+
+        // Módulo de Configuración de la Plataforma
+        Route::get('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'index'])->name('configuracion.index');
+        Route::put('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'update'])->name('configuracion.update');
+        Route::post('/configuracion/reset', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'resetDefaults'])->name('configuracion.reset');
+        Route::delete('/configuracion/branding/{clave}', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'removeBrandingFile'])->name('configuracion.removeBranding');
     });
 
 
@@ -77,6 +86,9 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
 
         // Seguimiento y Reportes (Exclusivo Editor)
         Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Editor\ReportesController::class, 'index'])->name('reportes.index');
+
+        // Auditoría de Infracciones y Anti-Trampa (Exclusivo Editor)
+        Route::get('/infracciones', [\Modules\SISIG\Http\Controllers\Editor\InfraccionesController::class, 'index'])->name('infracciones.index');
     });
 
     // Módulo del Aprendiz (Seguimiento, Inducción y Evaluaciones)
@@ -90,10 +102,24 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         // Mis Evaluaciones y Quices Interactivos
         Route::get('/evaluaciones', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'index'])->name('evaluaciones.index');
         Route::get('/evaluaciones/{id_quiz}/iniciar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'iniciar'])->name('evaluaciones.iniciar');
+        Route::post('/evaluaciones/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])->name('evaluaciones.incidente');
         Route::post('/evaluaciones/{id_quiz}/calificar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'calificar'])->name('evaluaciones.calificar');
+        Route::get('/evaluaciones/{id_resultado}/resultado', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'verResultado'])->name('evaluaciones.resultado');
 
         // Historial y Calificaciones (Mis Resultados)
         Route::get('/historial', [\Modules\SISIG\Http\Controllers\Aprendiz\HistorialAprendizController::class, 'index'])->name('historial.index');
+
+        // Presentación de Evaluaciones con Sistema Anti-Trampa y Auditoría (Rutas de compatibilidad)
+        Route::get('/quiz/{id_quiz}/iniciar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'iniciar'])->name('quiz.iniciar');
+        Route::get('/quiz/{id_resultado}/presentar', function ($id_resultado) {
+            $resultado = \Modules\SISIG\Entities\Resultado::find($id_resultado);
+            if ($resultado) {
+                return redirect()->route('sisig.aprendiz.evaluaciones.iniciar', $resultado->id_quiz);
+            }
+            return redirect()->route('sisig.aprendiz.evaluaciones.index');
+        })->name('quiz.presentar');
+        Route::post('/quiz/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])->name('quiz.incidente');
+        Route::get('/quiz/{id_resultado}/resultado', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'verResultado'])->name('quiz.resultado');
     });
 
     // Módulo de Perfil de Usuario (Reutilizable para cualquier rol autenticado en SISIG)

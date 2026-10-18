@@ -6,7 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>{{ $title ?? 'Panel de Control' }} | SISIG - SENA Empresa</title>
+    <title>{{ $title ?? 'Panel de Control' }} | {{ sisig_config('app_name', 'SISIG') }} - SENA Empresa</title>
+
+    @if(sisig_config('app_favicon'))
+        <link rel="icon" href="{{ asset(sisig_config('app_favicon')) }}">
+    @endif
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -134,12 +138,12 @@
                 extend: {
                     colors: {
                         sena: {
-                            green: '#39A900',
-                            'green-hover': '#2d8500',
+                            green: '{{ sisig_config("color_primario", "#39A900") }}',
+                            'green-hover': '{{ sisig_config("color_primario", "#39A900") }}',
                             'green-light': '#E8F5E9',
                             navy: '#00324D',
                             'navy-light': '#004B73',
-                            dark: '#001A29',
+                            dark: '{{ sisig_config("color_sidebar", "#001A29") }}',
                             slate: '#0F2B3E',
                             light: '#F8FAFC',
                             card: '#FFFFFF',
@@ -160,6 +164,10 @@
     </script>
 
     <style>
+        :root {
+            --color-primario: {{ sisig_config('color_primario', '#39A900') }};
+            --color-sidebar: {{ sisig_config('color_sidebar', '#001A29') }};
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -274,6 +282,14 @@
         
         <!-- Header Superior -->
         @include('sisig::components.layouts.header')
+
+        <!-- Banner Global de Mantenimiento / Aviso Institucional -->
+        @if(sisig_config('mensaje_mantenimiento_activo', false))
+            <div class="bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-center gap-2 text-center shadow-sm select-none border-b border-amber-600">
+                <i class="fas fa-bullhorn text-sm animate-bounce"></i>
+                <span>{{ sisig_config('mensaje_mantenimiento_texto', 'Atención: La plataforma entrará en mantenimiento preventivo.') }}</span>
+            </div>
+        @endif
 
         <main class="flex-1 p-5 sm:p-8 relative">
             <!-- Contenedor Universal de Alertas de Sesión / Acciones -->
