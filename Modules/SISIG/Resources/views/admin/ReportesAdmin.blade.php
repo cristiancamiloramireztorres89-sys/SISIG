@@ -353,49 +353,91 @@
             <!-- Panel de Métricas de la Sección Activa con Gráfica Donut -->
             <div class="bg-slate-50/90 rounded-3xl p-6 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
                 
-                <!-- Gráfica Donut SVG Dinámica -->
+                <!-- Gráfica Donut SVG Dinámica Multi-Segmento -->
                 <div class="flex items-center gap-6">
                     <div class="relative w-28 h-28 flex-shrink-0">
                         @php
+                            $mAprobados = (int) ($metricasSeccionQuiz['aprobados'] ?? 0);
+                            $mPendientes = (int) ($metricasSeccionQuiz['pendientes'] ?? 0);
+                            $mAnulados = (int) ($metricasSeccionQuiz['anulados'] ?? 0);
+                            $mNoAprobados = max(0, (int) ($metricasSeccionQuiz['no_aprobados'] ?? 0) - $mAnulados);
+                            $mTotal = $mAprobados + $mPendientes + $mAnulados + $mNoAprobados;
+
                             $pct = $metricasSeccionQuiz['porcentaje_aprobados'] ?? 0;
-                            $circunferencia = 238.76;
-                            $strokeDashoffset = $circunferencia - ($pct / 100) * $circunferencia;
+                            $circ = 238.76;
+
+                            $lenAprobados = $mTotal > 0 ? ($mAprobados / $mTotal) * $circ : 0;
+                            $lenPendientes = $mTotal > 0 ? ($mPendientes / $mTotal) * $circ : 0;
+                            $lenAnulados = $mTotal > 0 ? ($mAnulados / $mTotal) * $circ : 0;
+                            $lenNoAprobados = $mTotal > 0 ? ($mNoAprobados / $mTotal) * $circ : 0;
+
+                            $offAprobados = 0;
+                            $offPendientes = -$lenAprobados;
+                            $offAnulados = -($lenAprobados + $lenPendientes);
+                            $offNoAprobados = -($lenAprobados + $lenPendientes + $lenAnulados);
                         @endphp
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                             <!-- Fondo del Donut -->
                             <circle cx="50" cy="50" r="38" stroke="#e2e8f0" stroke-width="12" fill="transparent" />
-                            <!-- Segmento Aprobados Verde SENA Dinámico -->
-                            <circle id="donut-circle" cx="50" cy="50" r="38" stroke="#39A900" stroke-width="12" fill="transparent"
-                                    stroke-dasharray="{{ $circunferencia }}"
-                                    style="stroke-dashoffset: {{ $strokeDashoffset }}; transition: stroke-dashoffset 0.8s ease;"
-                                    stroke-linecap="round" />
+
+                            <!-- 1. Segmento Aprobaron (Verde SENA) -->
+                            <circle id="donut-segment-aprobados" cx="50" cy="50" r="38" stroke="#39A900" stroke-width="12" fill="transparent"
+                                    stroke-dasharray="{{ number_format($lenAprobados, 2, '.', '') }} {{ $circ }}"
+                                    style="stroke-dashoffset: {{ number_format($offAprobados, 2, '.', '') }}; opacity: {{ $lenAprobados > 0 ? '1' : '0' }}; transition: stroke-dasharray 0.8s ease, stroke-dashoffset 0.8s ease, opacity 0.3s ease;"
+                                    class="cursor-pointer"
+                                    onmouseenter="destacarSegmentoDonut('aprobados')" onmouseleave="restaurarDonut()" />
+
+                            <!-- 2. Segmento Pendientes (Ámbar) -->
+                            <circle id="donut-segment-pendientes" cx="50" cy="50" r="38" stroke="#f59e0b" stroke-width="12" fill="transparent"
+                                    stroke-dasharray="{{ number_format($lenPendientes, 2, '.', '') }} {{ $circ }}"
+                                    style="stroke-dashoffset: {{ number_format($offPendientes, 2, '.', '') }}; opacity: {{ $lenPendientes > 0 ? '1' : '0' }}; transition: stroke-dasharray 0.8s ease, stroke-dashoffset 0.8s ease, opacity 0.3s ease;"
+                                    class="cursor-pointer"
+                                    onmouseenter="destacarSegmentoDonut('pendientes')" onmouseleave="restaurarDonut()" />
+
+                            <!-- 3. Segmento Trampa / Anulados (Rojo) -->
+                            <circle id="donut-segment-anulados" cx="50" cy="50" r="38" stroke="#e11d48" stroke-width="12" fill="transparent"
+                                    stroke-dasharray="{{ number_format($lenAnulados, 2, '.', '') }} {{ $circ }}"
+                                    style="stroke-dashoffset: {{ number_format($offAnulados, 2, '.', '') }}; opacity: {{ $lenAnulados > 0 ? '1' : '0' }}; transition: stroke-dasharray 0.8s ease, stroke-dashoffset 0.8s ease, opacity 0.3s ease;"
+                                    class="cursor-pointer"
+                                    onmouseenter="destacarSegmentoDonut('anulados')" onmouseleave="restaurarDonut()" />
+
+                            <!-- 4. Segmento No Aprobaron por Puntaje (Gris Slate) -->
+                            <circle id="donut-segment-no-aprobados" cx="50" cy="50" r="38" stroke="#94a3b8" stroke-width="12" fill="transparent"
+                                    stroke-dasharray="{{ number_format($lenNoAprobados, 2, '.', '') }} {{ $circ }}"
+                                    style="stroke-dashoffset: {{ number_format($offNoAprobados, 2, '.', '') }}; opacity: {{ $lenNoAprobados > 0 ? '1' : '0' }}; transition: stroke-dasharray 0.8s ease, stroke-dashoffset 0.8s ease, opacity 0.3s ease;"
+                                    class="cursor-pointer"
+                                    onmouseenter="destacarSegmentoDonut('no_aprobados')" onmouseleave="restaurarDonut()" />
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span id="donut-porcentaje" class="text-xl font-black text-slate-800 leading-none">{{ $pct }}%</span>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">Aprobados</span>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
+                            <span id="donut-porcentaje" class="text-xl font-black text-slate-800 leading-none transition-all">{{ $pct }}%</span>
+                            <span id="donut-subtexto" class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5 transition-all">Aprobados</span>
                         </div>
                     </div>
 
                     <!-- Leyenda de Estados de la Sección -->
                     <div class="space-y-2 text-xs">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-sena-green inline-block flex-shrink-0"></span>
-                            <span class="font-bold text-slate-700">Aprobaron:</span>
+                        <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
+                             onmouseenter="destacarSegmentoDonut('aprobados')" onmouseleave="restaurarDonut()">
+                            <span class="w-3 h-3 rounded-full bg-sena-green inline-block flex-shrink-0 group-hover:scale-110 transition-transform"></span>
+                            <span class="font-bold text-slate-700 group-hover:text-emerald-700">Aprobaron:</span>
                             <strong id="contador-aprobados" class="text-emerald-700 font-extrabold">{{ $metricasSeccionQuiz['aprobados'] ?? 0 }}</strong>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block flex-shrink-0"></span>
-                            <span class="font-bold text-slate-700">Pendientes:</span>
+                        <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
+                             onmouseenter="destacarSegmentoDonut('pendientes')" onmouseleave="restaurarDonut()">
+                            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block flex-shrink-0 group-hover:scale-110 transition-transform"></span>
+                            <span class="font-bold text-slate-700 group-hover:text-amber-700">Pendientes:</span>
                             <strong id="contador-pendientes" class="text-amber-700 font-extrabold">{{ $metricasSeccionQuiz['pendientes'] ?? 0 }}</strong>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-rose-600 inline-block flex-shrink-0"></span>
-                            <span class="font-bold text-slate-700">Trampa / Anulados:</span>
+                        <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
+                             onmouseenter="destacarSegmentoDonut('anulados')" onmouseleave="restaurarDonut()">
+                            <span class="w-3 h-3 rounded-full bg-rose-600 inline-block flex-shrink-0 group-hover:scale-110 transition-transform"></span>
+                            <span class="font-bold text-slate-700 group-hover:text-rose-700">Trampa / Anulados:</span>
                             <strong id="contador-anulados" class="text-rose-700 font-extrabold">{{ $metricasSeccionQuiz['anulados'] ?? 0 }}</strong>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-slate-400 inline-block flex-shrink-0"></span>
-                            <span class="font-bold text-slate-500">No aprobaron (Puntaje):</span>
+                        <div class="flex items-center gap-2 px-2 py-1 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
+                             onmouseenter="destacarSegmentoDonut('no_aprobados')" onmouseleave="restaurarDonut()">
+                            <span class="w-3 h-3 rounded-full bg-slate-400 inline-block flex-shrink-0 group-hover:scale-110 transition-transform"></span>
+                            <span class="font-bold text-slate-500 group-hover:text-slate-800">No aprobaron (Puntaje):</span>
                             <strong id="contador-no-aprobados" class="text-slate-700 font-extrabold">{{ max(0, ($metricasSeccionQuiz['no_aprobados'] ?? 0) - ($metricasSeccionQuiz['anulados'] ?? 0)) }}</strong>
                         </div>
                     </div>
@@ -554,6 +596,101 @@
         let moduloActivoId = {{ $seccionQuizId ?? 'null' }};
         let moduloActivoNombre = "{{ $moduloActivo['nombre'] ?? 'Modulo' }}";
 
+        const circunferenciaDonut = 238.76;
+        let estadoActualDonut = {
+            aprobados: {{ (int) ($metricasSeccionQuiz['aprobados'] ?? 0) }},
+            pendientes: {{ (int) ($metricasSeccionQuiz['pendientes'] ?? 0) }},
+            anulados: {{ (int) ($metricasSeccionQuiz['anulados'] ?? 0) }},
+            no_aprobados: {{ max(0, (int) ($metricasSeccionQuiz['no_aprobados'] ?? 0) - (int) ($metricasSeccionQuiz['anulados'] ?? 0)) }},
+            total: {{ $mTotal }},
+            pctAprobados: {{ (int) ($metricasSeccionQuiz['porcentaje_aprobados'] ?? 0) }}
+        };
+
+        function actualizarDonutReporte2(aprobados, pendientes, anulados, noAprobadosPuntaje, pctAprobados) {
+            const total = aprobados + pendientes + anulados + noAprobadosPuntaje;
+            estadoActualDonut = {
+                aprobados: aprobados,
+                pendientes: pendientes,
+                anulados: anulados,
+                no_aprobados: noAprobadosPuntaje,
+                total: total,
+                pctAprobados: pctAprobados
+            };
+
+            const lenAprob = total > 0 ? (aprobados / total) * circunferenciaDonut : 0;
+            const lenPend = total > 0 ? (pendientes / total) * circunferenciaDonut : 0;
+            const lenAnul = total > 0 ? (anulados / total) * circunferenciaDonut : 0;
+            const lenNoApr = total > 0 ? (noAprobadosPuntaje / total) * circunferenciaDonut : 0;
+
+            const offAprob = 0;
+            const offPend = -lenAprob;
+            const offAnul = -(lenAprob + lenPend);
+            const offNoApr = -(lenAprob + lenPend + lenAnul);
+
+            const segAprob = document.getElementById('donut-segment-aprobados');
+            const segPend = document.getElementById('donut-segment-pendientes');
+            const segAnul = document.getElementById('donut-segment-anulados');
+            const segNoApr = document.getElementById('donut-segment-no-aprobados');
+
+            if (segAprob) {
+                segAprob.style.strokeDasharray = `${lenAprob.toFixed(2)} ${circunferenciaDonut}`;
+                segAprob.style.strokeDashoffset = `${offAprob.toFixed(2)}`;
+                segAprob.style.opacity = lenAprob > 0 ? '1' : '0';
+            }
+            if (segPend) {
+                segPend.style.strokeDasharray = `${lenPend.toFixed(2)} ${circunferenciaDonut}`;
+                segPend.style.strokeDashoffset = `${offPend.toFixed(2)}`;
+                segPend.style.opacity = lenPend > 0 ? '1' : '0';
+            }
+            if (segAnul) {
+                segAnul.style.strokeDasharray = `${lenAnul.toFixed(2)} ${circunferenciaDonut}`;
+                segAnul.style.strokeDashoffset = `${offAnul.toFixed(2)}`;
+                segAnul.style.opacity = lenAnul > 0 ? '1' : '0';
+            }
+            if (segNoApr) {
+                segNoApr.style.strokeDasharray = `${lenNoApr.toFixed(2)} ${circunferenciaDonut}`;
+                segNoApr.style.strokeDashoffset = `${offNoApr.toFixed(2)}`;
+                segNoApr.style.opacity = lenNoApr > 0 ? '1' : '0';
+            }
+
+            restaurarDonut();
+        }
+
+        function destacarSegmentoDonut(tipo) {
+            const pctTexto = document.getElementById('donut-porcentaje');
+            const subTexto = document.getElementById('donut-subtexto');
+            if (!pctTexto || !subTexto) return;
+
+            const total = estadoActualDonut.total;
+            let valor = 0;
+            let label = '';
+
+            if (tipo === 'aprobados') {
+                valor = estadoActualDonut.aprobados;
+                label = 'Aprobaron';
+            } else if (tipo === 'pendientes') {
+                valor = estadoActualDonut.pendientes;
+                label = 'Pendientes';
+            } else if (tipo === 'anulados') {
+                valor = estadoActualDonut.anulados;
+                label = 'Anulados';
+            } else if (tipo === 'no_aprobados') {
+                valor = estadoActualDonut.no_aprobados;
+                label = 'No Aprob.';
+            }
+
+            const pctSegmento = total > 0 ? Math.round((valor / total) * 100) : 0;
+            pctTexto.innerText = `${pctSegmento}%`;
+            subTexto.innerText = `${valor} ${label}`;
+        }
+
+        function restaurarDonut() {
+            const pctTexto = document.getElementById('donut-porcentaje');
+            const subTexto = document.getElementById('donut-subtexto');
+            if (pctTexto) pctTexto.innerText = `${estadoActualDonut.pctAprobados || 0}%`;
+            if (subTexto) subTexto.innerText = 'Aprobados';
+        }
+
         // Función para cambiar de sección al instante sin recarga de página
         function cambiarSeccionQuiz(id) {
             const data = datosReporte2PorModulo[id];
@@ -574,29 +711,23 @@
                 }
             });
 
-            // 2. Animar y actualizar la gráfica Donut
-            const pct = data.porcentaje_aprobados || 0;
-            const circunferencia = 238.76;
-            const strokeDashoffset = circunferencia - (pct / 100) * circunferencia;
+            // 2. Animar y actualizar la gráfica Donut con las 4 métricas reales
+            const aprobados = Number(data.aprobados) || 0;
+            const pendientes = Number(data.pendientes) || 0;
+            const anulados = Number(data.anulados) || 0;
+            const noAprobadosPuntaje = Math.max(0, (Number(data.no_aprobados) || 0) - anulados);
+            const pct = Number(data.porcentaje_aprobados) || 0;
 
-            const circle = document.getElementById('donut-circle');
-            if (circle) {
-                circle.style.strokeDashoffset = strokeDashoffset;
-            }
-
-            const pctTexto = document.getElementById('donut-porcentaje');
-            if (pctTexto) {
-                pctTexto.innerText = pct + '%';
-            }
+            actualizarDonutReporte2(aprobados, pendientes, anulados, noAprobadosPuntaje, pct);
 
             // 3. Actualizar contadores y textos contextuales
-            document.getElementById('contador-aprobados').innerText = data.aprobados;
-            document.getElementById('contador-pendientes').innerText = data.pendientes;
+            document.getElementById('contador-aprobados').innerText = aprobados;
+            document.getElementById('contador-pendientes').innerText = pendientes;
             if (document.getElementById('contador-anulados')) {
-                document.getElementById('contador-anulados').innerText = data.anulados || 0;
+                document.getElementById('contador-anulados').innerText = anulados;
             }
             if (document.getElementById('contador-no-aprobados')) {
-                document.getElementById('contador-no-aprobados').innerText = Math.max(0, (data.no_aprobados || 0) - (data.anulados || 0));
+                document.getElementById('contador-no-aprobados').innerText = noAprobadosPuntaje;
             }
             document.getElementById('seccion-nombre-texto').innerText = data.nombre;
             document.getElementById('seccion-norma-texto').innerText = '· ' + data.norma;

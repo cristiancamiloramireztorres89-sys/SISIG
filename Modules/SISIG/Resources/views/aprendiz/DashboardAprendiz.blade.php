@@ -121,9 +121,13 @@
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
                                     {{ $sec->badge }}
                                 </span>
-                                <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-sena-green flex items-center justify-center text-sm font-bold">
-                                    <i class="{{ $sec->icono }}"></i>
-                                </div>
+                                @if(!empty($sec->imagen))
+                                    <img src="{{ asset($sec->imagen) }}" alt="{{ $sec->titulo }}" class="w-10 h-10 object-cover rounded-xl border border-slate-200/80 shadow-xs flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-sena-green flex items-center justify-center text-sm font-bold">
+                                        <i class="{{ $sec->icono }}"></i>
+                                    </div>
+                                @endif
                             </div>
                             <div>
                                 <h3 class="text-sm font-extrabold text-slate-800 leading-snug">

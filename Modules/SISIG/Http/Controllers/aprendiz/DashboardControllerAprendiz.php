@@ -69,8 +69,8 @@ class DashboardControllerAprendiz extends Controller
                 $quizData = (object) [
                     'id_quiz' => $quiz->id_quiz,
                     'titulo' => $quiz->titulo,
-                    'puntaje_minimo' => (float) $quiz->puntaje_minimo,
-                    'numero_preguntas' => $quiz->numero_preguntas,
+                    'puntaje_minimo' => (float) ($quiz->porcentaje_aprobacion ?? $quiz->puntaje_minimo ?? 70),
+                    'numero_preguntas' => $quiz->numero_preguntas ?? 0,
                     'intentos_permitidos' => $intentosPermitidos,
                     'intentos_realizados' => $intentosRealizados,
                     'intentos_restantes' => $intentosRestantes,
@@ -94,6 +94,7 @@ class DashboardControllerAprendiz extends Controller
                 'porcentaje_visto' => $porcentajeVisto,
                 'estado' => $estadoModulo,
                 'quiz' => $quizData,
+                'imagen' => $mod->imagen,
                 'icono' => $mod->icon_class ?? $meta['icono'],
                 'color' => $meta['color'],
                 'gradiente' => $meta['gradiente'],

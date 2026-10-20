@@ -18,7 +18,7 @@
                         {{ $quiz->titulo }}
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
-                        Intento #{{ $intentoActual }} de {{ $intentosPermitidos }} • {{ $quiz->preguntas->count() }} preguntas
+                        Intento {{ $intentoActual }} de {{ $intentosPermitidos }} • {{ $quiz->preguntas->count() }} preguntas
                     </p>
                 </div>
 
@@ -69,7 +69,7 @@
                     <div class="flex items-center gap-2 mt-0.5 text-xs text-slate-500 font-medium">
                         <span>{{ $quiz->modulo->titulo ?? 'SIG La Angostura' }}</span>
                         <span>•</span>
-                        <span class="font-bold text-sena-green">Intento #{{ $intentoActual }} de {{ $intentosPermitidos }}</span>
+                        <span class="font-bold text-sena-green">Intento {{ $intentoActual }} de {{ $intentosPermitidos }}</span>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                             @endphp
                             <div id="heart-life-{{ $v }}" 
                                  class="heart-3d-box {{ $esPerdido ? 'heart-lost' : ($vidasIni === 1 ? 'heart-alive heart-critical' : 'heart-alive') }}" 
-                                 title="Vida #{{ $v }}: {{ $esPerdido ? 'Perdida' : 'Activa' }}">
+                                 title="Vida {{ $v }}: {{ $esPerdido ? 'Perdida' : 'Activa' }}">
                                 <svg class="w-6 h-6 sm:w-7 sm:h-7 heart-svg transition-transform duration-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <!-- Degradado frontal 3D rubí activo con iluminación cenital -->
@@ -711,42 +711,209 @@
                 reportarIncidenteAntiTrampa('clic_derecho', 'Intento de abrir menú contextual con clic derecho.');
             });
 
-            // C. Bloqueo de atajos de teclado peligrosos
+            // Función auxiliar para vaciar portapapeles ante intento de captura o copia
+            function vaciarPortapapelesSeguro() {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText('').catch(() => {});
+                    }
+                } catch (err) {}
+            }
+
+            // B. Bloqueo de portapapeles y menú contextual
+            document.addEventListener('copy', (e) => {
+                if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
+                e.preventDefault();
+                reportarIncidenteAntiTrampa('intento_copiar', 'Intento bloqueado de copiar texto del examen.');
+            });
+
+            document.addEventListener('cut', (e) => {
+                if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
+                e.preventDefault();
+                reportarIncidenteAntiTrampa('intento_copiar', 'Intento bloqueado de cortar texto del examen.');
+            });
+
+            document.addEventListener('paste', (e) => {
+                if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
+                e.preventDefault();
+                reportarIncidenteAntiTrampa('intento_pegar', 'Intento bloqueado de pegar texto externo (Ctrl+V / Shift+Insert / Menú).');
+            });
+
+            document.addEventListener('contextmenu', (e) => {
+                if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
+                e.preventDefault();
+                reportarIncidenteAntiTrampa('clic_derecho', 'Intento de abrir menú contextual con clic derecho.');
+            });
+
+            document.addEventListener('selectstart', (e) => {
+                if (antiTrampaConfig.examenIniciado && !antiTrampaConfig.bloqueado && !envioEnProgreso) {
+                    const tag = e.target.tagName ? e.target.tagName.toLowerCase() : '';
+                    if (tag !== 'input' && tag !== 'textarea') {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            document.addEventListener('dragstart', (e) => {
+                if (antiTrampaConfig.examenIniciado && !antiTrampaConfig.bloqueado && !envioEnProgreso) {
+                    e.preventDefault();
+                }
+            });
+
+            // C. Bloqueo de atajos de teclado peligrosos (Capturas, Pegar/Copiar, IA Brave/Copilot, DevTools)
             document.addEventListener('keydown', (e) => {
                 if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
 
                 const tecla = e.key ? e.key.toLowerCase() : '';
+                const code = e.code ? e.code.toLowerCase() : '';
                 const ctrl = e.ctrlKey || e.metaKey;
                 const shift = e.shiftKey;
+                const alt = e.altKey;
 
-                if (e.key === 'F12') {
+                // 1. Captura de pantalla (PrintScreen / Snapshot)
+                if (e.key === 'PrintScreen' || code === 'printscreen' || e.key === 'Snapshot' || e.keyCode === 44) {
+                    e.preventDefault();
+                    vaciarPortapapelesSeguro();
+                    reportarIncidenteAntiTrampa('captura_pantalla', 'Intento de captura de pantalla (Tecla ImprPant / PrintScreen).');
+                    return;
+                }
+
+                // 2. Herramientas de recorte y captura por atajos (Shift+S en Windows, Cmd+Shift+3/4/5 en Mac)
+                if ((ctrl || alt || e.metaKey) && shift && ['s', 'keys', '3', '4', '5'].includes(tecla || code)) {
+                    e.preventDefault();
+                    vaciarPortapapelesSeguro();
+                    reportarIncidenteAntiTrampa('captura_pantalla', 'Intento de captura o recorte de pantalla (Shift+S / Recortes).');
+                    return;
+                }
+
+                // 3. Atajos para invocar IA (Brave Leo Ctrl+B / Alt+B, Edge Copilot Ctrl+Shift+., etc.)
+                if ((ctrl || alt) && (tecla === 'b' || code === 'keyb')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('asistente_ia', 'Intento de abrir asistente de IA en navegador (Ctrl+B / Alt+B / Brave Leo).');
+                    return;
+                }
+
+                if (ctrl && shift && (tecla === '.' || code === 'period')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('asistente_ia', 'Intento de abrir asistente de IA Copilot en Edge (Ctrl+Shift+.).');
+                    return;
+                }
+
+                if (alt && (tecla === 'c' || code === 'keyc')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('asistente_ia', 'Intento de abrir asistente de IA / Copilot (Alt+C).');
+                    return;
+                }
+
+                if ((ctrl || alt) && (code === 'space' || tecla === ' ' || tecla === 'space')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('asistente_ia', 'Intento de abrir lanzador de búsqueda o asistente de IA (Espacio).');
+                    return;
+                }
+
+                // Extensiones comunes de IA (ChatGPT, Monica, Merlin, Sider, etc.)
+                if (ctrl && shift && ['l', 'o', 'e', 'y', 'a'].includes(tecla)) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('asistente_ia', `Intento de abrir extensión de IA o herramienta externa (Ctrl+Shift+${tecla.toUpperCase()}).`);
+                    return;
+                }
+
+                // 4. Portapapeles alternativo (Shift+Insert para pegar, Ctrl+Insert para copiar, Shift+Delete para cortar)
+                if (shift && (e.key === 'Insert' || code === 'insert')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('intento_pegar', 'Intento de pegar contenido externo (Shift+Insert).');
+                    return;
+                }
+
+                if (ctrl && (e.key === 'Insert' || code === 'insert')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('intento_copiar', 'Intento de copiar contenido del examen (Ctrl+Insert).');
+                    return;
+                }
+
+                if (shift && (e.key === 'Delete' || code === 'delete')) {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('intento_copiar', 'Intento de cortar contenido (Shift+Delete).');
+                    return;
+                }
+
+                // 5. DevTools y Teclas de función de depuración / búsqueda / recarga
+                if (e.key === 'F12' || code === 'f12') {
                     e.preventDefault();
                     reportarIncidenteAntiTrampa('tecla_bloqueada', 'Intento de abrir herramientas de desarrollador (F12).');
                     return;
                 }
 
-                if (e.key === 'PrintScreen') {
+                if (e.key === 'F5' || code === 'f5') {
                     e.preventDefault();
-                    reportarIncidenteAntiTrampa('tecla_bloqueada', 'Intento de captura de pantalla (PrintScreen).');
+                    reportarIncidenteAntiTrampa('tecla_bloqueada', 'Intento de recargar el examen (F5).');
                     return;
                 }
 
+                if (e.key === 'F3' || code === 'f3') {
+                    e.preventDefault();
+                    reportarIncidenteAntiTrampa('tecla_bloqueada', 'Intento de buscar en la página (F3).');
+                    return;
+                }
+
+                // 6. Atajos con Ctrl / Cmd
                 if (ctrl) {
-                    if (['c', 'x', 'v'].includes(tecla)) {
+                    // Pegar
+                    if (tecla === 'v' || code === 'keyv') {
                         e.preventDefault();
-                        reportarIncidenteAntiTrampa(`intento_${tecla === 'v' ? 'pegar' : 'copiar'}`, `Atajo Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                        reportarIncidenteAntiTrampa('intento_pegar', 'Atajo Ctrl+V (Pegar contenido externo) bloqueado.');
                         return;
                     }
-                    if (['u', 's', 'p'].includes(tecla)) {
+                    // Copiar / Cortar
+                    if (['c', 'x'].includes(tecla) || ['keyc', 'keyx'].includes(code)) {
                         e.preventDefault();
-                        reportarIncidenteAntiTrampa('tecla_bloqueada', `Atajo Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                        reportarIncidenteAntiTrampa('intento_copiar', `Atajo Ctrl+${tecla.toUpperCase()} (Copiar/Cortar) bloqueado.`);
                         return;
                     }
-                    if (shift && ['i', 'j', 'c'].includes(tecla)) {
+                    // Seleccionar todo
+                    if (tecla === 'a' || code === 'keya') {
                         e.preventDefault();
-                        reportarIncidenteAntiTrampa('tecla_bloqueada', `Atajo Ctrl+Shift+${tecla.toUpperCase()} bloqueado.`);
+                        reportarIncidenteAntiTrampa('intento_copiar', 'Atajo Ctrl+A (Seleccionar todo) bloqueado.');
                         return;
                     }
+
+                    // Búsqueda en página
+                    if (['f', 'g'].includes(tecla)) {
+                        e.preventDefault();
+                        reportarIncidenteAntiTrampa('tecla_bloqueada', `Atajo de búsqueda Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                        return;
+                    }
+
+                    // Código fuente, guardar, imprimir, recargar
+                    if (['u', 's', 'p', 'r'].includes(tecla)) {
+                        e.preventDefault();
+                        if (tecla === 'p') vaciarPortapapelesSeguro();
+                        reportarIncidenteAntiTrampa(tecla === 'p' ? 'captura_pantalla' : 'tecla_bloqueada', `Atajo Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                        return;
+                    }
+
+                    // Nuevas pestañas, ventanas, historial o descargas
+                    if (['n', 't', 'w', 'h', 'j'].includes(tecla)) {
+                        e.preventDefault();
+                        reportarIncidenteAntiTrampa('tecla_bloqueada', `Atajo de navegación Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                        return;
+                    }
+
+                    // Consola / Inspector DevTools (Ctrl+Shift+I/J/C/K)
+                    if (shift && ['i', 'j', 'c', 'k'].includes(tecla)) {
+                        e.preventDefault();
+                        reportarIncidenteAntiTrampa('tecla_bloqueada', `Atajo Ctrl+Shift+${tecla.toUpperCase()} (Inspector/Consola) bloqueado.`);
+                        return;
+                    }
+                }
+            });
+
+            // Captura reactiva de PrintScreen en keyup (por si el SO interceptó el keydown)
+            window.addEventListener('keyup', (e) => {
+                if (antiTrampaConfig.bloqueado || envioEnProgreso || !antiTrampaConfig.examenIniciado) return;
+                if (e.key === 'PrintScreen' || (e.code && e.code.toLowerCase() === 'printscreen') || e.key === 'Snapshot' || e.keyCode === 44) {
+                    vaciarPortapapelesSeguro();
+                    reportarIncidenteAntiTrampa('captura_pantalla', 'Captura de pantalla detectada por el monitor (PrintScreen).');
                 }
             });
 

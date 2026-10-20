@@ -238,56 +238,163 @@ class SisigAntiTrampa {
             const shift = e.shiftKey;
             const alt = e.altKey;
 
-            // F12 (Herramientas de Desarrollador)
-            if (e.key === 'F12') {
+            const code = e.code ? e.code.toLowerCase() : '';
+            const vaciarPortapapeles = () => {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText('').catch(() => {});
+                    }
+                } catch (err) {}
+            };
+
+            // 1. Captura de pantalla (PrintScreen / Snapshot)
+            if (e.key === 'PrintScreen' || code === 'printscreen' || e.key === 'Snapshot' || e.keyCode === 44) {
+                e.preventDefault();
+                vaciarPortapapeles();
+                this.reportarIncidente('captura_pantalla', 'Intento de captura de pantalla (Tecla ImprPant / PrintScreen).');
+                return;
+            }
+
+            // 2. Herramientas de recorte y captura por atajos (Shift+S en Windows, Cmd+Shift+3/4/5 en Mac)
+            if ((ctrl || alt || e.metaKey) && shift && ['s', 'keys', '3', '4', '5'].includes(tecla || code)) {
+                e.preventDefault();
+                vaciarPortapapeles();
+                this.reportarIncidente('captura_pantalla', 'Intento de captura o recorte de pantalla (Shift+S / Recortes).');
+                return;
+            }
+
+            // 3. Atajos para invocar IA (Brave Leo Ctrl+B / Alt+B, Edge Copilot Ctrl+Shift+., etc.)
+            if ((ctrl || alt) && (tecla === 'b' || code === 'keyb')) {
+                e.preventDefault();
+                this.reportarIncidente('asistente_ia', 'Intento de abrir asistente de IA en navegador (Ctrl+B / Alt+B / Brave Leo).');
+                return;
+            }
+
+            if (ctrl && shift && (tecla === '.' || code === 'period')) {
+                e.preventDefault();
+                this.reportarIncidente('asistente_ia', 'Intento de abrir asistente de IA Copilot en Edge (Ctrl+Shift+.).');
+                return;
+            }
+
+            if (alt && (tecla === 'c' || code === 'keyc')) {
+                e.preventDefault();
+                this.reportarIncidente('asistente_ia', 'Intento de abrir asistente de IA / Copilot (Alt+C).');
+                return;
+            }
+
+            if ((ctrl || alt) && (code === 'space' || tecla === ' ' || tecla === 'space')) {
+                e.preventDefault();
+                this.reportarIncidente('asistente_ia', 'Intento de abrir lanzador de búsqueda o asistente de IA (Espacio).');
+                return;
+            }
+
+            // Extensiones comunes de IA (ChatGPT, Monica, Merlin, Sider, etc.)
+            if (ctrl && shift && ['l', 'o', 'e', 'y', 'a'].includes(tecla)) {
+                e.preventDefault();
+                this.reportarIncidente('asistente_ia', `Intento de abrir extensión de IA o herramienta externa (Ctrl+Shift+${tecla.toUpperCase()}).`);
+                return;
+            }
+
+            // 4. Portapapeles alternativo (Shift+Insert, Ctrl+Insert, Shift+Delete)
+            if (shift && (e.key === 'Insert' || code === 'insert')) {
+                e.preventDefault();
+                this.reportarIncidente('intento_pegar', 'Intento de pegar contenido externo (Shift+Insert).');
+                return;
+            }
+
+            if (ctrl && (e.key === 'Insert' || code === 'insert')) {
+                e.preventDefault();
+                this.reportarIncidente('intento_copiar', 'Intento de copiar contenido del examen (Ctrl+Insert).');
+                return;
+            }
+
+            if (shift && (e.key === 'Delete' || code === 'delete')) {
+                e.preventDefault();
+                this.reportarIncidente('intento_copiar', 'Intento de cortar contenido (Shift+Delete).');
+                return;
+            }
+
+            // 5. DevTools y Teclas de función
+            if (e.key === 'F12' || code === 'f12') {
                 e.preventDefault();
                 this.reportarIncidente('tecla_bloqueada', 'Intento de abrir herramientas de desarrollador (F12).');
                 return;
             }
 
-            // Tecla ImprPant / PrintScreen
-            if (e.key === 'PrintScreen') {
+            if (e.key === 'F5' || code === 'f5') {
                 e.preventDefault();
-                this.reportarIncidente('tecla_bloqueada', 'Intento de captura de pantalla (PrintScreen).');
+                this.reportarIncidente('tecla_bloqueada', 'Intento de recargar el examen (F5).');
                 return;
             }
 
-            // Atajos con Ctrl / Cmd
+            if (e.key === 'F3' || code === 'f3') {
+                e.preventDefault();
+                this.reportarIncidente('tecla_bloqueada', 'Intento de buscar en la página (F3).');
+                return;
+            }
+
+            // 6. Atajos con Ctrl / Cmd
             if (ctrl) {
-                // Ctrl + C / Ctrl + X / Ctrl + V
-                if (['c', 'x', 'v'].includes(tecla)) {
+                // Pegar
+                if (tecla === 'v' || code === 'keyv') {
                     e.preventDefault();
-                    this.reportarIncidente(`intento_${tecla === 'v' ? 'pegar' : 'copiar'}`, `Atajo Ctrl+${tecla.toUpperCase()} bloqueado.`);
+                    this.reportarIncidente('intento_pegar', 'Atajo Ctrl+V (Pegar contenido externo) bloqueado.');
+                    return;
+                }
+                // Copiar / Cortar
+                if (['c', 'x'].includes(tecla) || ['keyc', 'keyx'].includes(code)) {
+                    e.preventDefault();
+                    this.reportarIncidente('intento_copiar', `Atajo Ctrl+${tecla.toUpperCase()} (Copiar/Cortar) bloqueado.`);
+                    return;
+                }
+                // Seleccionar todo
+                if (tecla === 'a' || code === 'keya') {
+                    e.preventDefault();
+                    this.reportarIncidente('intento_copiar', 'Atajo Ctrl+A (Seleccionar todo) bloqueado.');
                     return;
                 }
 
-                // Ctrl + U (Ver código fuente)
-                if (tecla === 'u') {
+                // Búsqueda en página
+                if (['f', 'g'].includes(tecla)) {
                     e.preventDefault();
-                    this.reportarIncidente('tecla_bloqueada', 'Intento de ver el código fuente (Ctrl+U).');
+                    this.reportarIncidente('tecla_bloqueada', `Atajo de búsqueda Ctrl+${tecla.toUpperCase()} bloqueado.`);
                     return;
                 }
 
-                // Ctrl + S (Guardar página)
-                if (tecla === 's') {
+                // Código fuente, guardar, imprimir, recargar
+                if (['u', 's', 'p', 'r'].includes(tecla)) {
                     e.preventDefault();
-                    this.reportarIncidente('tecla_bloqueada', 'Intento de guardar la página (Ctrl+S).');
+                    if (tecla === 'p') vaciarPortapapeles();
+                    this.reportarIncidente(tecla === 'p' ? 'captura_pantalla' : 'tecla_bloqueada', `Atajo Ctrl+${tecla.toUpperCase()} bloqueado.`);
                     return;
                 }
 
-                // Ctrl + P (Imprimir)
-                if (tecla === 'p') {
+                // Nuevas pestañas, ventanas, historial o descargas
+                if (['n', 't', 'w', 'h', 'j'].includes(tecla)) {
                     e.preventDefault();
-                    this.reportarIncidente('tecla_bloqueada', 'Intento de imprimir el examen (Ctrl+P).');
+                    this.reportarIncidente('tecla_bloqueada', `Atajo de navegación Ctrl+${tecla.toUpperCase()} bloqueado.`);
                     return;
                 }
 
-                // Ctrl + Shift + I/J/C (DevTools)
-                if (shift && ['i', 'j', 'c'].includes(tecla)) {
+                // Consola / Inspector DevTools (Ctrl+Shift+I/J/C/K)
+                if (shift && ['i', 'j', 'c', 'k'].includes(tecla)) {
                     e.preventDefault();
-                    this.reportarIncidente('tecla_bloqueada', `Intento de abrir consola/inspector (Ctrl+Shift+${tecla.toUpperCase()}).`);
+                    this.reportarIncidente('tecla_bloqueada', `Atajo Ctrl+Shift+${tecla.toUpperCase()} (Inspector/Consola) bloqueado.`);
                     return;
                 }
+            }
+        });
+
+        // Captura reactiva de PrintScreen en keyup
+        window.addEventListener('keyup', (e) => {
+            if (this.bloqueado) return;
+            if (e.key === 'PrintScreen' || (e.code && e.code.toLowerCase() === 'printscreen') || e.key === 'Snapshot' || e.keyCode === 44) {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText('').catch(() => {});
+                    }
+                } catch (err) {}
+                this.reportarIncidente('captura_pantalla', 'Captura de pantalla detectada por el monitor (PrintScreen).');
             }
         });
     }

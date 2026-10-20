@@ -88,7 +88,7 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-3xl font-black text-slate-800">
-                        #{{ $intentoNumero }}
+                        {{ $intentoNumero }}
                     </h3>
                     <div class="mt-2 text-xs text-slate-500 font-medium">
                         De {{ $intentosPermitidos }} intentos permitidos
@@ -135,7 +135,7 @@
                 <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $quiz->id_quiz) }}" 
                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all">
                     <i class="fas fa-redo text-xs"></i>
-                    <span>Presentar Siguiente Intento (#{{ $intentoNumero + 1 }})</span>
+                    <span>Presentar Siguiente Intento (Intento {{ $intentoNumero + 1 }})</span>
                 </a>
             @endif
         </div>

@@ -49,6 +49,7 @@ class EvaluacionesAprendizController extends Controller
 
             $intentosPermitidos = $quiz->numero_intentos ?? 3;
             $intentosRestantes = max(0, $intentosPermitidos - $intentosRealizados);
+
             $puedePresentar = !$aprobado && ($intentosRestantes > 0) && ($quiz->preguntas->count() > 0);
 
             return (object) [
@@ -241,6 +242,8 @@ class EvaluacionesAprendizController extends Controller
             'intento_pegar' => 'Intento de pegar contenido',
             'clic_derecho' => 'Menú contextual (clic derecho)',
             'tecla_bloqueada' => 'Atajo de teclado no permitido',
+            'captura_pantalla' => 'Intento de captura de pantalla (PrintScreen / Recortes)',
+            'asistente_ia' => 'Intento de abrir IA o asistente inteligente (Brave Leo, Copilot, etc.)',
         ];
 
         $descripcionTipo = $tiposMapeados[$tipoEvento] ?? $tipoEvento;

@@ -171,6 +171,11 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        #contenedor-alertas-globales:empty {
+            display: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
         /* Scrollbar elegante y oscuro para el sidebar */
         #sidebar-menu::-webkit-scrollbar {
             width: 4px;
@@ -291,15 +296,15 @@
             </div>
         @endif
 
-        <main class="flex-1 p-5 sm:p-8 relative">
+        <main class="flex-1 p-4 sm:p-6 lg:p-7 relative">
             <!-- Contenedor Universal de Alertas de Sesión / Acciones -->
-            <div id="contenedor-alertas-globales" class="space-y-3 mb-6">
+            <div id="contenedor-alertas-globales" class="space-y-3">
                 @if(session('success') || session('error') || session('info') || session('warning'))
                     @php 
                         $tipo = session('success') ? 'success' : (session('error') ? 'error' : (session('warning') ? 'warning' : 'info'));
                         $mensaje = session('success') ?? session('error') ?? session('warning') ?? session('info');
                     @endphp
-                    <div id="session-alert" class="p-4 rounded-2xl {{ $tipo === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : ($tipo === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800') }} border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out animate-fade-in">
+                    <div id="session-alert" class="p-4 mb-4 rounded-2xl {{ $tipo === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : ($tipo === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800') }} border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out animate-fade-in">
                         <div class="flex items-center gap-3">
                             <i class="fas {{ $tipo === 'success' ? 'fa-check-circle text-emerald-600' : ($tipo === 'error' ? 'fa-exclamation-triangle text-rose-600' : 'fa-exclamation-circle text-amber-600') }} text-base flex-shrink-0"></i>
                             <p class="text-xs sm:text-sm font-bold">{{ $mensaje }}</p>

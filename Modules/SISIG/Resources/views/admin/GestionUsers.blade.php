@@ -182,27 +182,27 @@
                                 <td class="py-3.5 px-4 text-slate-600">
                                     <span class="font-medium text-slate-700">{{ $u->email }}</span>
                                     @if($u->ficha && $u->rol_slug === 'aprendiz_sisig')
-                                        <span class="text-[10px] text-sena-green font-bold block">Ficha: {{ $u->ficha }}</span>
+                                        <span class="text-[10px] text-black font-bold block">Ficha: {{ $u->ficha }}</span>
                                     @endif
                                 </td>
 
                                 <td class="py-3.5 px-4">
                                     @php
-                                        $colors = match($u->rol_slug) {
-                                            'admin_sisig' => ['text-emerald-600', 'bg-emerald-500'],
-                                            'editor_sisig' => ['text-sky-600', 'bg-sky-500'],
-                                            'aprendiz_sisig' => ['text-teal-600', 'bg-teal-500'],
-                                            default => ['text-slate-500', 'bg-slate-400'],
+                                        $dotColor = match($u->rol_slug) {
+                                            'admin_sisig' => 'bg-emerald-500',
+                                            'editor_sisig' => 'bg-sky-500',
+                                            'aprendiz_sisig' => 'bg-teal-500',
+                                            default => 'bg-slate-400',
                                         };
                                     @endphp
-                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold {{ $colors[0] }}">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $colors[1] }}"></span>
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-black">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
                                         <span>{{ $u->rol_nombre }}</span>
                                     </span>
                                 </td>
 
                                 <td class="py-3.5 px-4">
-                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold {{ $u->is_active ? 'text-emerald-600' : 'text-rose-600' }}">
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-black">
                                         <span class="w-1.5 h-1.5 rounded-full {{ $u->is_active ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
                                         <span>{{ $u->is_active ? 'Activo' : 'Inactivo' }}</span>
                                     </span>

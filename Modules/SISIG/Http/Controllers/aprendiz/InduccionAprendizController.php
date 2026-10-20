@@ -61,15 +61,45 @@ class InduccionAprendizController extends Controller
         $moduloAnterior = Modulo::where('estado', '!=', 'inactivo')->where('id', '<', $id)->orderBy('id', 'desc')->first();
         $moduloSiguiente = Modulo::where('estado', '!=', 'inactivo')->where('id', '>', $id)->orderBy('id', 'asc')->first();
 
-        // Evaluación o quiz asociado al módulo (si existe en base de datos)
-        $quizAsociado = Quiz::where('modulo_id', $modulo->id)->where('activo', 1)->first();
+        $userId = auth()->id();
+
+        // Consultar los quices o evaluaciones asignadas a este módulo
+        $quicesAsociados = Quiz::where('modulo_id', $modulo->id)
+            ->where('activo', 1)
+            ->withCount('preguntas')
+            ->get();
+
+        $quicesConEstado = $quicesAsociados->map(function ($quiz) use ($userId) {
+            $intentos = \Illuminate\Support\Facades\DB::table('sisig_resultados')
+                ->where('user_id', $userId)
+                ->where('id_quiz', $quiz->id_quiz)
+                ->whereNotNull('fecha_presentacion')
+                ->get();
+
+            $aprobado = $intentos->contains('aprobado', 1);
+            $mejorNota = $intentos->max('puntaje') ?? 0;
+            $intentosUsados = $intentos->count();
+            $intentosPermitidos = $quiz->numero_intentos ?? 3;
+            $puedePresentar = !$aprobado && ($intentosUsados < $intentosPermitidos) && ($quiz->preguntas_count > 0);
+
+            $quiz->aprobado = $aprobado;
+            $quiz->mejor_nota = (float) $mejorNota;
+            $quiz->intentos_usados = $intentosUsados;
+            $quiz->intentos_permitidos = $intentosPermitidos;
+            $quiz->puede_presentar = $puedePresentar;
+
+            return $quiz;
+        });
+
+        $quizAsociado = $quicesConEstado->first();
 
         return view('sisig::aprendiz.induccion.show', compact(
             'modulo',
             'todosModulos',
             'moduloAnterior',
             'moduloSiguiente',
-            'quizAsociado'
+            'quizAsociado',
+            'quicesConEstado'
         ));
     }
 }
