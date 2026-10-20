@@ -76,32 +76,67 @@
                            class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none text-xs transition-all text-slate-800">
                 </div>
 
-                <!-- Pastillas de Selección de Sección SIG -->
-                <div class="flex flex-wrap items-center gap-3 text-xs">
-                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Sección SIG:</span>
-                        
-                        <!-- Calidad -->
-                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'calidad', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'calidad' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-certificate text-xs {{ $seccion === 'calidad' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
-                            <span>Calidad</span>
-                        </a>
+                <!-- Pastillas de Selección de Sección SIG Dinámicas -->
+                @php
+                    $listaModulos = (!empty($modulos) && $modulos->isNotEmpty()) ? $modulos : collect([
+                        (object)['id' => 1, 'titulo' => 'Calidad', 'icono_base' => 'fas fa-certificate', 'color_icono' => 'text-emerald-400'],
+                        (object)['id' => 2, 'titulo' => 'SST', 'icono_base' => 'fas fa-hard-hat', 'color_icono' => 'text-amber-400'],
+                        (object)['id' => 3, 'titulo' => 'Ambiental', 'icono_base' => 'fas fa-leaf', 'color_icono' => 'text-emerald-400'],
+                    ]);
+                    $tieneMasDeTres = $listaModulos->count() > 3;
+                @endphp
 
-                        <!-- SST -->
-                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'sst', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'sst' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-hard-hat text-xs {{ $seccion === 'sst' ? 'text-amber-400' : 'text-slate-400' }}"></i>
-                            <span>SST</span>
-                        </a>
+                <style>
+                    #contenedor-secciones-sig::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
 
-                        <!-- Ambiental -->
-                        <a href="{{ route('sisig.editor.reportes.index', ['seccion' => 'ambiental', 'buscar' => request('buscar')]) }}"
-                           class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 {{ $seccion === 'ambiental' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            <i class="fas fa-leaf text-xs {{ $seccion === 'ambiental' ? 'text-emerald-400' : 'text-slate-400' }}"></i>
-                            <span>Ambiental</span>
-                        </a>
+                <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 select-none text-xs">
+                    <span class="text-slate-400 font-bold px-2 hidden sm:inline whitespace-nowrap">Sección SIG:</span>
+                    
+                    @if($tieneMasDeTres)
+                        <!-- Flecha Desplazamiento Izquierda -->
+                        <button type="button" 
+                                id="btn-nav-secciones-prev"
+                                onclick="desplazarSecciones('left')" 
+                                class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                title="Ver módulos anteriores"
+                                aria-label="Ver módulos anteriores">
+                            <i class="fas fa-chevron-left text-[10px]"></i>
+                        </button>
+                    @endif
+
+                    <!-- Contenedor Deslizable de Módulos Dinámicos (Capacidad: 3 módulos) -->
+                    <div id="contenedor-secciones-sig" 
+                         class="flex items-center gap-1.5 overflow-x-auto scroll-smooth {{ $tieneMasDeTres ? 'w-[240px] sm:w-[270px] md:w-[300px]' : '' }} py-0.5 px-0.5"
+                         style="scrollbar-width: none; -ms-overflow-style: none;">
+                        @foreach($listaModulos as $mod)
+                            @php
+                                $esActivo = ($moduloSeleccionado && $moduloSeleccionado->id == $mod->id) 
+                                            || (strtolower(trim($seccion)) === strtolower(trim($mod->titulo)));
+                            @endphp
+                            <a href="{{ route('sisig.editor.reportes.index', ['seccion' => $mod->id, 'buscar' => request('buscar')]) }}"
+                               id="seccion-pill-{{ $mod->id }}"
+                               title="{{ $mod->titulo }}"
+                               @if($tieneMasDeTres) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
+                               class="px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate {{ $esActivo ? 'bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-seccion' : 'text-slate-600 hover:bg-slate-200/80 hover:text-slate-900' }}">
+                                <span class="truncate">{{ $mod->titulo }}</span>
+                            </a>
+                        @endforeach
                     </div>
+
+                    @if($tieneMasDeTres)
+                        <!-- Flecha Desplazamiento Derecha -->
+                        <button type="button" 
+                                id="btn-nav-secciones-next"
+                                onclick="desplazarSecciones('right')" 
+                                class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                title="Ver más módulos"
+                                aria-label="Ver más módulos">
+                            <i class="fas fa-chevron-right text-[10px]"></i>
+                        </button>
+                    @endif
                 </div>
 
             </div>
@@ -519,6 +554,51 @@
                 cerrarModalRespuestas();
             }
         });
+
+        // Navegación con flechas para módulos de Sección SIG
+        function desplazarSecciones(direccion) {
+            const contenedor = document.getElementById('contenedor-secciones-sig');
+            if (!contenedor) return;
+            const paso = Math.round(contenedor.clientWidth / 3) + 2; // Desplazamiento exacto de 1 módulo (1/3 visible)
+            contenedor.scrollBy({
+                left: direccion === 'left' ? -paso : paso,
+                behavior: 'smooth'
+            });
+            setTimeout(verificarLimitesScrollSecciones, 320);
+        }
+
+        function verificarLimitesScrollSecciones() {
+            const contenedor = document.getElementById('contenedor-secciones-sig');
+            const btnPrev = document.getElementById('btn-nav-secciones-prev');
+            const btnNext = document.getElementById('btn-nav-secciones-next');
+            if (!contenedor) return;
+
+            if (btnPrev) {
+                const alInicio = contenedor.scrollLeft <= 5;
+                btnPrev.style.opacity = alInicio ? '0.35' : '1';
+                btnPrev.style.pointerEvents = alInicio ? 'none' : 'auto';
+            }
+            if (btnNext) {
+                const alFinal = (contenedor.scrollLeft + contenedor.clientWidth) >= (contenedor.scrollWidth - 5);
+                btnNext.style.opacity = alFinal ? '0.35' : '1';
+                btnNext.style.pointerEvents = alFinal ? 'none' : 'auto';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const contenedor = document.getElementById('contenedor-secciones-sig');
+            if (contenedor) {
+                contenedor.addEventListener('scroll', verificarLimitesScrollSecciones);
+                
+                // Centrar automáticamente la pastilla del módulo activo si no está visible
+                const activa = contenedor.querySelector('.is-active-seccion');
+                if (activa) {
+                    activa.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+                setTimeout(verificarLimitesScrollSecciones, 350);
+            }
+        });
+    </script>
 
     <!-- Librería SheetJS para exportación nativa a Microsoft Excel (.xlsx) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>

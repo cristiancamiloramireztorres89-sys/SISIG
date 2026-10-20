@@ -85,12 +85,89 @@
                         <button type="button" onclick="filterByStatus('No aprobado')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="No aprobado">No aprobados</button>
                     </div>
 
-                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                        <span class="text-slate-400 font-bold px-2 hidden sm:inline">Sección:</span>
-                        <button type="button" onclick="filterBySeccion('todas')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm" data-seccion="todas">Todas</button>
-                        <button type="button" onclick="filterBySeccion('calidad')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="calidad">Calidad</button>
-                        <button type="button" onclick="filterBySeccion('sst')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="sst">SST</button>
-                        <button type="button" onclick="filterBySeccion('ambiental')" class="seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-seccion="ambiental">Ambiental</button>
+                    @php
+                        $modulosFiltroPart = \Illuminate\Support\Facades\DB::table('sisig_modulos')
+                            ->where('estado', '!=', 'inactivo')
+                            ->orderBy('id', 'asc')
+                            ->get();
+                        if ($modulosFiltroPart->isEmpty()) {
+                            $modulosFiltroPart = collect([
+                                (object)['id' => 1, 'titulo' => 'Calidad'],
+                                (object)['id' => 2, 'titulo' => 'SST'],
+                                (object)['id' => 3, 'titulo' => 'Ambiental'],
+                            ]);
+                        }
+                        $totalOpcionesPart = $modulosFiltroPart->count() + 1;
+                        $tieneMasDeTresPart = $totalOpcionesPart > 3;
+                    @endphp
+
+                    <style>
+                        #contenedor-modulos-part::-webkit-scrollbar {
+                            display: none;
+                        }
+                        #contenedor-modulos-part {
+                            -ms-overflow-style: none;
+                            scrollbar-width: none;
+                        }
+                    </style>
+
+                    <!-- Filtro Dinámico de Secciones SIG Participantes (Sin logos, Capacidad: 3) -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 select-none text-xs">
+                        <span class="text-slate-400 font-bold px-2 hidden sm:inline whitespace-nowrap">Sección:</span>
+                        
+                        @if($tieneMasDeTresPart)
+                            <button type="button" 
+                                    id="btn-part-modulos-prev"
+                                    onclick="desplazarModulosPart('left')" 
+                                    class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                    title="Ver módulos anteriores"
+                                    aria-label="Ver módulos anteriores">
+                                <i class="fas fa-chevron-left text-[10px]"></i>
+                            </button>
+                        @endif
+
+                        <div id="contenedor-modulos-part" 
+                             class="flex items-center gap-1.5 overflow-x-auto scroll-smooth {{ $tieneMasDeTresPart ? 'w-[240px] sm:w-[270px] md:w-[300px]' : '' }} py-0.5 px-0.5"
+                             style="scrollbar-width: none; -ms-overflow-style: none;">
+                            
+                            <!-- Opción Todas -->
+                            <button type="button" 
+                                    onclick="filterBySeccion('todas')"
+                                    title="Todas las secciones"
+                                    @if($tieneMasDeTresPart) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
+                                    class="seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-part"
+                                    data-seccion="todas">
+                                <span class="truncate">Todas</span>
+                            </button>
+
+                            @foreach($modulosFiltroPart as $mP)
+                                @php
+                                    $secKey = strtolower($mP->titulo);
+                                    if (str_contains($secKey, 'calidad')) $secKey = 'calidad';
+                                    elseif (str_contains($secKey, 'sst') || str_contains($secKey, 'seguridad')) $secKey = 'sst';
+                                    elseif (str_contains($secKey, 'ambiental') || str_contains($secKey, 'ambiente')) $secKey = 'ambiental';
+                                @endphp
+                                <button type="button" 
+                                        onclick="filterBySeccion('{{ $secKey }}')"
+                                        title="{{ $mP->titulo }}"
+                                        @if($tieneMasDeTresPart) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
+                                        class="seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate text-slate-600 hover:bg-slate-200/80 hover:text-slate-900"
+                                        data-seccion="{{ $secKey }}">
+                                    <span class="truncate">{{ $mP->titulo }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+
+                        @if($tieneMasDeTresPart)
+                            <button type="button" 
+                                    id="btn-part-modulos-next"
+                                    onclick="desplazarModulosPart('right')" 
+                                    class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                    title="Ver más módulos"
+                                    aria-label="Ver más módulos">
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </button>
+                        @endif
                     </div>
                 </div>
 
@@ -405,13 +482,42 @@
             applyFilters();
         }
 
+        function desplazarModulosPart(direccion) {
+            const contenedor = document.getElementById('contenedor-modulos-part');
+            if (!contenedor) return;
+            const paso = Math.round(contenedor.clientWidth / 3) + 2;
+            contenedor.scrollBy({
+                left: direccion === 'left' ? -paso : paso,
+                behavior: 'smooth'
+            });
+            setTimeout(verificarLimitesScrollPart, 320);
+        }
+
+        function verificarLimitesScrollPart() {
+            const contenedor = document.getElementById('contenedor-modulos-part');
+            const btnPrev = document.getElementById('btn-part-modulos-prev');
+            const btnNext = document.getElementById('btn-part-modulos-next');
+            if (!contenedor) return;
+
+            if (btnPrev) {
+                const alInicio = contenedor.scrollLeft <= 5;
+                btnPrev.style.opacity = alInicio ? '0.35' : '1';
+                btnPrev.style.pointerEvents = alInicio ? 'none' : 'auto';
+            }
+            if (btnNext) {
+                const alFinal = (contenedor.scrollLeft + contenedor.clientWidth) >= (contenedor.scrollWidth - 5);
+                btnNext.style.opacity = alFinal ? '0.35' : '1';
+                btnNext.style.pointerEvents = alFinal ? 'none' : 'auto';
+            }
+        }
+
         // 3. Filtro / Ordenación por Sección
         function filterBySeccion(seccion) {
             currentSeccionFilter = seccion;
             document.querySelectorAll('.seccion-filter-btn').forEach(btn => {
                 btn.className = btn.dataset.seccion === seccion 
-                    ? 'seccion-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm'
-                    : 'seccion-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200';
+                    ? 'seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-part flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate'
+                    : 'seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate';
             });
 
             // Si se selecciona una sección específica, ordenar la tabla de mayor a menor porcentaje en esa sección

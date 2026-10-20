@@ -74,11 +74,25 @@
                     <input type="text" name="buscar" id="infracciones-search-input" value="{{ $buscar ?? '' }}" placeholder="Buscar por aprendiz, documento, ficha o quiz..." 
                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                 </div>
+                @php
+                    $modulosInfracciones = \Illuminate\Support\Facades\DB::table('sisig_modulos')
+                        ->where('estado', '!=', 'inactivo')
+                        ->orderBy('id', 'asc')
+                        ->get();
+                @endphp
                 <select name="seccion" id="infracciones-seccion-select" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[180px]" onchange="this.form.submit()">
                     <option value="todas" {{ $seccion === 'todas' ? 'selected' : '' }}>Todos los módulos</option>
-                    <option value="calidad" {{ $seccion === 'calidad' ? 'selected' : '' }}>Calidad (ISO 9001)</option>
-                    <option value="sst" {{ $seccion === 'sst' ? 'selected' : '' }}>SST (ISO 45001)</option>
-                    <option value="ambiental" {{ $seccion === 'ambiental' ? 'selected' : '' }}>Ambiental (ISO 14001)</option>
+                    @foreach($modulosInfracciones as $modInf)
+                        @php
+                            $valSec = strtolower($modInf->titulo);
+                            if (str_contains($valSec, 'calidad')) $valSec = 'calidad';
+                            elseif (str_contains($valSec, 'sst') || str_contains($valSec, 'seguridad')) $valSec = 'sst';
+                            elseif (str_contains($valSec, 'ambiental') || str_contains($valSec, 'ambiente')) $valSec = 'ambiental';
+                        @endphp
+                        <option value="{{ $valSec }}" {{ $seccion === $valSec ? 'selected' : '' }}>
+                            {{ $modInf->titulo }} {{ !empty($modInf->norma) ? "({$modInf->norma})" : '' }}
+                        </option>
+                    @endforeach
                 </select>
             </form>
         </div>

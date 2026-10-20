@@ -66,6 +66,7 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
 
         // Rutas de Gestión de Contenido para el Editor
         Route::get('/contenido', [ContenidoController::class, 'index'])->name('contenido.index');
+        Route::post('/contenido', [ContenidoController::class, 'store'])->name('contenido.store');
         Route::get('/contenido/{id}/editar', [ContenidoController::class, 'edit'])->name('contenido.edit');
         Route::put('/contenido/{id}', [ContenidoController::class, 'update'])->name('contenido.update');
 

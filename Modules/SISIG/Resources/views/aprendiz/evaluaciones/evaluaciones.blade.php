@@ -87,12 +87,84 @@
             </div>
             
             <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                <select id="filtroModuloSelect" class="bg-slate-50 border border-slate-200 text-slate-700 font-medium text-sm rounded-2xl px-4 py-3 focus:ring-2 focus:ring-sena-green/50 outline-none w-full sm:w-auto cursor-pointer transition-all hover:bg-slate-100">
-                    <option value="">Todas las secciones</option>
-                    @foreach($evaluaciones->pluck('modulo.titulo')->unique()->filter() as $modTitulo)
-                        <option value="{{ strtolower($modTitulo) }}">{{ $modTitulo }}</option>
-                    @endforeach
-                </select>
+                @php
+                    $modulosFiltroAprendiz = \Illuminate\Support\Facades\DB::table('sisig_modulos')
+                        ->where('estado', '!=', 'inactivo')
+                        ->orderBy('id', 'asc')
+                        ->get();
+                    if ($modulosFiltroAprendiz->isEmpty()) {
+                        $modulosFiltroAprendiz = $evaluaciones->pluck('modulo.titulo')->unique()->filter()->map(function($t, $i) {
+                            return (object)['id' => $i+1, 'titulo' => $t];
+                        });
+                    }
+                    $totalOpcionesEv = $modulosFiltroAprendiz->count() + 1;
+                    $tieneMasDeTresEv = $totalOpcionesEv > 3;
+                @endphp
+
+                <style>
+                    #contenedor-modulos-ev::-webkit-scrollbar {
+                        display: none;
+                    }
+                    #contenedor-modulos-ev {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
+                    }
+                </style>
+
+                <!-- Filtro Dinámico de Secciones SIG Aprendiz (Sin logos, Capacidad: 3) -->
+                <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 select-none text-xs">
+                    <span class="text-slate-400 font-bold px-2 hidden sm:inline whitespace-nowrap">Sección SIG:</span>
+                    
+                    @if($tieneMasDeTresEv)
+                        <button type="button" 
+                                id="btn-ev-modulos-prev"
+                                onclick="desplazarModulosEv('left')" 
+                                class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                title="Ver módulos anteriores"
+                                aria-label="Ver módulos anteriores">
+                            <i class="fas fa-chevron-left text-[10px]"></i>
+                        </button>
+                    @endif
+
+                    <div id="contenedor-modulos-ev" 
+                         class="flex items-center gap-1.5 overflow-x-auto scroll-smooth {{ $tieneMasDeTresEv ? 'w-[240px] sm:w-[270px] md:w-[300px]' : '' }} py-0.5 px-0.5"
+                         style="scrollbar-width: none; -ms-overflow-style: none;">
+                        
+                        <!-- Opción Todas -->
+                        <button type="button" 
+                                onclick="seleccionarModuloEv('', this)"
+                                title="Todas las secciones"
+                                @if($tieneMasDeTresEv) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
+                                class="btn-ev-modulo-pill px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-ev"
+                                data-modulo="">
+                            <span class="truncate">Todas</span>
+                        </button>
+
+                        @foreach($modulosFiltroAprendiz as $mEv)
+                            <button type="button" 
+                                    onclick="seleccionarModuloEv('{{ strtolower($mEv->titulo) }}', this)"
+                                    title="{{ $mEv->titulo }}"
+                                    @if($tieneMasDeTresEv) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
+                                    class="btn-ev-modulo-pill px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate text-slate-600 hover:bg-slate-200/80 hover:text-slate-900"
+                                    data-modulo="{{ strtolower($mEv->titulo) }}">
+                                <span class="truncate">{{ $mEv->titulo }}</span>
+                            </button>
+                        @endforeach
+                    </div>
+
+                    @if($tieneMasDeTresEv)
+                        <button type="button" 
+                                id="btn-ev-modulos-next"
+                                onclick="desplazarModulosEv('right')" 
+                                class="w-7 h-7 rounded-xl bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80 shadow-xs flex items-center justify-center transition-all active:scale-90 flex-shrink-0 cursor-pointer"
+                                title="Ver más módulos"
+                                aria-label="Ver más módulos">
+                            <i class="fas fa-chevron-right text-[10px]"></i>
+                        </button>
+                    @endif
+                </div>
+
+                <input type="hidden" id="filtroModuloSelect" value="">
 
                 <select id="filtroEstadoSelect" class="bg-slate-50 border border-slate-200 text-slate-700 font-medium text-sm rounded-2xl px-4 py-3 focus:ring-2 focus:ring-sena-green/50 outline-none w-full sm:w-auto cursor-pointer transition-all hover:bg-slate-100">
                     <option value="">Todos los estados</option>
@@ -237,7 +309,7 @@
                                     <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $ev->id_quiz) }}" 
                                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all w-full group-hover:bg-emerald-600">
                                         <i class="fas fa-play text-xs"></i>
-                                        <span>Iniciar Evaluación (Intento #{{ $ev->intentos_realizados + 1 }})</span>
+                                        <span>Iniciar Evaluación (Intento {{ $ev->intentos_realizados + 1 }})</span>
                                         <i class="fas fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
                                     </a>
                                 @endif
@@ -253,11 +325,59 @@
 
     <!-- Script de Filtro y Búsqueda en Tiempo Real -->
     <script>
+        function seleccionarModuloEv(modulo, btn) {
+            document.querySelectorAll('.btn-ev-modulo-pill').forEach(b => {
+                b.className = 'btn-ev-modulo-pill px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate text-slate-600 hover:bg-slate-200/80 hover:text-slate-900';
+            });
+            btn.className = 'btn-ev-modulo-pill px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-ev';
+            
+            const hiddenInput = document.getElementById('filtroModuloSelect');
+            if (hiddenInput) {
+                hiddenInput.value = modulo;
+                hiddenInput.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function desplazarModulosEv(direccion) {
+            const contenedor = document.getElementById('contenedor-modulos-ev');
+            if (!contenedor) return;
+            const paso = Math.round(contenedor.clientWidth / 3) + 2;
+            contenedor.scrollBy({
+                left: direccion === 'left' ? -paso : paso,
+                behavior: 'smooth'
+            });
+            setTimeout(verificarLimitesScrollEv, 320);
+        }
+
+        function verificarLimitesScrollEv() {
+            const contenedor = document.getElementById('contenedor-modulos-ev');
+            const btnPrev = document.getElementById('btn-ev-modulos-prev');
+            const btnNext = document.getElementById('btn-ev-modulos-next');
+            if (!contenedor) return;
+
+            if (btnPrev) {
+                const alInicio = contenedor.scrollLeft <= 5;
+                btnPrev.style.opacity = alInicio ? '0.35' : '1';
+                btnPrev.style.pointerEvents = alInicio ? 'none' : 'auto';
+            }
+            if (btnNext) {
+                const alFinal = (contenedor.scrollLeft + contenedor.clientWidth) >= (contenedor.scrollWidth - 5);
+                btnNext.style.opacity = alFinal ? '0.35' : '1';
+                btnNext.style.pointerEvents = alFinal ? 'none' : 'auto';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('filtroQuizInput');
             const moduloSelect = document.getElementById('filtroModuloSelect');
             const estadoSelect = document.getElementById('filtroEstadoSelect');
             const cards = document.querySelectorAll('.card-quiz');
+            const contenedorEv = document.getElementById('contenedor-modulos-ev');
+
+            if (contenedorEv) {
+                contenedorEv.addEventListener('scroll', verificarLimitesScrollEv);
+                setTimeout(verificarLimitesScrollEv, 350);
+            }
 
             function filtrar() {
                 const query = (searchInput?.value || '').trim().toLowerCase();

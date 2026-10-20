@@ -17,45 +17,83 @@ class ReportesController extends Controller
      */
     public function index(Request $request)
     {
-        $seccion = strtolower($request->input('seccion', 'calidad'));
-        if (!in_array($seccion, ['calidad', 'sst', 'ambiental'])) {
-            $seccion = 'calidad';
+        // 1. Obtener todos los módulos formativos de la base de datos de manera dinámica
+        $modulos = DB::table('sisig_modulos')
+            ->where('estado', '!=', 'inactivo')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        if ($modulos->isEmpty()) {
+            $modulos = DB::table('sisig_modulos')->orderBy('id', 'asc')->get();
         }
 
+        // Asignar icono visual a cada módulo
+        $modulos = $modulos->map(function ($mod) {
+            $tit = strtolower($mod->titulo ?? '');
+            if (str_contains($tit, 'calidad') || str_contains($tit, '9001')) {
+                $mod->icono_base = 'fas fa-certificate';
+                $mod->color_icono = 'text-emerald-400';
+            } elseif (str_contains($tit, 'sst') || str_contains($tit, 'seguridad') || str_contains($tit, 'salud') || str_contains($tit, '45001')) {
+                $mod->icono_base = 'fas fa-hard-hat';
+                $mod->color_icono = 'text-amber-400';
+            } elseif (str_contains($tit, 'ambiental') || str_contains($tit, 'ambiente') || str_contains($tit, '14001')) {
+                $mod->icono_base = 'fas fa-leaf';
+                $mod->color_icono = 'text-emerald-400';
+            } elseif (!empty($mod->icon_class)) {
+                $mod->icono_base = trim(preg_replace('/text-[a-z0-9\/-]+/', '', $mod->icon_class)) ?: 'fas fa-layer-group';
+                $mod->color_icono = 'text-sky-400';
+            } else {
+                $mod->icono_base = 'fas fa-layer-group';
+                $mod->color_icono = 'text-sky-400';
+            }
+            $mod->icono = $mod->icono_base . ' ' . $mod->color_icono;
+            return $mod;
+        });
+
+        // 2. Determinar el módulo o sección activa dinámicamente
+        $seccionInput = $request->input('seccion');
+        $moduloSeleccionado = null;
+
+        if ($seccionInput) {
+            if (is_numeric($seccionInput)) {
+                $moduloSeleccionado = $modulos->firstWhere('id', (int) $seccionInput);
+            }
+            if (!$moduloSeleccionado) {
+                $moduloSeleccionado = $modulos->first(function ($m) use ($seccionInput) {
+                    return strtolower(trim($m->titulo)) === strtolower(trim($seccionInput));
+                });
+            }
+            if (!$moduloSeleccionado) {
+                $moduloSeleccionado = $modulos->first(function ($m) use ($seccionInput) {
+                    return str_contains(strtolower($m->titulo), strtolower($seccionInput));
+                });
+            }
+        }
+
+        if (!$moduloSeleccionado) {
+            $moduloSeleccionado = $modulos->first(function ($m) {
+                return str_contains(strtolower($m->titulo), 'calidad');
+            }) ?? $modulos->first();
+        }
+
+        $seccion = $moduloSeleccionado ? $moduloSeleccionado->titulo : 'General';
         $buscar = trim($request->input('buscar', ''));
 
-        // 1. Identificar módulos y quices correspondientes a la sección activa
-        $modulosQuery = DB::table('sisig_modulos');
-        if ($seccion === 'calidad') {
-            $modulosQuery->where(function ($q) {
-                $q->where('titulo', 'like', '%calidad%')
-                  ->orWhere('norma', 'like', '%9001%');
-            });
-        } elseif ($seccion === 'sst') {
-            $modulosQuery->where(function ($q) {
-                $q->where('titulo', 'like', '%sst%')
-                  ->orWhere('titulo', 'like', '%seguridad%')
-                  ->orWhere('titulo', 'like', '%salud%')
-                  ->orWhere('norma', 'like', '%45001%');
-            });
-        } elseif ($seccion === 'ambiental') {
-            $modulosQuery->where(function ($q) {
-                $q->where('titulo', 'like', '%ambiental%')
-                  ->orWhere('titulo', 'like', '%ambiente%')
-                  ->orWhere('norma', 'like', '%14001%');
-            });
-        }
-        $modulosIds = $modulosQuery->pluck('id')->toArray();
+        // 3. Consultar quices asociados al módulo activo
+        $quizIds = [];
+        if ($moduloSeleccionado) {
+            $quizIds = DB::table('sisig_quices')
+                ->where(function ($q) use ($moduloSeleccionado) {
+                    $q->where('modulo_id', $moduloSeleccionado->id)
+                      ->orWhere('titulo', 'like', "%{$moduloSeleccionado->titulo}%");
 
-        $quizIds = DB::table('sisig_quices')
-            ->where(function ($q) use ($modulosIds, $seccion) {
-                if (!empty($modulosIds)) {
-                    $q->whereIn('modulo_id', $modulosIds);
-                }
-                $q->orWhere('titulo', 'like', "%{$seccion}%");
-            })
-            ->pluck('id_quiz')
-            ->toArray();
+                    if (!empty($moduloSeleccionado->norma)) {
+                        $q->orWhere('titulo', 'like', "%{$moduloSeleccionado->norma}%");
+                    }
+                })
+                ->pluck('id_quiz')
+                ->toArray();
+        }
 
         // 2. Consultar aprendices registrados
         $query = User::query();
@@ -186,7 +224,9 @@ class ReportesController extends Controller
             'seccion',
             'buscar',
             'aprobadosList',
-            'noAprobadosList'
+            'noAprobadosList',
+            'modulos',
+            'moduloSeleccionado'
         ));
     }
 }
