@@ -309,6 +309,7 @@
                 quizOriginalSnapshot = null;
             }
             modal.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         form.addEventListener('submit', function(e) {
@@ -327,7 +328,22 @@
 
         function closeExamenModal() {
             modal.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
+
+        // Cerrar modal al hacer clic en el backdrop oscuro
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeExamenModal();
+            }
+        });
+
+        // Cerrar modal al presionar Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeExamenModal();
+            }
+        });
 
         function confirmarToggleQuiz(form, tituloQuiz, activo) {
             if (!form) return;

@@ -1,0 +1,766 @@
+<mxfile host="app.diagrams.net" modified="2026-10-17T18:25:00.000Z" agent="Mozilla/5.0" version="24.7.17">
+  <diagram id="diag_general" name="1. Diagrama General SISIG">
+    <mxGraphModel dx="2200" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+<mxCell id="1" parent="0" />
+<mxCell id="g_sys" value="Sistema de Inducción SISIG - SENA Empresa CEFA (Módulo SIG)" style="swimlane;whiteSpace=wrap;html=1;swimlaneFillColor=#FFFFFF;fillColor=#F8FAFC;strokeColor=#00324D;strokeWidth=2.5;fontSize=16;fontStyle=1;fontColor=#00324D;startSize=40;rounded=1;arcSize=2;shadow=0;" parent="1" vertex="1">
+<mxGeometry x="240" y="40" width="1760" height="1440" as="geometry" />
+</mxCell>
+<mxCell id="z_apr" value="ÁREA 1: INDUCCIÓN PEDAGÓGICA Y PERFIL DE APRENDIZ" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;dashed=1;fontStyle=1;fontSize=12;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#166534;" parent="1" vertex="1">
+<mxGeometry x="265" y="90" width="845" height="590" as="geometry" />
+</mxCell>
+<mxCell id="z_eval" value="ÁREA 2: EVALUACIÓN INTERACTIVA Y MOTOR ANTI-FRAUDE" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;dashed=1;fontStyle=1;fontSize=12;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fillColor=#FEF2F2;strokeColor=#DC2626;fontColor=#991B1B;" parent="1" vertex="1">
+<mxGeometry x="265" y="695" width="845" height="720" as="geometry" />
+</mxCell>
+<mxCell id="z_ped" value="ÁREA 3: GESTIÓN PEDAGÓGICA Y BANCO DE PREGUNTAS (INSTRUCTOR/EDITOR)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;dashed=1;fontStyle=1;fontSize=12;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fillColor=#FAF5FF;strokeColor=#9333EA;fontColor=#6B21A8;" parent="1" vertex="1">
+<mxGeometry x="1130" y="90" width="845" height="590" as="geometry" />
+</mxCell>
+<mxCell id="z_adm" value="ÁREA 4: ADMINISTRACIÓN DE USUARIOS, MÉTRICAS Y AUDITORÍA (ADMINISTRADOR)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;dashed=1;fontStyle=1;fontSize=12;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;" parent="1" vertex="1">
+<mxGeometry x="1130" y="695" width="845" height="720" as="geometry" />
+</mxCell>
+<mxCell id="g_act_apr" value="Aprendiz SENA&#xa;(aprendiz_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#38BDF8;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="70" y="320" width="65" height="95" as="geometry" />
+</mxCell>
+<mxCell id="g_act_sys" value="«Sistema»&#xa;Motor Anti-Fraude&#xa;y Cronómetro" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#F87171;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="70" y="960" width="65" height="95" as="geometry" />
+</mxCell>
+<mxCell id="g_act_edt" value="Editor / Instructor&#xa;(editor_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#C084FC;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="2040" y="320" width="65" height="95" as="geometry" />
+</mxCell>
+<mxCell id="g_act_adm" value="Administrador SISIG&#xa;(admin_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#FBBF24;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="2040" y="960" width="65" height="95" as="geometry" />
+</mxCell>
+<mxCell id="gen_adm_edt" style="edgeStyle=straight;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=2;strokeColor=#00324D;" parent="1" edge="1" source="g_act_adm" target="g_act_edt">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu01" value="CU-01: Iniciar Sesión con&#xa;Credenciales [RF-01]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" parent="1" vertex="1">
+<mxGeometry x="290" y="130" width="210" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu01_inc1" value="CU-Inc: Validar Credenciales&#xa;y Hash Bcrypt [RNF]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="105" width="200" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu01_ext1" value="CU-Ext: Bloquear Cuenta por&#xa;Intentos Fallidos" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="165" width="200" height="45" as="geometry" />
+</mxCell>
+<mxCell id="inc_01_val" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu01" target="g_cu01_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_01_bloq" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu01_ext1" target="g_cu01">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu04" value="CU-04: Modificar Datos&#xa;del Perfil [RF-04, RF-05]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" parent="1" vertex="1">
+<mxGeometry x="290" y="240" width="210" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu06" value="CU-06: Validar Cambios&#xa;Reales en Perfil [RF-06]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="215" width="200" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu07" value="CU-07: Actualizar Contraseña&#xa;de Acceso [RF-07]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="275" width="200" height="45" as="geometry" />
+</mxCell>
+<mxCell id="inc_04_06" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu04" target="g_cu06">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_07_04" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu07" target="g_cu04">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu35" value="CU-35: Visualizar Dashboard&#xa;y Progreso SIG [RF-35]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="350" width="210" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu35_inc" value="CU-Inc: Calcular Avance&#xa;Porcentual de Inducción" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="350" width="200" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_35_calc" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu35" target="g_cu35_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu36" value="CU-36: Consultar Materiales SIG&#xa;(SST, Calidad, Ambiental) [RF-36]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="440" width="220" height="60" as="geometry" />
+</mxCell>
+<mxCell id="g_cu36_ext" value="CU-Ext: Descargar Guías y&#xa;Normativas en PDF" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="445" width="200" height="50" as="geometry" />
+</mxCell>
+<mxCell id="ext_36_pdf" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu36_ext" target="g_cu36">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu42" value="CU-42: Consultar Historial de&#xa;Calificaciones e Intentos [RF-42]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="540" width="220" height="60" as="geometry" />
+</mxCell>
+<mxCell id="g_cu42_inc" value="CU-Inc: Consultar Retro-&#xa;alimentación Pedagógica" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="520" width="200" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cucert" value="CU-Cert: Descargar Constancia&#xa;de Aprobación SISIG" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="580" width="200" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_42_retro" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu42" target="g_cu42_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_cert_42" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cucert" target="g_cu42">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_g_cu01" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu01">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_g_cu04" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu04">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_g_cu35" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu35">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_g_cu36" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu36">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_g_cu42" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu42">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu37" value="CU-37: Presentar Examen / Quiz&#xa;Interactivo del SIG [RF-37]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEE2E2;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="290" y="745" width="220" height="70" as="geometry" />
+</mxCell>
+<mxCell id="g_cu37_inc1" value="CU-Inc: Validar Disponibilidad&#xa;e Intentos Restantes [RF-37]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="715" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu38" value="CU-38: Monitorear Cronómetro&#xa;y Enviar por Tiempo [RF-38]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="775" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu39" value="CU-39: Monitorear Conducta&#xa;Anti-Fraude en Pantalla [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEE2E2;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="580" y="855" width="210" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu41" value="CU-41: Calificar y Registrar&#xa;Respuestas en Base de Datos [RF-41]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="940" width="210" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_37_val" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu37" target="g_cu37_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_37_38" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu37" target="g_cu38">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_37_39" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu37" target="g_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_37_41" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu37" target="g_cu41">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cureint" value="CU-Ext: Habilitar Nuevo&#xa;Intento de Quiz" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="290" y="860" width="210" height="50" as="geometry" />
+</mxCell>
+<mxCell id="g_cutimeout" value="CU-Ext: Cierre Automático&#xa;por Tiempo Agotado [RF-38]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="290" y="930" width="210" height="50" as="geometry" />
+</mxCell>
+<mxCell id="ext_reint_37" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cureint" target="g_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_timeout_37" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cutimeout" target="g_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu39a" value="CU-39A: Registrar Infracción por&#xa;Pérdida de Foco / Ventana [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="1020" width="220" height="50" as="geometry" />
+</mxCell>
+<mxCell id="g_cu39b" value="CU-Ext: Emitir Advertencia Visual&#xa;en Pantalla [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="1085" width="220" height="50" as="geometry" />
+</mxCell>
+<mxCell id="g_cu40" value="CU-40: Anular Examen por&#xa;Infracción Flagrante (0.0) [RF-40]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="580" y="1155" width="220" height="50" as="geometry" />
+</mxCell>
+<mxCell id="ext_39a_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu39a" target="g_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_39b_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu39b" target="g_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_40_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu40" target="g_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_apr_cu37" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_apr" target="g_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_sys_g_cu38" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="g_act_sys" target="g_cu38">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_sys_g_cu39" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="g_act_sys" target="g_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_sys_g_cu41" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="g_act_sys" target="g_cu41">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_sys_g_cu39a" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="g_act_sys" target="g_cu39a">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_sys_g_cu40" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="g_act_sys" target="g_cu40">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu20" value="CU-20: Gestionar Módulos&#xa;Temáticos del SIG [RF-20]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="1720" y="140" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu20_ext1" value="CU-Ext: Cambiar Secuencia&#xa;y Orden de Módulo [RF-22]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="115" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu20_ext2" value="CU-Ext: Activar / Inactivar&#xa;Módulo Temático [RF-23]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="175" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="ext_20_ord" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu20_ext1" target="g_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_20_act" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu20_ext2" target="g_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu24" value="CU-24: Redactar Contenidos con&#xa;Editor Enriquecido [RF-24]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="1720" y="250" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu24_inc" value="CU-Inc: Incrustar Videos,&#xa;Imágenes y Enlaces Normativos" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="250" width="210" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_24_media" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu24" target="g_cu24_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu25" value="CU-25: Configurar Exámenes y&#xa;Parámetros del Quiz [RF-25, 27]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="1720" y="360" width="220" height="60" as="geometry" />
+</mxCell>
+<mxCell id="g_cu25_inc1" value="CU-Inc: Vincular a Módulo&#xa;Temático del SIG [RF-26]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="330" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu25_inc2" value="CU-Inc: Parametrizar Intentos,&#xa;Tiempo y Nota Mínima [RF-26]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="390" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu25_ext" value="CU-Ext: Activar / Inactivar&#xa;Examen para Aprendices [RF-28]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="360" width="200" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_25_vinc" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu25" target="g_cu25_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_25_param" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu25" target="g_cu25_inc2">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_25_act" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu25_ext" target="g_cu25">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu29" value="CU-29: Administrar Banco de&#xa;Preguntas del Quiz [RF-29, 30]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="1720" y="490" width="220" height="60" as="geometry" />
+</mxCell>
+<mxCell id="g_cu30_inc" value="CU-Inc: Registrar Opciones&#xa;de Selección Múltiple [RF-30]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="465" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu31" value="CU-31: Definir Respuesta&#xa;Correcta y Ponderación [RF-31]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="525" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu32" value="CU-32: Configurar Retro-&#xa;alimentación Formativa [RF-32]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="475" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu33_ext" value="CU-Ext: Editar / Eliminar Pregunta&#xa;(Sin Intentos Previos) [RF-33, 34]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="535" width="220" height="50" as="geometry" />
+</mxCell>
+<mxCell id="inc_29_30" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu29" target="g_cu30_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_29_31" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu29" target="g_cu31">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_32_29" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu32" target="g_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_33_29" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu33_ext" target="g_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_edt_g_cu20" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_edt" target="g_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_edt_g_cu24" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_edt" target="g_cu24">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_edt_g_cu25" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_edt" target="g_cu25">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_edt_g_cu29" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_edt" target="g_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu08" value="CU-08: Consultar Dashboard de&#xa;Métricas Globales [RF-08]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="1720" y="745" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu08_inc" value="CU-Inc: Calcular Indicadores en&#xa;Tiempo Real (% Aprobados, Quizzes)" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="720" width="220" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu09" value="CU-09: Auditar Infracciones&#xa;y Exámenes Anulados [RF-09]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="780" width="220" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu10_ext" value="CU-Ext: Monitorear Últimas&#xa;Evaluaciones [RF-10]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="720" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu11_ext" value="CU-Ext: Consultar Bitácora&#xa;de Auditoría y Logs [RF-11]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="780" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="inc_08_calc" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu08" target="g_cu08_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_09_08" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu09" target="g_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_10_08" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu10_ext" target="g_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_11_08" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu11_ext" target="g_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu12" value="CU-12: Listar y Buscar Usuarios&#xa;en la Plataforma [RF-12]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="1720" y="870" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu13a" value="CU-Ext: Buscar por Documento&#xa;o Nombre [RF-13]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="845" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu13b" value="CU-Ext: Filtrar por Rol o&#xa;Estado Activo/Inactivo [RF-13]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="905" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="ext_13a_12" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu13a" target="g_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_13b_12" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu13b" target="g_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu14" value="CU-14: Registrar Nuevos&#xa;Usuarios en Plataforma [RF-14]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="1720" y="980" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu14_inc1" value="CU-Inc: Validar Documento y&#xa;Correo Electrónico Único" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="965" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu14_inc2" value="CU-Inc: Asignar Rol y Cifrar&#xa;Contraseña con Bcrypt" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="1025" width="210" height="45" as="geometry" />
+</mxCell>
+<mxCell id="inc_14_val" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu14" target="g_cu14_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="inc_14_pwd" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="g_cu14" target="g_cu14_inc2">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="g_cu16" value="CU-16: Modificar Información&#xa;Básica de Usuario [RF-16]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="1720" y="1100" width="220" height="55" as="geometry" />
+</mxCell>
+<mxCell id="g_cu17" value="CU-Ext: Cambiar Estado de&#xa;Usuario (Activo/Inactivo) [RF-17]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="1085" width="215" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu18" value="CU-Ext: Reasignar Rol del&#xa;Usuario en SISIG [RF-18]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1430" y="1145" width="215" height="45" as="geometry" />
+</mxCell>
+<mxCell id="g_cu19" value="CU-Ext: Eliminar Usuario sin&#xa;Actividad en Sistema [RF-19]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1160" y="1115" width="220" height="50" as="geometry" />
+</mxCell>
+<mxCell id="ext_17_16" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu17" target="g_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_18_16" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu18" target="g_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="ext_19_16" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="g_cu19" target="g_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_adm_g_cu08" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_adm" target="g_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_adm_g_cu12" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_adm" target="g_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_adm_g_cu14" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_adm" target="g_cu14">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="rel_adm_g_cu16" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="g_act_adm" target="g_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="box_leg" value="Convenciones del Diagrama UML" style="swimlane;whiteSpace=wrap;html=1;startSize=22;fillColor=#F8FAFC;strokeColor=#64748B;fontStyle=1;fontSize=10.5;fontColor=#1E293B;" parent="1" vertex="1">
+<mxGeometry x="40" y="1250" width="190" height="190" as="geometry" />
+</mxCell>
+<mxCell id="txt_leg" value="• «include»: Inclusión obligatoria.&lt;br/&gt;• «extend»: Ejecución condicional.&lt;br/&gt;• Óvalo relleno: Caso de uso base.&lt;br/&gt;• Óvalo azul: Caso incluido (include).&lt;br/&gt;• Óvalo ámbar: Caso extensor (extend).&lt;br/&gt;• Línea continua: Asociación.&lt;br/&gt;• Flecha hueca: Generalización.&lt;br/&gt;• Línea roja: Monitoreo Anti-Fraude." style="text;html=1;align=left;verticalAlign=middle;fontSize=8.5;fontColor=#334155;" parent="box_leg" vertex="1">
+<mxGeometry x="5" y="25" width="180" height="160" as="geometry" />
+</mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_aprendiz" name="2. Aprendiz y Anti-Fraude">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+<mxCell id="1" parent="0" />
+<mxCell id="p2_sys" value="Sub-sistema: Experiencia del Aprendiz y Motor de Evaluación Anti-Fraude" style="swimlane;whiteSpace=wrap;html=1;swimlaneFillColor=#FFFFFF;fillColor=#F8FAFC;strokeColor=#00324D;strokeWidth=2.5;fontSize=16;fontStyle=1;fontColor=#00324D;startSize=40;rounded=1;arcSize=2;shadow=0;" parent="1" vertex="1">
+<mxGeometry x="240" y="40" width="1280" height="1050" as="geometry" />
+</mxCell>
+<mxCell id="p2_act_apr" value="Aprendiz SENA&#xa;(aprendiz_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#38BDF8;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="60" y="280" width="65" height="100" as="geometry" />
+</mxCell>
+<mxCell id="p2_act_sys" value="«Sistema»&#xa;Motor Anti-Fraude&#xa;y Cronómetro" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#F87171;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="60" y="740" width="65" height="100" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu01" value="CU-01: Iniciar Sesión con Credenciales [RF-01]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" parent="1" vertex="1">
+<mxGeometry x="290" y="90" width="250" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu01_inc" value="CU-Inc: Validar Credenciales y Hash Bcrypt" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="75" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu01_ext" value="CU-Ext: Bloquear Acceso por Intentos Fallidos" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="130" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_01" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu01" target="p2_cu01_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_01" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu01_ext" target="p2_cu01">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu04" value="CU-04: Modificar Datos del Perfil [RF-04, RF-05]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" parent="1" vertex="1">
+<mxGeometry x="290" y="190" width="250" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu06" value="CU-06: Validar Cambios Reales en Perfil [RF-06]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="180" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu07" value="CU-07: Actualizar Clave de Acceso [RF-07]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="235" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_04_06" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu04" target="p2_cu06">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_07_04" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu07" target="p2_cu04">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu35" value="CU-35: Visualizar Dashboard y Progreso [RF-35]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="290" width="250" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu35_inc" value="CU-Inc: Calcular Avance Porcentual de Inducción" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="290" width="240" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_35" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu35" target="p2_cu35_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu36" value="CU-36: Consultar Materiales SIG (SST, Calidad, Ambiental) [RF-36]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="380" width="260" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu36_ext" value="CU-Ext: Descargar Guías y Normativas en PDF" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="380" width="240" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_36" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu36_ext" target="p2_cu36">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu42" value="CU-42: Consultar Historial e Intentos de Quiz [RF-42]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;" parent="1" vertex="1">
+<mxGeometry x="290" y="470" width="260" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu42_inc" value="CU-Inc: Consultar Retroalimentación por Pregunta" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="455" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_cucert" value="CU-Cert: Descargar Constancia de Aprobación SISIG" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="515" width="240" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_42" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu42" target="p2_cu42_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_cert_42" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cucert" target="p2_cu42">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu37" value="CU-37: Presentar Examen / Quiz Interactivo del SIG [RF-37]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEE2E2;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="290" y="620" width="260" height="75" as="geometry" />
+</mxCell>
+<mxCell id="p2_cureint" value="CU-Ext: Habilitar Nuevo Intento&#xa;[Condición: reprobado y le quedan intentos]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="290" y="740" width="260" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cutimeout" value="CU-Ext: Cierre Automático por Tiempo Agotado [RF-38]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="290" y="825" width="260" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu37_inc1" value="CU-Inc: Validar Disponibilidad e Intentos [RF-37]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="595" width="250" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu38" value="CU-38: Monitorear Cronómetro y Enviar por Tiempo [RF-38]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="655" width="250" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu39" value="CU-39: Monitorear Conducta Anti-Fraude en Pantalla [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEE2E2;strokeColor=#DC2626;fontColor=#7F1D1D;" parent="1" vertex="1">
+<mxGeometry x="670" y="735" width="250" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu41" value="CU-41: Calificar y Registrar Respuestas en BD [RF-41]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="670" y="815" width="250" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu39a" value="CU-39A: Registrar Infracción por Pérdida de Foco / Ventana [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1000" y="695" width="280" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu39b" value="CU-Ext: Emitir Advertencia Visual en Pantalla [RF-39]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1000" y="755" width="280" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_cu40" value="CU-40: Anular Examen por Infracción Flagrante (Nota 0.0) [RF-40]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="1000" y="815" width="280" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p2_note" value="&lt;b&gt;Reglas de Puntos de Extensión (Anti-Fraude y Evaluación):&lt;/b&gt;&lt;br/&gt;• &lt;i&gt;«extend» Pérdida de Foco:&lt;/i&gt; Condición: Aprendiz cambia de pestaña o minimiza ventana.&lt;br/&gt;• &lt;i&gt;«extend» Advertencia:&lt;/i&gt; Condición: Se registra primera falta no crítica.&lt;br/&gt;• &lt;i&gt;«extend» Anulación:&lt;/i&gt; Condición: Falta flagrante o supera límite configurado.&lt;br/&gt;• &lt;i&gt;«extend» Reintento:&lt;/i&gt; Condición: [intento_fallido AND intentos_usados &amp;lt; max_intentos].&lt;br/&gt;• &lt;i&gt;«extend» Constancia:&lt;/i&gt; Condición: [puntaje_obtenido &amp;gt;= puntaje_minimo_aprobatorio (70%)]." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;fillColor=#FEF9C3;strokeColor=#CA8A04;fontColor=#713F12;fontSize=9.5;" parent="1" vertex="1">
+<mxGeometry x="670" y="910" width="540" height="110" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu01" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu01">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu04" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu04">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu35" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu35">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu36" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu36">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu42" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu42">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_apr_p2_cu37" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p2_act_apr" target="p2_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_37_val" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu37" target="p2_cu37_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_37_38" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu37" target="p2_cu38">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_37_39" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu37" target="p2_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_inc_37_41" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p2_cu37" target="p2_cu41">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_reint_37" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cureint" target="p2_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_timeout_37" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cutimeout" target="p2_cu37">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_39a_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu39a" target="p2_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_39b_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu39b" target="p2_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_ext_40_39" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p2_cu40" target="p2_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_sys_p2_cu38" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="p2_act_sys" target="p2_cu38">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_sys_p2_cu39" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="p2_act_sys" target="p2_cu39">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_sys_p2_cu41" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="p2_act_sys" target="p2_cu41">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_sys_p2_cu39a" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="p2_act_sys" target="p2_cu39a">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p2_rel_sys_p2_cu40" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#DC2626;" parent="1" edge="1" source="p2_act_sys" target="p2_cu40">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_editor" name="3. Instructor y Banco de Preguntas">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+<mxCell id="1" parent="0" />
+<mxCell id="p3_sys" value="Sub-sistema: Gestión de Módulos Pedagógicos y Banco de Preguntas" style="swimlane;whiteSpace=wrap;html=1;swimlaneFillColor=#FFFFFF;fillColor=#F8FAFC;strokeColor=#00324D;strokeWidth=2.5;fontSize=16;fontStyle=1;fontColor=#00324D;startSize=40;rounded=1;arcSize=2;shadow=0;" parent="1" vertex="1">
+<mxGeometry x="240" y="40" width="1180" height="880" as="geometry" />
+</mxCell>
+<mxCell id="p3_act_edt" value="Editor / Instructor&#xa;(editor_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#C084FC;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="60" y="360" width="65" height="100" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu20" value="CU-20: Listar y Organizar Módulos Temáticos SIG [RF-20]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="290" y="90" width="280" height="60" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu20_ext1" value="CU-Ext: Cambiar Secuencia y Orden de Módulo [RF-22]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="75" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu20_ext2" value="CU-Ext: Activar / Inactivar Módulo Temático [RF-23]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="130" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_ext_20_1" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p3_cu20_ext1" target="p3_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_ext_20_2" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p3_cu20_ext2" target="p3_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu24" value="CU-24: Redactar Contenidos con Editor Enriquecido [RF-24]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="290" y="210" width="280" height="65" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu24_inc" value="CU-Inc: Incrustar Videos, Imágenes y Enlaces Normativos" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="215" width="260" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p3_inc_24" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p3_cu24" target="p3_cu24_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu25" value="CU-25: Configurar Exámenes y Quizzes por Módulo [RF-25, 27]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="290" y="340" width="280" height="65" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu25_inc1" value="CU-Inc: Vincular a Módulo Temático SIG [RF-26]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="310" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu25_inc2" value="CU-Inc: Parametrizar Intentos, Tiempo y Aprobación" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="370" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu25_ext" value="CU-Ext: Activar / Inactivar Examen para Aprendices [RF-28]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="430" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_inc_25_1" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p3_cu25" target="p3_cu25_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_inc_25_2" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p3_cu25" target="p3_cu25_inc2">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_ext_25" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p3_cu25_ext" target="p3_cu25">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu29" value="CU-29: Administrar Banco de Preguntas del Quiz [RF-29, 30]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#F3E8FF;strokeColor=#9333EA;fontColor=#581C87;" parent="1" vertex="1">
+<mxGeometry x="290" y="520" width="280" height="65" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu30_inc" value="CU-Inc: Registrar Opciones de Selección Múltiple [RF-30]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="495" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu31" value="CU-31: Definir Respuesta Correcta y Ponderación [RF-31]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="550" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu32" value="CU-32: Configurar Retroalimentación Formativa [RF-32]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="605" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p3_cu33_ext" value="CU-Ext: Editar / Eliminar Pregunta (Sin Intentos Previos) [RF-33, 34]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="660" width="270" height="50" as="geometry" />
+</mxCell>
+<mxCell id="p3_inc_29_30" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p3_cu29" target="p3_cu30_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_inc_29_31" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p3_cu29" target="p3_cu31">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_ext_32" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p3_cu32" target="p3_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_ext_33" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p3_cu33_ext" target="p3_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_note" value="&lt;b&gt;Puntos de Inclusión y Extensión del Instructor:&lt;/b&gt;&lt;br/&gt;• &lt;i&gt;«include» Opciones y Respuesta Correcta:&lt;/i&gt; Toda pregunta exige mínimo 2 opciones y marcar la correcta.&lt;br/&gt;• &lt;i&gt;«extend» Retroalimentación:&lt;/i&gt; Condición: Se añade explicación pedagógica para orientar al aprendiz.&lt;br/&gt;• &lt;i&gt;«extend» Edición/Eliminación:&lt;/i&gt; Condición: Examen no debe tener intentos presentados por aprendices.&lt;br/&gt;• &lt;i&gt;«extend» Estado Módulo/Examen:&lt;/i&gt; Condición: Permite suspender temporalmente la visualización." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;fillColor=#FEF9C3;strokeColor=#CA8A04;fontColor=#713F12;fontSize=9.5;" parent="1" vertex="1">
+<mxGeometry x="290" y="740" width="580" height="100" as="geometry" />
+</mxCell>
+<mxCell id="p3_rel_edt_p3_cu20" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p3_act_edt" target="p3_cu20">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_rel_edt_p3_cu24" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p3_act_edt" target="p3_cu24">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_rel_edt_p3_cu25" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p3_act_edt" target="p3_cu25">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p3_rel_edt_p3_cu29" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p3_act_edt" target="p3_cu29">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_admin" name="4. Administrador y Seguridad">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+<mxCell id="1" parent="0" />
+<mxCell id="p4_sys" value="Sub-sistema: Administración de Usuarios, Métricas y Auditoría de Seguridad" style="swimlane;whiteSpace=wrap;html=1;swimlaneFillColor=#FFFFFF;fillColor=#F8FAFC;strokeColor=#00324D;strokeWidth=2.5;fontSize=16;fontStyle=1;fontColor=#00324D;startSize=40;rounded=1;arcSize=2;shadow=0;" parent="1" vertex="1">
+<mxGeometry x="240" y="40" width="1180" height="920" as="geometry" />
+</mxCell>
+<mxCell id="p4_act_adm" value="Administrador SISIG&#xa;(admin_sisig)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeWidth=2;fontSize=12;fontStyle=1;fillColor=#FBBF24;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="60" y="410" width="65" height="100" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu08" value="CU-08: Consultar Dashboard de Métricas Globales [RF-08]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="290" y="90" width="280" height="60" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu08_inc" value="CU-Inc: Calcular Indicadores en Tiempo Real [RF-08]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="65" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu09" value="CU-09: Auditar Infracciones y Exámenes Anulados [RF-09]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="120" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu10" value="CU-Ext: Monitorear Últimas Evaluaciones [RF-10]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="960" y="65" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu11" value="CU-Ext: Visualizar Bitácora de Auditoría y Logs [RF-11]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="960" y="120" width="240" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_inc_08" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p4_cu08" target="p4_cu08_inc">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_09" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu09" target="p4_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_10" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu10" target="p4_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_11" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu11" target="p4_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu21" value="CU-21: Crear Nuevo Módulo Temático del SIG [RF-21]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="290" y="210" width="280" height="55" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu12" value="CU-12: Listar y Buscar Usuarios Registrados en SISIG [RF-12]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="290" y="320" width="280" height="60" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu13a" value="CU-Ext: Buscar por Documento o Correo [RF-13]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="295" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu13b" value="CU-Ext: Filtrar por Rol o Estado (Activo/Inactivo) [RF-13]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="350" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_13a" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu13a" target="p4_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_13b" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu13b" target="p4_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu14" value="CU-14: Registrar Nuevos Usuarios en la Plataforma [RF-14]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="290" y="440" width="280" height="60" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu14_inc1" value="CU-Inc: Validar Tipo, Documento y Correo Único" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="425" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu14_inc2" value="CU-Inc: Asignar Rol y Cifrar Contraseña con Bcrypt" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="485" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_inc_14_1" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p4_cu14" target="p4_cu14_inc1">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_inc_14_2" value="«include»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#0284C7;fontColor=#0369A1;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" parent="1" edge="1" source="p4_cu14" target="p4_cu14_inc2">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu16" value="CU-16: Modificar Información Básica de Usuario [RF-16]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=10.5;fontStyle=1;shadow=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#78350F;" parent="1" vertex="1">
+<mxGeometry x="290" y="580" width="280" height="60" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu15" value="CU-Ext: Consultar Ficha y Detalle de Usuario [RF-15]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="550" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu17" value="CU-Ext: Cambiar Estado de Usuario (Activo/Inactivo) [RF-17]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="605" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu18" value="CU-Ext: Reasignar Rol del Usuario en SISIG [RF-18]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="660" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_cu19" value="CU-Ext: Eliminar Usuario sin Actividad Registrada [RF-19]" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeDasharray=3 3;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#B45309;fontSize=9.5;fontStyle=2;" parent="1" vertex="1">
+<mxGeometry x="680" y="715" width="260" height="45" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_15" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu15" target="p4_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_17" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu17" target="p4_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_18" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu18" target="p4_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_ext_19" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1.5;strokeColor=#D97706;fontColor=#B45309;fontSize=10.5;fontStyle=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;" parent="1" edge="1" source="p4_cu19" target="p4_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_note" value="&lt;b&gt;Reglas de Puntos de Extensión del Administrador:&lt;/b&gt;&lt;br/&gt;• &lt;i&gt;«extend» Filtros de Búsqueda:&lt;/i&gt; Condición: El administrador aplica filtros por cédula, rol o estado.&lt;br/&gt;• &lt;i&gt;«extend» Eliminación:&lt;/i&gt; Condición: El usuario NO registra quices, logs ni actividad en la plataforma.&lt;br/&gt;• &lt;i&gt;«include» Cifrado Seguro:&lt;/i&gt; Todo usuario nuevo se guarda con contraseña cifrada mediante algoritmo Bcrypt." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;fillColor=#FEF9C3;strokeColor=#CA8A04;fontColor=#713F12;fontSize=9.5;" parent="1" vertex="1">
+<mxGeometry x="290" y="785" width="650" height="90" as="geometry" />
+</mxCell>
+<mxCell id="p4_rel_adm_p4_cu08" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p4_act_adm" target="p4_cu08">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_rel_adm_p4_cu21" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p4_act_adm" target="p4_cu21">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_rel_adm_p4_cu12" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p4_act_adm" target="p4_cu12">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_rel_adm_p4_cu14" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p4_act_adm" target="p4_cu14">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+<mxCell id="p4_rel_adm_p4_cu16" style="edgeStyle=straight;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#475569;" parent="1" edge="1" source="p4_act_adm" target="p4_cu16">
+<mxGeometry relative="1" as="geometry" />
+</mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

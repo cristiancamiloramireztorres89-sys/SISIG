@@ -380,6 +380,7 @@
             }
 
             modal.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
             setTimeout(() => {
                 preguntaOriginalSnapshot = JSON.stringify(getPreguntaSnapshot());
             }, 50);
@@ -415,7 +416,15 @@
 
         function closePreguntaModal() {
             modal.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
+
+        // Cerrar modal al hacer clic en el backdrop oscuro
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closePreguntaModal();
+            }
+        });
 
         function addOpcion(texto = '', esCorrecta = false) {
             const isMultiple = currentType === 'seleccion_multiple';

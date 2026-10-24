@@ -6,11 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>{{ $title ?? 'Panel de Control' }} | {{ sisig_config('app_name', 'SISIG') }} - SENA Empresa</title>
-
-    @if(sisig_config('app_favicon'))
-        <link rel="icon" href="{{ asset(sisig_config('app_favicon')) }}">
-    @endif
+    <title>{{ $title ?? 'Panel de Control' }} | SISIG - SENA Empresa</title>
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -138,12 +134,12 @@
                 extend: {
                     colors: {
                         sena: {
-                            green: '{{ sisig_config("color_primario", "#39A900") }}',
-                            'green-hover': '{{ sisig_config("color_primario", "#39A900") }}',
+                            green: '#39A900',
+                            'green-hover': '#2e8b00',
                             'green-light': '#E8F5E9',
                             navy: '#00324D',
                             'navy-light': '#004B73',
-                            dark: '{{ sisig_config("color_sidebar", "#001A29") }}',
+                            dark: '#001A29',
                             slate: '#0F2B3E',
                             light: '#F8FAFC',
                             card: '#FFFFFF',
@@ -165,8 +161,8 @@
 
     <style>
         :root {
-            --color-primario: {{ sisig_config('color_primario', '#39A900') }};
-            --color-sidebar: {{ sisig_config('color_sidebar', '#001A29') }};
+            --color-primario: #39A900;
+            --color-sidebar: #001A29;
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -175,6 +171,18 @@
             display: none !important;
             margin: 0 !important;
             padding: 0 !important;
+        }
+        /* Bloqueo estricto de scroll para la página de fondo cuando hay un modal abierto */
+        html.modal-open,
+        body.modal-open {
+            overflow: hidden !important;
+            height: 100% !important;
+        }
+
+        /* Prevenir que el scroll dentro del modal rebote hacia el fondo de la página */
+        .modal-open [class*="overflow-y-auto"],
+        .modal-open [class*="overflow-auto"] {
+            overscroll-behavior: contain !important;
         }
         /* Scrollbar elegante y oscuro para el sidebar */
         #sidebar-menu::-webkit-scrollbar {
@@ -288,14 +296,6 @@
         <!-- Header Superior -->
         @include('sisig::components.layouts.header')
 
-        <!-- Banner Global de Mantenimiento / Aviso Institucional -->
-        @if(sisig_config('mensaje_mantenimiento_activo', false))
-            <div class="bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-center gap-2 text-center shadow-sm select-none border-b border-amber-600">
-                <i class="fas fa-bullhorn text-sm animate-bounce"></i>
-                <span>{{ sisig_config('mensaje_mantenimiento_texto', 'Atención: La plataforma entrará en mantenimiento preventivo.') }}</span>
-            </div>
-        @endif
-
         <main class="flex-1 p-4 sm:p-6 lg:p-7 relative">
             <!-- Contenedor Universal de Alertas de Sesión / Acciones -->
             <div id="contenedor-alertas-globales" class="space-y-3">
@@ -363,6 +363,31 @@
             if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
             if (backdrop) backdrop.addEventListener('click', closeSidebarMobile);
         });
+
+        // ========================================================
+        // CONTROL GLOBAL DE BLOQUEO DE SCROLL AL ABRIR CUALQUIER MODAL
+        // ========================================================
+        window.lockBodyScroll = function(lock) {
+            if (lock) {
+                document.documentElement.classList.add('modal-open');
+                document.body.classList.add('modal-open');
+            } else {
+                setTimeout(() => {
+                    const modales = document.querySelectorAll('.fixed.inset-0:not(#sidebar-backdrop)');
+                    let hayModalAbierto = false;
+                    for (const m of modales) {
+                        if (!m.classList.contains('hidden') && m.style.display !== 'none' && (m.offsetWidth > 0 || m.offsetHeight > 0)) {
+                            hayModalAbierto = true;
+                            break;
+                        }
+                    }
+                    if (!hayModalAbierto) {
+                        document.documentElement.classList.remove('modal-open');
+                        document.body.classList.remove('modal-open');
+                    }
+                }, 20);
+            }
+        };
     </script>
 </body>
 </html>

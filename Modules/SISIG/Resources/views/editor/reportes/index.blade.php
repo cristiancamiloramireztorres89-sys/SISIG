@@ -188,8 +188,14 @@
                                 
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $item->iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($item->avatar_url))
+                                                <img src="{{ $item->avatar_url }}" alt="{{ $item->nombre }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->nombre }}</span>
@@ -305,8 +311,14 @@
                                 
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $item->iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($item->avatar_url))
+                                                <img src="{{ $item->avatar_url }}" alt="{{ $item->nombre }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->nombre }}</span>
@@ -507,7 +519,14 @@
 
         // Control del Modal de Respuestas
         function abrirModalRespuestas(item, seccion) {
-            document.getElementById('modal-avatar').textContent = item.iniciales || 'AP';
+            const modalAvatar = document.getElementById('modal-avatar');
+            if (modalAvatar) {
+                if (item.avatar_url) {
+                    modalAvatar.innerHTML = `<img src="${item.avatar_url}" alt="${item.nombre}" class="w-full h-full object-cover">`;
+                } else {
+                    modalAvatar.innerHTML = `<i class="fas fa-user text-slate-400"></i>`;
+                }
+            }
             document.getElementById('modal-nombre').textContent = item.nombre || 'Sin nombre';
             document.getElementById('modal-info-sub').textContent = 'Quiz ' + seccion + ' · Ficha ' + (item.ficha || 'Sin asignar');
             document.getElementById('modal-puntaje').textContent = item.puntaje + '%';
@@ -543,10 +562,12 @@
             }
 
             document.getElementById('modal-respuestas-aprendiz').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         function cerrarModalRespuestas() {
             document.getElementById('modal-respuestas-aprendiz').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         document.getElementById('modal-respuestas-aprendiz')?.addEventListener('click', function(e) {
