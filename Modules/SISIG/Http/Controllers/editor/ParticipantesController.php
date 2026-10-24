@@ -195,9 +195,24 @@ class ParticipantesController extends Controller
                 $iniciales = mb_strtoupper(mb_substr($nombreLimpio, 0, 2));
             }
 
+            // Foto / Avatar guardado del usuario
+            $avatarUrl = null;
+            if (isset($aprendiz->person) && !empty($aprendiz->person->avatar)) {
+                $avatarVal = $aprendiz->person->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            } elseif (!empty($aprendiz->avatar)) {
+                $avatarVal = $aprendiz->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            }
+
             return (object) [
                 'id'         => $aprendiz->id,
                 'nombre'     => $nombreLimpio,
+                'avatar_url' => $avatarUrl,
                 'iniciales'  => $iniciales,
                 'documento'  => $documento,
                 'correo'     => $aprendiz->email ?? 'N/A',
