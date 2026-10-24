@@ -51,12 +51,6 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
 
         // Módulo de Reportes y Métricas
         Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Admin\ReportesController::class, 'index'])->name('reportes.index');
-
-        // Módulo de Configuración de la Plataforma
-        Route::get('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'index'])->name('configuracion.index');
-        Route::put('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'update'])->name('configuracion.update');
-        Route::post('/configuracion/reset', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'resetDefaults'])->name('configuracion.reset');
-        Route::delete('/configuracion/branding/{clave}', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionController::class, 'removeBrandingFile'])->name('configuracion.removeBranding');
     });
 
 

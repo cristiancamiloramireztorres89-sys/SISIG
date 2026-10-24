@@ -136,6 +136,20 @@ class InfraccionesController extends Controller
                 $ficha = (string) $aprendiz->ficha;
             }
 
+            // Foto / Avatar guardado del usuario
+            $avatarUrl = null;
+            if (isset($aprendiz->person) && !empty($aprendiz->person->avatar)) {
+                $avatarVal = $aprendiz->person->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            } elseif (!empty($aprendiz->avatar)) {
+                $avatarVal = $aprendiz->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            }
+
             // Quiz y Módulo
             $quizTitulo = $res->quiz->titulo ?? 'Evaluación de Seguridad';
             $moduloNombre = $res->quiz->modulo->titulo ?? 'Módulo SIG';
@@ -162,6 +176,7 @@ class InfraccionesController extends Controller
                 'id_resultado'           => $res->id_resultado,
                 'user_id'                => $res->user_id,
                 'aprendiz'               => $nombreAprendiz,
+                'avatar_url'             => $avatarUrl,
                 'correo'                 => $aprendiz->email ?? 'N/A',
                 'iniciales'              => $iniciales,
                 'documento'              => $documento,

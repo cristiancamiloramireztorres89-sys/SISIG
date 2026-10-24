@@ -151,8 +151,14 @@
                                 <!-- Aprendiz con Avatar -->
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-rose-700 to-rose-900 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-rose-200">
-                                            {{ $item->iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($item->avatar_url))
+                                                <img src="{{ $item->avatar_url }}" alt="{{ $item->aprendiz }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->aprendiz }}</span>
@@ -239,8 +245,8 @@
             
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div id="modal-inf-avatar" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-700 to-rose-900 text-white font-black text-sm flex items-center justify-center flex-shrink-0 shadow-sm border border-rose-200">
-                        --
+                    <div id="modal-inf-avatar" class="w-11 h-11 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                        <i class="fas fa-user text-slate-400 text-sm"></i>
                     </div>
                     <div>
                         <h3 id="modal-inf-nombre" class="text-base font-bold text-slate-800">Nombre Aprendiz</h3>
@@ -344,7 +350,12 @@
 
         // Control del Modal de Auditoría
         function abrirModalInfraccion(item) {
-            document.getElementById('modal-inf-avatar').textContent = item.iniciales || 'AP';
+            const avatarContainer = document.getElementById('modal-inf-avatar');
+            if (item.avatar_url) {
+                avatarContainer.innerHTML = `<img src="${item.avatar_url}" alt="${item.aprendiz || ''}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-sm"><i class="fas fa-user"></i></div>`;
+            }
             document.getElementById('modal-inf-nombre').textContent = item.aprendiz || 'Sin nombre';
             document.getElementById('modal-inf-sub').textContent = item.quiz + ' · ' + (item.modulo || 'Módulo SIG');
             document.getElementById('modal-inf-motivo').textContent = item.motivo_anulacion || 'Infracciones anti-trampa detectadas.';
@@ -383,10 +394,12 @@
             }
 
             document.getElementById('modal-infraccion-detalle').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         function cerrarModalInfraccion() {
             document.getElementById('modal-infraccion-detalle').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         document.getElementById('modal-infraccion-detalle')?.addEventListener('click', function(e) {

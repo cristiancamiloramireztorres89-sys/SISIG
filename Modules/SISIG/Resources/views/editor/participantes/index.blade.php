@@ -217,8 +217,14 @@
                                 
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $participante->iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($participante->avatar_url))
+                                                <img src="{{ $participante->avatar_url }}" alt="{{ $participante->nombre }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $participante->nombre }}</span>
@@ -332,8 +338,8 @@
             
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div id="modal-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                        --
+                    <div id="modal-avatar" class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                        <i class="fas fa-user text-slate-400 text-sm"></i>
                     </div>
                     <div>
                         <h3 id="modal-nombre" class="text-base font-bold text-slate-800">Nombre Aprendiz</h3>
@@ -541,7 +547,12 @@
 
         // 4. Modal Detalle del Participante
         function abrirModalDetalle(aprendiz) {
-            document.getElementById('modal-avatar').textContent = aprendiz.iniciales || 'AP';
+            const avatarContainer = document.getElementById('modal-avatar');
+            if (aprendiz.avatar_url) {
+                avatarContainer.innerHTML = `<img src="${aprendiz.avatar_url}" alt="${aprendiz.nombre || ''}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-sm"><i class="fas fa-user"></i></div>`;
+            }
             document.getElementById('modal-nombre').textContent = aprendiz.nombre || 'Sin nombre';
             document.getElementById('modal-documento').textContent = 'CC - ' + (aprendiz.documento || 'N/A');
             document.getElementById('modal-correo').textContent = aprendiz.correo || 'N/A';
@@ -579,10 +590,12 @@
             }
 
             document.getElementById('modal-detalle-aprendiz').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         function cerrarModalDetalle() {
             document.getElementById('modal-detalle-aprendiz').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         // Cerrar modal al hacer click en el backdrop

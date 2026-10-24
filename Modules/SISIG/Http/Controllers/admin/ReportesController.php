@@ -158,6 +158,20 @@ class ReportesController extends Controller
                 }
             }
 
+            // Foto / Avatar guardado del usuario
+            $avatarUrl = null;
+            if (isset($aprendiz->person) && !empty($aprendiz->person->avatar)) {
+                $avatarVal = $aprendiz->person->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            } elseif (!empty($aprendiz->avatar)) {
+                $avatarVal = $aprendiz->avatar;
+                $avatarUrl = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                    ? $avatarVal
+                    : asset('storage/' . $avatarVal);
+            }
+
             // Evaluar el progreso del aprendiz en CADA MÓDULO existente en la BD
             $modulosCompletadosCount = 0;
 
@@ -207,6 +221,7 @@ class ReportesController extends Controller
                 $reporte1Filas->push((object) [
                     'id'          => $aprendiz->id,
                     'aprendiz'    => $nombreAprendiz,
+                    'avatar_url'  => $avatarUrl,
                     'documento'   => $documento,
                     'correo'      => $aprendiz->email ?? 'N/A',
                     'ficha'       => $ficha,
@@ -292,6 +307,19 @@ class ReportesController extends Controller
                     }
                 }
 
+                $avatarUrl2 = null;
+                if (isset($aprendiz->person) && !empty($aprendiz->person->avatar)) {
+                    $avatarVal = $aprendiz->person->avatar;
+                    $avatarUrl2 = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                        ? $avatarVal
+                        : asset('storage/' . $avatarVal);
+                } elseif (!empty($aprendiz->avatar)) {
+                    $avatarVal = $aprendiz->avatar;
+                    $avatarUrl2 = (str_starts_with($avatarVal, 'http') || str_starts_with($avatarVal, '/'))
+                        ? $avatarVal
+                        : asset('storage/' . $avatarVal);
+                }
+
                 $partesNombre = preg_split('/\s+/', $nombreAprendiz);
                 $iniciales = count($partesNombre) >= 2
                     ? mb_strtoupper(mb_substr($partesNombre[0], 0, 1) . mb_substr($partesNombre[1], 0, 1))
@@ -345,6 +373,7 @@ class ReportesController extends Controller
                     $filasModulo[] = (object) [
                         'id'               => $aprendiz->id,
                         'aprendiz'         => $nombreAprendiz,
+                        'avatar_url'       => $avatarUrl2,
                         'iniciales'        => $iniciales,
                         'ficha'            => $ficha,
                         'intentos'         => $intentos,
@@ -363,6 +392,7 @@ class ReportesController extends Controller
                     $filasModulo[] = (object) [
                         'id'               => $aprendiz->id,
                         'aprendiz'         => $nombreAprendiz,
+                        'avatar_url'       => $avatarUrl2,
                         'iniciales'        => $iniciales,
                         'ficha'            => $ficha,
                         'intentos'         => '—',

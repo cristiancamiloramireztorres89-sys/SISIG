@@ -20,7 +20,7 @@ class GestionExamenesController extends AdminGestionExamenesController
      */
     public function store(Request $request)
     {
-        $limiteMaximo = (int) sisig_config('editor_limite_quizzes_por_modulo', 10);
+        $limiteMaximo = 10;
         $conteoActual = Quiz::where('modulo_id', $request->modulo_id)->count();
 
         if ($conteoActual >= $limiteMaximo) {
@@ -37,7 +37,7 @@ class GestionExamenesController extends AdminGestionExamenesController
      */
     public function update(Request $request, $id)
     {
-        $puedeEditarConRespuestas = (bool) sisig_config('editor_puede_editar_quizzes_con_respuestas', false);
+        $puedeEditarConRespuestas = false;
         
         if (!$puedeEditarConRespuestas) {
             $quiz = $this->findQuizOrFail($id);

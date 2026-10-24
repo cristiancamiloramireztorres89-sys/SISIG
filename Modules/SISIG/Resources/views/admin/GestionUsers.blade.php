@@ -593,6 +593,7 @@
             document.getElementById('user-submit-btn').textContent = 'Crear Usuario';
 
             modal.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         function openEditModal(userId) {
@@ -649,6 +650,7 @@
                     document.getElementById('user-submit-btn').textContent = 'Guardar Cambios';
                     userOriginalSnapshot = JSON.stringify(getUserFormData());
                     modal.classList.remove('hidden');
+                    if (window.lockBodyScroll) window.lockBodyScroll(true);
                 })
                 .catch(err => {
                     console.error(err);
@@ -674,6 +676,7 @@
 
         function closeUserModal() {
             modal.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         // 3. Confirmación para Desactivar / Activar Usuario
@@ -717,6 +720,7 @@
             if (hasActivity) {
                 document.getElementById('no-eliminable-usuario-nombre').textContent = userName;
                 document.getElementById('modal-usuario-no-eliminable').classList.remove('hidden');
+                if (window.lockBodyScroll) window.lockBodyScroll(true);
                 return;
             }
 
@@ -739,11 +743,31 @@
 
         function cerrarModalNoEliminable() {
             document.getElementById('modal-usuario-no-eliminable').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
-        // Cerrar modal informativo con Escape
+        // Cerrar modal al hacer clic en el backdrop oscuro
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeUserModal();
+            }
+        });
+
+        const modalNoEliminable = document.getElementById('modal-usuario-no-eliminable');
+        if (modalNoEliminable) {
+            modalNoEliminable.addEventListener('click', (e) => {
+                if (e.target === modalNoEliminable) {
+                    cerrarModalNoEliminable();
+                }
+            });
+        }
+
+        // Cerrar modal con Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                if (!modal.classList.contains('hidden')) {
+                    closeUserModal();
+                }
                 cerrarModalNoEliminable();
             }
         });

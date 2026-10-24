@@ -79,7 +79,7 @@ if (!function_exists('currentUserPrimaryRole')) {
 
 if (!function_exists('sisig_config')) {
     /**
-     * Obtener el valor de una configuración del sistema SISIG.
+     * Obtener el valor de una configuración del sistema SISIG (fallback predeterminado).
      *
      * @param string $clave
      * @param mixed $default
@@ -87,6 +87,6 @@ if (!function_exists('sisig_config')) {
      */
     function sisig_config(string $clave, $default = null)
     {
-        return \Modules\SISIG\Entities\Configuracion::get($clave, $default);
+        return $default;
     }
 }

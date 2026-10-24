@@ -38,7 +38,7 @@
 
             @if(auth()->user()->hasRole('admin_sisig'))
                 <div class="self-start lg:self-auto">
-                    <button type="button" onclick="document.getElementById('modalCrearModulo').classList.remove('hidden')"
+                    <button type="button" onclick="abrirModalCrearModulo()"
                             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                         <i class="fas fa-plus text-xs"></i>
                         <span>Nuevo Módulo</span>
@@ -264,7 +264,7 @@
     <!-- 5. Modal Crear Módulo -->
     <div id="modalCrearModulo" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <!-- Backdrop oscuro -->
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer" onclick="cerrarModalCrearModulo()"></div>
         
         <!-- Modal Contenedor -->
         <div class="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto">
@@ -278,7 +278,7 @@
                         <p class="text-xs text-slate-500 mt-0.5">Creación de módulo y asignación de estado para el SIG</p>
                     </div>
                 </div>
-                <button type="button" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                <button type="button" onclick="cerrarModalCrearModulo()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
@@ -361,8 +361,8 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="document.getElementById('modalCrearModulo').classList.add('hidden')" 
-                            class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all">
+                    <button type="button" onclick="cerrarModalCrearModulo()" 
+                            class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer">
                         Cancelar
                     </button>
                     <button type="submit" 
@@ -394,10 +394,62 @@
                 </button>
             </div>
             
-            <form id="formEditarModulo" action="" method="POST" class="mt-5 space-y-4">
+            <form id="formEditarModulo" action="" method="POST" enctype="multipart/form-data" class="mt-5 space-y-4">
                 @csrf
                 @method('PUT')
                 
+                <!-- Input oculto para la imagen recortada en Base64 -->
+                <input type="hidden" name="imagen_recortada" id="edit-modulo-imagen-recortada">
+
+                <!-- Sección de Imagen con Recorte y Reemplazo -->
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-700 block mb-1.5 flex items-center justify-between">
+                        <span>Imagen del Módulo</span>
+                        <span class="text-[11px] text-slate-400 font-normal">Reemplazar o personalizar</span>
+                    </label>
+
+                    <input type="file" id="edit-input-imagen-modulo" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+
+                    <!-- Dropzone cuando no hay imagen cargada -->
+                    <div id="edit-dropzone-imagen-modulo" onclick="document.getElementById('edit-input-imagen-modulo').click()" 
+                         class="border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-slate-50 hover:bg-emerald-50/40 rounded-2xl p-4 text-center cursor-pointer transition-all group">
+                        <div class="flex flex-col items-center justify-center gap-1.5">
+                            <div class="w-11 h-11 rounded-2xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-sena-green group-hover:scale-110 transition-all">
+                                <i class="fas fa-camera text-base"></i>
+                            </div>
+                            <div class="text-xs font-bold text-slate-700 group-hover:text-emerald-700">
+                                Seleccionar imagen para el módulo
+                            </div>
+                            <p class="text-[11px] text-slate-400">Podrás recortar y acomodarla a tu gusto (JPG, PNG, WEBP)</p>
+                        </div>
+                    </div>
+
+                    <!-- Previsualización de Imagen (Actual o Nueva Recortada) -->
+                    <div id="edit-preview-imagen-modulo-container" class="hidden flex items-center gap-4 p-3 bg-emerald-50/50 border border-emerald-200 rounded-2xl">
+                        <img id="edit-preview-imagen-modulo" src="" alt="Previsualización" class="w-16 h-16 object-cover rounded-xl border border-emerald-200 shadow-sm flex-shrink-0">
+                        <div class="flex-grow min-w-0">
+                            <div class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                <i class="fas fa-check-circle text-emerald-600 text-xs"></i>
+                                <span id="edit-label-imagen-estado">Imagen actual del módulo</span>
+                            </div>
+                            <p id="edit-sub-imagen-estado" class="text-[11px] text-slate-500 mt-0.5">Puedes reemplazarla seleccionando una nueva imagen.</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button type="button" onclick="document.getElementById('edit-input-imagen-modulo').click()" class="text-xs text-sena-green hover:underline font-bold flex items-center gap-1 cursor-pointer">
+                                    <i class="fas fa-exchange-alt"></i> Reemplazar imagen
+                                </button>
+                                <span id="edit-sep-reajustar" class="text-slate-300 hidden">|</span>
+                                <button type="button" id="edit-btn-reajustar" onclick="reabrirCropperEdit()" class="hidden text-xs text-slate-600 hover:text-slate-900 font-medium flex items-center gap-1 cursor-pointer">
+                                    <i class="fas fa-crop-alt"></i> Reajustar
+                                </button>
+                                <span id="edit-sep-deshacer" class="text-slate-300 hidden">|</span>
+                                <button type="button" id="edit-btn-deshacer" onclick="deshacerCambioImagenEdit()" class="hidden text-xs text-rose-500 hover:text-rose-700 font-medium flex items-center gap-1 cursor-pointer">
+                                    <i class="fas fa-undo"></i> Deshacer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="text-left">
                     <label class="text-xs font-bold text-slate-700 block mb-1">Nombre del Módulo *</label>
                     <input type="text" name="titulo" id="edit-modulo-titulo" required 
@@ -492,23 +544,68 @@
 
     <script>
         const rutaUpdateModuloBase = "{{ route('sisig.admin.modulos.update', ':id') }}";
+        const baseAssetUrl = "{{ asset('') }}";
         let moduloOriginalSnapshot = null;
+        let moduloEditandoActual = null;
 
         function getModuloFormData() {
             return {
                 titulo: document.getElementById('edit-modulo-titulo').value.trim(),
                 estado: document.getElementById('edit-modulo-estado').value,
-                descripcion: document.getElementById('edit-modulo-descripcion').value.trim()
+                descripcion: document.getElementById('edit-modulo-descripcion').value.trim(),
+                imagen_recortada: document.getElementById('edit-modulo-imagen-recortada').value
             };
         }
 
         function abrirModalEditarModulo(modulo) {
+            moduloEditandoActual = modulo;
             const modal = document.getElementById('modalEditarModulo');
             const form = document.getElementById('formEditarModulo');
             form.action = rutaUpdateModuloBase.replace(':id', modulo.id);
             document.getElementById('edit-modulo-titulo').value = modulo.titulo || '';
             document.getElementById('edit-modulo-estado').value = modulo.estado || 'publicado';
             document.getElementById('edit-modulo-descripcion').value = modulo.descripcion || '';
+
+            // Reiniciar estado de imagen en edición
+            const editHiddenInput = document.getElementById('edit-modulo-imagen-recortada');
+            const editFileInput = document.getElementById('edit-input-imagen-modulo');
+            const editDropzone = document.getElementById('edit-dropzone-imagen-modulo');
+            const editPreviewContainer = document.getElementById('edit-preview-imagen-modulo-container');
+            const editPreviewImg = document.getElementById('edit-preview-imagen-modulo');
+            const editLabel = document.getElementById('edit-label-imagen-estado');
+            const editSub = document.getElementById('edit-sub-imagen-estado');
+            const editBtnReajustar = document.getElementById('edit-btn-reajustar');
+            const editBtnDeshacer = document.getElementById('edit-btn-deshacer');
+            const editSepReajustar = document.getElementById('edit-sep-reajustar');
+            const editSepDeshacer = document.getElementById('edit-sep-deshacer');
+
+            editHiddenInput.value = '';
+            editFileInput.value = '';
+            currentRawImageSrcEditar = null;
+
+            if (modulo.imagen) {
+                const imgUrl = (modulo.imagen.startsWith('http') || modulo.imagen.startsWith('/'))
+                    ? modulo.imagen
+                    : (baseAssetUrl + modulo.imagen.replace(/^\//, ''));
+                editPreviewImg.src = imgUrl;
+                editDropzone.classList.add('hidden');
+                editPreviewContainer.classList.remove('hidden');
+                editLabel.textContent = 'Imagen actual del módulo';
+                editSub.textContent = 'Puedes reemplazarla seleccionando una nueva imagen.';
+                editBtnReajustar.classList.add('hidden');
+                editSepReajustar.classList.add('hidden');
+                editBtnDeshacer.classList.add('hidden');
+                editSepDeshacer.classList.add('hidden');
+            } else {
+                editPreviewImg.src = '';
+                editPreviewContainer.classList.add('hidden');
+                editDropzone.classList.remove('hidden');
+                editBtnReajustar.classList.add('hidden');
+                editSepReajustar.classList.add('hidden');
+                editBtnDeshacer.classList.add('hidden');
+                editSepDeshacer.classList.add('hidden');
+            }
+
             moduloOriginalSnapshot = JSON.stringify(getModuloFormData());
 
             // Configurar botón eliminar dentro del modal de edición
@@ -518,6 +615,17 @@
             };
 
             modal.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
+        }
+
+        function abrirModalCrearModulo() {
+            document.getElementById('modalCrearModulo').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
+        }
+
+        function cerrarModalCrearModulo() {
+            document.getElementById('modalCrearModulo').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         document.getElementById('formEditarModulo').addEventListener('submit', function(e) {
@@ -536,6 +644,7 @@
 
         function cerrarModalEditarModulo() {
             document.getElementById('modalEditarModulo').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         function confirmarEliminarModulo(formId, tituloModulo) {
@@ -559,16 +668,32 @@
         // LÓGICA DE RECORTE Y ENCUADRE (CROPPER.JS)
         // ==========================================
         let cropperInstance = null;
-        let currentRawImageSrc = null;
+        let cropperContext = 'crear'; // 'crear' | 'editar'
+        let currentRawImageSrcCrear = null;
+        let currentRawImageSrcEditar = null;
 
         const inputImagen = document.getElementById('input-imagen-modulo');
         const dropzoneImagen = document.getElementById('dropzone-imagen-modulo');
         const previewContainer = document.getElementById('preview-imagen-modulo-container');
         const previewImg = document.getElementById('preview-imagen-modulo');
         const hiddenInputRecortada = document.getElementById('crear-modulo-imagen-recortada');
+
+        const editInputImagen = document.getElementById('edit-input-imagen-modulo');
+        const editDropzone = document.getElementById('edit-dropzone-imagen-modulo');
+        const editPreviewContainer = document.getElementById('edit-preview-imagen-modulo-container');
+        const editPreviewImg = document.getElementById('edit-preview-imagen-modulo');
+        const editHiddenInputRecortada = document.getElementById('edit-modulo-imagen-recortada');
+        const editLabelEstado = document.getElementById('edit-label-imagen-estado');
+        const editSubEstado = document.getElementById('edit-sub-imagen-estado');
+        const editBtnReajustar = document.getElementById('edit-btn-reajustar');
+        const editBtnDeshacer = document.getElementById('edit-btn-deshacer');
+        const editSepReajustar = document.getElementById('edit-sep-reajustar');
+        const editSepDeshacer = document.getElementById('edit-sep-deshacer');
+
         const modalRecortar = document.getElementById('modalRecortarImagen');
         const cropperTarget = document.getElementById('cropper-image-target');
 
+        // Modo Crear: Selector de archivo
         if (inputImagen) {
             inputImagen.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -581,15 +706,38 @@
                     }
                     const reader = new FileReader();
                     reader.onload = function(evt) {
-                        currentRawImageSrc = evt.target.result;
-                        iniciarCropper(currentRawImageSrc);
+                        cropperContext = 'crear';
+                        currentRawImageSrcCrear = evt.target.result;
+                        iniciarCropper(currentRawImageSrcCrear);
                     };
                     reader.readAsDataURL(file);
                 }
             });
         }
 
-        // Soporte Drag & Drop sobre la zona de subida
+        // Modo Editar: Selector de archivo para reemplazar imagen
+        if (editInputImagen) {
+            editInputImagen.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (!file.type.startsWith('image/')) {
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner('Por favor selecciona un archivo de imagen válido.', 'error');
+                        }
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        cropperContext = 'editar';
+                        currentRawImageSrcEditar = evt.target.result;
+                        iniciarCropper(currentRawImageSrcEditar);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Soporte Drag & Drop sobre la zona de subida (Crear)
         if (dropzoneImagen) {
             ['dragenter', 'dragover'].forEach(eventName => {
                 dropzoneImagen.addEventListener(eventName, (e) => {
@@ -613,9 +761,34 @@
             });
         }
 
+        // Soporte Drag & Drop sobre la zona de subida (Editar)
+        if (editDropzone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                editDropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    editDropzone.classList.add('border-emerald-500', 'bg-emerald-50');
+                });
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                editDropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    editDropzone.classList.remove('border-emerald-500', 'bg-emerald-50');
+                });
+            });
+            editDropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    editInputImagen.files = e.dataTransfer.files;
+                    const event = new Event('change');
+                    editInputImagen.dispatchEvent(event);
+                }
+            });
+        }
+
         function iniciarCropper(imgSrc) {
             cropperTarget.src = imgSrc;
             modalRecortar.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
 
             if (cropperInstance) {
                 cropperInstance.destroy();
@@ -650,12 +823,19 @@
 
         function cancelarRecorte() {
             modalRecortar.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
             if (cropperInstance) {
                 cropperInstance.destroy();
                 cropperInstance = null;
             }
-            if (!hiddenInputRecortada.value) {
-                inputImagen.value = '';
+            if (cropperContext === 'editar') {
+                if (!editHiddenInputRecortada.value) {
+                    editInputImagen.value = '';
+                }
+            } else {
+                if (!hiddenInputRecortada.value) {
+                    inputImagen.value = '';
+                }
             }
         }
 
@@ -672,30 +852,78 @@
 
             const croppedBase64 = canvas.toDataURL('image/png');
 
-            // Guardar en el input hidden para enviarlo al backend
-            hiddenInputRecortada.value = croppedBase64;
-
-            // Mostrar en el preview del formulario
-            previewImg.src = croppedBase64;
-            dropzoneImagen.classList.add('hidden');
-            previewContainer.classList.remove('hidden');
+            if (cropperContext === 'editar') {
+                editHiddenInputRecortada.value = croppedBase64;
+                editPreviewImg.src = croppedBase64;
+                editDropzone.classList.add('hidden');
+                editPreviewContainer.classList.remove('hidden');
+                editLabelEstado.textContent = 'Nueva imagen seleccionada';
+                editSubEstado.textContent = 'El reemplazo se guardará al hacer clic en Guardar Cambios.';
+                editBtnReajustar.classList.remove('hidden');
+                editSepReajustar.classList.remove('hidden');
+                editBtnDeshacer.classList.remove('hidden');
+                editSepDeshacer.classList.remove('hidden');
+            } else {
+                hiddenInputRecortada.value = croppedBase64;
+                previewImg.src = croppedBase64;
+                dropzoneImagen.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            }
 
             // Cerrar el modal de recorte
             modalRecortar.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
             cropperInstance.destroy();
             cropperInstance = null;
         }
 
         function reabrirCropper() {
-            if (currentRawImageSrc) {
-                iniciarCropper(currentRawImageSrc);
+            if (currentRawImageSrcCrear) {
+                cropperContext = 'crear';
+                iniciarCropper(currentRawImageSrcCrear);
+            }
+        }
+
+        function reabrirCropperEdit() {
+            if (currentRawImageSrcEditar) {
+                cropperContext = 'editar';
+                iniciarCropper(currentRawImageSrcEditar);
+            }
+        }
+
+        function deshacerCambioImagenEdit() {
+            editHiddenInputRecortada.value = '';
+            editInputImagen.value = '';
+            currentRawImageSrcEditar = null;
+
+            if (moduloEditandoActual && moduloEditandoActual.imagen) {
+                const imgUrl = (moduloEditandoActual.imagen.startsWith('http') || moduloEditandoActual.imagen.startsWith('/'))
+                    ? moduloEditandoActual.imagen
+                    : (baseAssetUrl + moduloEditandoActual.imagen.replace(/^\//, ''));
+                editPreviewImg.src = imgUrl;
+                editDropzone.classList.add('hidden');
+                editPreviewContainer.classList.remove('hidden');
+                editLabelEstado.textContent = 'Imagen actual del módulo';
+                editSubEstado.textContent = 'Puedes reemplazarla seleccionando una nueva imagen.';
+                editBtnReajustar.classList.add('hidden');
+                editSepReajustar.classList.add('hidden');
+                editBtnDeshacer.classList.add('hidden');
+                editSepDeshacer.classList.add('hidden');
+            } else {
+                editPreviewImg.src = '';
+                editPreviewContainer.classList.add('hidden');
+                editDropzone.classList.remove('hidden');
+                editBtnReajustar.classList.add('hidden');
+                editSepReajustar.classList.add('hidden');
+                editBtnDeshacer.classList.add('hidden');
+                editSepDeshacer.classList.add('hidden');
             }
         }
 
         function quitarImagenModulo() {
             hiddenInputRecortada.value = '';
             inputImagen.value = '';
-            currentRawImageSrc = null;
+            currentRawImageSrcCrear = null;
             previewImg.src = '';
             previewContainer.classList.add('hidden');
             dropzoneImagen.classList.remove('hidden');

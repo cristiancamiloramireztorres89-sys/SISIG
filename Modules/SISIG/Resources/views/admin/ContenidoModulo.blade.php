@@ -505,6 +505,7 @@
             var modal = document.getElementById('modalConfigFondoContenido');
             if (modal) {
                 modal.style.display = 'flex';
+                if (window.lockBodyScroll) window.lockBodyScroll(true);
             }
         };
 
@@ -512,6 +513,7 @@
             var modal = document.getElementById('modalConfigFondoContenido');
             if (modal) {
                 modal.style.display = 'none';
+                if (window.lockBodyScroll) window.lockBodyScroll(false);
             }
         };
 
@@ -522,6 +524,7 @@
             if (cropperFondoTarget && modalRecortarFondo) {
                 cropperFondoTarget.src = imgSrc;
                 modalRecortarFondo.style.display = 'flex';
+                if (window.lockBodyScroll) window.lockBodyScroll(true);
 
                 if (cropperFondoInstance) {
                     cropperFondoInstance.destroy();
@@ -558,6 +561,7 @@
             var modalRecortarFondo = document.getElementById('modalRecortarFondo');
             if (modalRecortarFondo) {
                 modalRecortarFondo.style.display = 'none';
+                if (window.lockBodyScroll) window.lockBodyScroll(false);
             }
             if (cropperFondoInstance) {
                 cropperFondoInstance.destroy();
@@ -605,6 +609,7 @@
             var modalRecortarFondo = document.getElementById('modalRecortarFondo');
             if (modalRecortarFondo) {
                 modalRecortarFondo.style.display = 'none';
+                if (window.lockBodyScroll) window.lockBodyScroll(false);
             }
 
             cropperFondoInstance.destroy();
