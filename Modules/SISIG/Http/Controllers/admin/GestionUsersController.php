@@ -19,7 +19,19 @@ class GestionUsersController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::withTrashed()->with(['person', 'roles']);
+        // Por defecto: Solo usuarios activos (excluye registros eliminados / desactivados con SoftDeletes)
+        $status = $request->input('status', 'activos');
+
+        if ($status === 'inactivos' || $status === 'inactivo') {
+            $query = User::onlyTrashed()->with(['person', 'roles']);
+            $status = 'inactivos';
+        } elseif ($status === 'todos') {
+            $query = User::withTrashed()->with(['person', 'roles']);
+            $status = 'todos';
+        } else {
+            $query = User::with(['person', 'roles']);
+            $status = 'activos';
+        }
 
         // Filtro de búsqueda
         if ($request->filled('search')) {
@@ -49,16 +61,11 @@ class GestionUsersController extends Controller
             }
         }
 
-        // Filtro por estado
-        if ($request->filled('status')) {
-            $request->input('status') === 'activos' ? $query->whereNull('deleted_at') : $query->whereNotNull('deleted_at');
-        }
-
         $users = $query->orderBy('name')->get();
 
-        // KPIs de usuarios
-        $totalUsuarios = User::withTrashed()->count();
-        $totalActivos = User::count();
+        // KPIs de usuarios (usuarios activos en el sistema)
+        $totalUsuarios = User::count();
+        $totalActivos = $totalUsuarios;
         $totalInactivos = User::onlyTrashed()->count();
         $totalAdmins = User::whereHas('roles', fn($q) => $q->whereIn('slug', ['admin_sisig', 'sisig.admin']))->count();
         $totalEditores = User::whereHas('roles', fn($q) => $q->whereIn('slug', ['editor_sisig']))->count();
@@ -125,7 +132,7 @@ class GestionUsersController extends Controller
         return view('sisig::admin.GestionUsers', compact(
             'usersData', 'totalUsuarios', 'totalActivos', 'totalInactivos',
             'totalAdmins', 'totalEditores', 'totalAprendices', 'totalSecciones', 'totalQuices',
-            'modulosActivos', 'quicesActivos'
+            'modulosActivos', 'quicesActivos', 'status'
         ));
     }
 
