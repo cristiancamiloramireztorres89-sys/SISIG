@@ -1,14 +1,14 @@
 <!-- Sidebar Lateral Completo para SISIG (Modo Completo y Modo Mini-Iconos) -->
-<aside id="sidebar-menu" style="background-color: {{ sisig_config('color_sidebar', '#001A29') }};" class="w-64 border-r border-slate-800 text-slate-300 flex-shrink-0 flex flex-col justify-between h-screen sticky top-0 transition-all duration-300 z-40">
+<aside id="sidebar-menu" style="background-color: #001A29;" class="w-64 border-r border-slate-800 text-slate-300 flex-shrink-0 flex flex-col justify-between h-screen sticky top-0 transition-all duration-300 z-40">
     
     <!-- 1. Encabezado Superior del Sidebar (Identidad Institucional SISIG) -->
     <div class="h-16 px-4 flex-shrink-0 flex items-center justify-start sidebar-header-container transition-all">
         <div class="flex items-center gap-3 overflow-hidden w-full select-none sidebar-header-inner">
             <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 sidebar-logo-box">
-                <img src="{{ sisig_config('app_logo') ? asset(sisig_config('app_logo')) : asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow">
+                <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow">
             </div>
             <div class="min-w-0 sidebar-text transition-all duration-200">
-                <span class="text-lg font-extrabold tracking-tight text-white block leading-tight">{{ sisig_config('app_name', 'SISIG') }}</span>
+                <span class="text-lg font-extrabold tracking-tight text-white block leading-tight">SISIG</span>
             </div>
         </div>
     </div>
@@ -72,13 +72,6 @@
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.seguridad.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
                         <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.admin.seguridad.*') ? 'text-white' : 'text-emerald-400 group-hover:scale-110' }}"></i>
                         <span class="sidebar-text truncate">Seguridad y Accesos</span>
-                    </a>
-
-                    <a href="{{ route('sisig.admin.configuracion.index') }}" 
-                       title="Configuración de la Plataforma"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group {{ request()->routeIs('sisig.admin.configuracion.*') ? 'bg-sena-green text-white shadow-sena' : 'hover:bg-slate-800/80 hover:text-white text-slate-300' }}">
-                        <i class="fas fa-sliders-h text-sm w-5 text-center flex-shrink-0 transition-transform {{ request()->routeIs('sisig.admin.configuracion.*') ? 'text-white' : 'text-amber-400 group-hover:scale-110' }}"></i>
-                        <span class="sidebar-text truncate">Configuración Plataforma</span>
                     </a>
                 </div>
             </div>

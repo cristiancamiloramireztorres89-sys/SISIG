@@ -38,7 +38,7 @@
             </div>
 
             <div class="self-start lg:self-auto">
-                <button type="button" onclick="document.getElementById('modalCrearModuloEditor').classList.remove('hidden')"
+                <button type="button" onclick="abrirModalCrearModuloEditor()"
                         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
                     <i class="fas fa-plus text-xs"></i>
                     <span>Nuevo Módulo</span>
@@ -156,7 +156,7 @@
                     <p class="text-sm text-slate-500 max-w-md mx-auto mt-2 leading-relaxed mb-6">
                         Aún no tienes módulos en tu panel editorial. Empieza creando tu propio módulo temático para comenzar a redactar contenido formativo.
                     </p>
-                    <button type="button" onclick="document.getElementById('modalCrearModuloEditor').classList.remove('hidden')" 
+                    <button type="button" onclick="abrirModalCrearModuloEditor()" 
                             class="px-6 py-2.5 bg-sena-green hover:bg-sena-green-hover text-white font-bold rounded-xl shadow-sena transition-all cursor-pointer">
                         <i class="fas fa-plus mr-2"></i> Crear nuevo módulo
                     </button>
@@ -251,7 +251,7 @@
     <!-- Modal Crear Módulo para Editor -->
     <div id="modalCrearModuloEditor" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <!-- Backdrop oscuro -->
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modalCrearModuloEditor').classList.add('hidden')"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer" onclick="cerrarModalCrearModuloEditor()"></div>
         
         <!-- Modal Contenedor -->
         <div class="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto">
@@ -264,7 +264,7 @@
                         <p class="text-xs text-slate-500 mt-0.5">Creación de módulo y asignación a tu panel editorial</p>
                     </div>
                 </div>
-                <button type="button" onclick="document.getElementById('modalCrearModuloEditor').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
+                <button type="button" onclick="cerrarModalCrearModuloEditor()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
@@ -353,7 +353,7 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="document.getElementById('modalCrearModuloEditor').classList.add('hidden')" 
+                    <button type="button" onclick="cerrarModalCrearModuloEditor()" 
                             class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer">
                         Cancelar
                     </button>
@@ -476,9 +476,20 @@
             });
         }
 
+        function abrirModalCrearModuloEditor() {
+            document.getElementById('modalCrearModuloEditor').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
+        }
+
+        function cerrarModalCrearModuloEditor() {
+            document.getElementById('modalCrearModuloEditor').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
+        }
+
         function editorIniciarCropper(imgSrc) {
             editorCropperTarget.src = imgSrc;
             editorModalRecortar.classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
 
             if (editorCropperInstance) {
                 editorCropperInstance.destroy();
@@ -512,6 +523,7 @@
 
         function editorCancelarRecorte() {
             editorModalRecortar.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
             if (editorCropperInstance) {
                 editorCropperInstance.destroy();
                 editorCropperInstance = null;
@@ -539,6 +551,7 @@
             editorPreviewContainer.classList.remove('hidden');
 
             editorModalRecortar.classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
             editorCropperInstance.destroy();
             editorCropperInstance = null;
         }
@@ -598,5 +611,15 @@
         if (inputBuscar) inputBuscar.addEventListener('input', filtrarModulos);
         if (selectSeccion) selectSeccion.addEventListener('change', filtrarModulos);
         if (selectEstado) selectEstado.addEventListener('change', filtrarModulos);
+
+        // Cerrar modal al presionar Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modalCrearModuloEditor');
+                if (modal && !modal.classList.contains('hidden')) {
+                    cerrarModalCrearModuloEditor();
+                }
+            }
+        });
     </script>
 </x-sisig::layouts.editor>

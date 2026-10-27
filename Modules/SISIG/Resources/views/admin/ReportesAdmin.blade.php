@@ -4,13 +4,6 @@
         <!-- 1. Encabezado de la Sección (Estilo Limpio y Unificado) -->
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
             <div>
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1">
-                    <span>Inicio</span>
-                    <i class="fas fa-chevron-right text-[10px]"></i>
-                    <span>Gestión</span>
-                    <i class="fas fa-chevron-right text-[10px]"></i>
-                    <span class="text-sena-green font-extrabold">Reportes</span>
-                </div>
                 <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
                     <i class="fas fa-chart-line text-sena-green"></i>
                     <span>Reportes Generales SISIG</span>
@@ -208,17 +201,20 @@
                                     {{ $index + 1 }}
                                 </td>
 
-                                <!-- Aprendiz con Avatar -->
+                                <!-- Aprendiz con Avatar / Foto -->
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
                                         @php
-                                            $partesNombre = preg_split('/\s+/', trim($item->aprendiz));
-                                            $iniciales = count($partesNombre) >= 2
-                                                ? mb_strtoupper(mb_substr($partesNombre[0], 0, 1) . mb_substr($partesNombre[1], 0, 1))
-                                                : mb_strtoupper(mb_substr($item->aprendiz, 0, 2));
+                                            $avatarFoto = $item->avatar_url ?? null;
                                         @endphp
-                                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($avatarFoto))
+                                                <img src="{{ $avatarFoto }}" alt="{{ $item->aprendiz }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $item->aprendiz }}</span>
@@ -481,16 +477,12 @@
                                     {{ $index + 1 }}
                                 </td>
 
-                                <!-- Aprendiz con Avatar -->
+                                <!-- Aprendiz con Avatar / Foto -->
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
                                         @php
                                             $nombreApp = data_get($item, 'aprendiz', 'Aprendiz');
-                                            $partesNombre2 = preg_split('/\s+/', trim($nombreApp));
-                                            $iniciales2 = count($partesNombre2) >= 2
-                                                ? mb_strtoupper(mb_substr($partesNombre2[0], 0, 1) . mb_substr($partesNombre2[1], 0, 1))
-                                                : mb_strtoupper(mb_substr($nombreApp, 0, 2));
-                                            $inicFinal = data_get($item, 'iniciales', $iniciales2);
+                                            $avatarFoto2 = data_get($item, 'avatar_url');
                                             $puntajeNum = data_get($item, 'puntaje_num');
                                             $puntajeTxt = data_get($item, 'puntaje', '—');
                                             $resTxt = data_get($item, 'resultado', 'Pendiente');
@@ -501,8 +493,14 @@
                                             $intentosTxt = data_get($item, 'intentos', '—');
                                             $fechaTxt = data_get($item, 'fecha', '—');
                                         @endphp
-                                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $inicFinal }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($avatarFoto2))
+                                                <img src="{{ $avatarFoto2 }}" alt="{{ $nombreApp }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $nombreApp }}</span>
@@ -797,13 +795,17 @@
                     `;
                 }
 
+                const avatarImgHtml = item.avatar_url
+                    ? `<img src="${item.avatar_url}" alt="${item.aprendiz}" class="w-full h-full object-cover">`
+                    : `<div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs"><i class="fas fa-user"></i></div>`;
+
                 html += `
                     <tr class="hover:bg-slate-50/80 transition-colors animate-fade-in">
                         <td class="py-3.5 px-4 text-center font-bold text-slate-400">${index + 1}</td>
                         <td class="py-3.5 px-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                    ${item.iniciales}
+                                <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                    ${avatarImgHtml}
                                 </div>
                                 <div>
                                     <span class="font-bold text-slate-800 block text-xs sm:text-sm">${item.aprendiz}</span>

@@ -86,17 +86,7 @@
                     </div>
 
                     @php
-                        $modulosFiltroPart = \Illuminate\Support\Facades\DB::table('sisig_modulos')
-                            ->where('estado', '!=', 'inactivo')
-                            ->orderBy('id', 'asc')
-                            ->get();
-                        if ($modulosFiltroPart->isEmpty()) {
-                            $modulosFiltroPart = collect([
-                                (object)['id' => 1, 'titulo' => 'Calidad'],
-                                (object)['id' => 2, 'titulo' => 'SST'],
-                                (object)['id' => 3, 'titulo' => 'Ambiental'],
-                            ]);
-                        }
+                        $modulosFiltroPart = $modulos ?? collect();
                         $totalOpcionesPart = $modulosFiltroPart->count() + 1;
                         $tieneMasDeTresPart = $totalOpcionesPart > 3;
                     @endphp
@@ -196,9 +186,18 @@
                             <th class="py-3.5 px-4">Aprendiz / Persona</th>
                             <th class="py-3.5 px-4">Documento</th>
                             <th class="py-3.5 px-4">Correo Electrónico</th>
-                            <th class="py-3.5 px-4 text-center">Calidad</th>
-                            <th class="py-3.5 px-4 text-center">SST</th>
-                            <th class="py-3.5 px-4 text-center">Ambiental</th>
+                            @foreach($modulos as $mod)
+                                @php
+                                    $modKey = strtolower($mod->titulo);
+                                    if (str_contains($modKey, 'calidad')) $modKey = 'calidad';
+                                    elseif (str_contains($modKey, 'sst') || str_contains($modKey, 'seguridad')) $modKey = 'sst';
+                                    elseif (str_contains($modKey, 'ambiental') || str_contains($modKey, 'ambiente')) $modKey = 'ambiental';
+                                    else $modKey = \Illuminate\Support\Str::slug($modKey, '_');
+                                @endphp
+                                <th class="py-3.5 px-4 text-center col-seccion col-seccion-{{ $modKey }}" data-seccion-col="{{ $modKey }}">
+                                    {{ $mod->titulo }}
+                                </th>
+                            @endforeach
                             <th class="py-3.5 px-4">Estado</th>
                             <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
@@ -213,12 +212,21 @@
                                 data-status="{{ $participante->estado }}"
                                 data-calidad="{{ $participante->calidad }}"
                                 data-sst="{{ $participante->sst }}"
-                                data-ambiental="{{ $participante->ambiental }}">
+                                data-ambiental="{{ $participante->ambiental }}"
+                                @foreach($participante->secciones as $sec)
+                                    data-{{ \Illuminate\Support\Str::slug($sec['titulo'], '_') }}="{{ $sec['porcentaje'] }}"
+                                @endforeach>
                                 
                                 <td class="py-3.5 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                                            {{ $participante->iniciales }}
+                                        <div class="w-9 h-9 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                                            @if(!empty($participante->avatar_url))
+                                                <img src="{{ $participante->avatar_url }}" alt="{{ $participante->nombre }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div>
                                             <span class="font-bold text-slate-800 block text-xs sm:text-sm">{{ $participante->nombre }}</span>
@@ -229,7 +237,7 @@
 
                                 <td class="py-3.5 px-4 text-slate-600 font-mono text-xs">
                                     <span class="font-bold text-slate-700">{{ $participante->documento }}</span>
-                                    <span class="text-[10px] text-slate-400 block">Cédula de ciudadanía</span>
+                                    <span class="text-[10px] text-slate-400 block">{{ $participante->tipo_documento ?? 'Sin asignar' }}</span>
                                 </td>
 
                                 <td class="py-3.5 px-4 text-slate-600">
@@ -239,47 +247,32 @@
                                     @endif
                                 </td>
 
-                                <td class="py-3.5 px-4">
-                                    <div class="w-24 mx-auto">
-                                        <div class="flex items-center justify-between text-[11px] mb-1">
-                                            <span class="font-bold text-slate-700">{{ $participante->calidad }}%</span>
-                                            <span class="text-[10px] {{ $participante->calidad >= 70 ? 'text-emerald-600 font-bold' : ($participante->calidad > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
-                                                {{ $participante->calidad >= 70 ? 'Aprobado' : ($participante->calidad > 0 ? 'En curso' : '0%') }}
-                                            </span>
-                                        </div>
-                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                            <div class="h-1.5 rounded-full {{ $participante->calidad >= 70 ? 'bg-sena-green' : ($participante->calidad > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->calidad }}%"></div>
-                                        </div>
-                                    </div>
-                                </td>
+                                @foreach($modulos as $mod)
+                                    @php
+                                        $modKey = strtolower($mod->titulo);
+                                        if (str_contains($modKey, 'calidad')) $modKey = 'calidad';
+                                        elseif (str_contains($modKey, 'sst') || str_contains($modKey, 'seguridad')) $modKey = 'sst';
+                                        elseif (str_contains($modKey, 'ambiental') || str_contains($modKey, 'ambiente')) $modKey = 'ambiental';
+                                        else $modKey = \Illuminate\Support\Str::slug($modKey, '_');
 
-                                <td class="py-3.5 px-4">
-                                    <div class="w-24 mx-auto">
-                                        <div class="flex items-center justify-between text-[11px] mb-1">
-                                            <span class="font-bold text-slate-700">{{ $participante->sst }}%</span>
-                                            <span class="text-[10px] {{ $participante->sst >= 70 ? 'text-emerald-600 font-bold' : ($participante->sst > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
-                                                {{ $participante->sst >= 70 ? 'Aprobado' : ($participante->sst > 0 ? 'En curso' : '0%') }}
-                                            </span>
+                                        $secInfo = collect($participante->secciones)->firstWhere('id', $mod->id);
+                                        $secPct = $secInfo['porcentaje'] ?? 0;
+                                        $secEst = $secInfo['estado'] ?? 'Sin iniciar';
+                                    @endphp
+                                    <td class="py-3.5 px-4 col-seccion col-seccion-{{ $modKey }}" data-seccion-col="{{ $modKey }}">
+                                        <div class="w-24 mx-auto">
+                                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                                <span class="font-bold text-slate-700">{{ $secPct }}%</span>
+                                                <span class="text-[10px] {{ $secPct >= 70 ? 'text-emerald-600 font-bold' : ($secPct > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
+                                                    {{ $secEst }}
+                                                </span>
+                                            </div>
+                                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                                <div class="h-1.5 rounded-full {{ $secPct >= 70 ? 'bg-sena-green' : ($secPct > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $secPct }}%"></div>
+                                            </div>
                                         </div>
-                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                            <div class="h-1.5 rounded-full {{ $participante->sst >= 70 ? 'bg-sena-green' : ($participante->sst > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->sst }}%"></div>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td class="py-3.5 px-4">
-                                    <div class="w-24 mx-auto">
-                                        <div class="flex items-center justify-between text-[11px] mb-1">
-                                            <span class="font-bold text-slate-700">{{ $participante->ambiental }}%</span>
-                                            <span class="text-[10px] {{ $participante->ambiental >= 70 ? 'text-emerald-600 font-bold' : ($participante->ambiental > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400') }}">
-                                                {{ $participante->ambiental >= 70 ? 'Aprobado' : ($participante->ambiental > 0 ? 'En curso' : '0%') }}
-                                            </span>
-                                        </div>
-                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                            <div class="h-1.5 rounded-full {{ $participante->ambiental >= 70 ? 'bg-sena-green' : ($participante->ambiental > 0 ? 'bg-amber-400' : 'bg-slate-200') }}" style="width: {{ $participante->ambiental }}%"></div>
-                                        </div>
-                                    </div>
-                                </td>
+                                    </td>
+                                @endforeach
 
                                 <td class="py-3.5 px-4">
                                     @php
@@ -308,7 +301,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12 text-slate-400">
+                                <td colspan="{{ 5 + count($modulos) }}" class="text-center py-12 text-slate-400">
                                     <i class="fas fa-users-slash text-3xl mb-2 block text-slate-300"></i>
                                     No hay participantes registrados en el sistema.
                                 </td>
@@ -332,12 +325,12 @@
             
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div id="modal-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 text-white font-black text-xs flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/50">
-                        --
+                    <div id="modal-avatar" class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
+                        <i class="fas fa-user text-slate-400 text-sm"></i>
                     </div>
                     <div>
                         <h3 id="modal-nombre" class="text-base font-bold text-slate-800">Nombre Aprendiz</h3>
-                        <p id="modal-documento" class="text-xs text-slate-500 mt-0.5">CC - --</p>
+                        <p id="modal-documento" class="text-xs text-slate-500 mt-0.5">Sin asignar</p>
                     </div>
                 </div>
                 <button type="button" onclick="cerrarModalDetalle()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
@@ -350,67 +343,21 @@
                 <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
                     <div>
                         <span class="text-slate-400 block font-medium">Correo Electrónico</span>
-                        <span id="modal-correo" class="text-slate-700 font-bold break-all">--</span>
+                        <span id="modal-correo" class="text-slate-700 font-bold break-all">Sin asignar</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block font-medium">Ficha / Programa</span>
-                        <span id="modal-ficha" class="text-slate-700 font-bold">--</span>
+                        <span id="modal-ficha" class="text-slate-700 font-bold">Sin asignar</span>
                     </div>
                 </div>
 
-                <!-- Rendimiento por sección formativa -->
+                <!-- Rendimiento por sección formativa dinámico -->
                 <div class="space-y-2.5">
                     <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block">Rendimiento por Sección</span>
 
-                    <!-- Calidad -->
-                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold">
-                                <i class="fas fa-certificate"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs block">Gestión de la Calidad</span>
-                                <span class="text-[10px] text-slate-400">Norma ISO 9001</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span id="modal-calidad" class="text-xs font-extrabold text-slate-800 block">0%</span>
-                            <span id="modal-calidad-badge" class="text-[10px] font-semibold text-slate-400">Pendiente</span>
-                        </div>
-                    </div>
-
-                    <!-- SST -->
-                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">
-                                <i class="fas fa-hard-hat"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs block">Seguridad y Salud en el Trabajo</span>
-                                <span class="text-[10px] text-slate-400">Norma ISO 45001</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span id="modal-sst" class="text-xs font-extrabold text-slate-800 block">0%</span>
-                            <span id="modal-sst-badge" class="text-[10px] font-semibold text-slate-400">Pendiente</span>
-                        </div>
-                    </div>
-
-                    <!-- Ambiental -->
-                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">
-                                <i class="fas fa-leaf"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs block">Gestión Ambiental</span>
-                                <span class="text-[10px] text-slate-400">Norma ISO 14001</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span id="modal-ambiental" class="text-xs font-extrabold text-slate-800 block">0%</span>
-                            <span id="modal-ambiental-badge" class="text-[10px] font-semibold text-slate-400">Pendiente</span>
-                        </div>
+                    <!-- Contenedor dinámico de secciones -->
+                    <div id="modal-secciones-container" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                        <!-- Se insertan dinámicamente con JavaScript desde los datos reales del aprendiz -->
                     </div>
                 </div>
 
@@ -511,62 +458,119 @@
             }
         }
 
-        // 3. Filtro / Ordenación por Sección
+        // 3. Filtro, Visibilidad y Ordenación por Sección
         function filterBySeccion(seccion) {
             currentSeccionFilter = seccion;
+
+            // 1. Actualizar visualmente la clase de botón activo
             document.querySelectorAll('.seccion-filter-btn').forEach(btn => {
-                btn.className = btn.dataset.seccion === seccion 
+                const isActive = btn.dataset.seccion === seccion;
+                btn.className = isActive 
                     ? 'seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-part flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate'
                     : 'seccion-filter-btn px-2.5 py-1.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate';
             });
 
-            // Si se selecciona una sección específica, ordenar la tabla de mayor a menor porcentaje en esa sección
+            // 2. Controlar la visibilidad de las columnas (th y td)
+            const todasLasColumnas = document.querySelectorAll('.col-seccion');
+            if (seccion === 'todas') {
+                todasLasColumnas.forEach(col => col.style.display = '');
+            } else {
+                todasLasColumnas.forEach(col => {
+                    col.style.display = (col.dataset.seccionCol === seccion) ? '' : 'none';
+                });
+            }
+
+            // 3. Ajustar colspan del mensaje de tabla vacía si existe
+            const emptyTd = document.querySelector('#participantes-table-body td[colspan]');
+            if (emptyTd) {
+                emptyTd.colSpan = seccion === 'todas' ? (5 + {{ count($modulos) }}) : 6;
+            }
+
+            // 4. Ordenar: si es sección específica de mayor a menor; si es 'todas' alfabéticamente
+            const rows = getRows();
             if (seccion !== 'todas') {
-                const rows = getRows();
                 rows.sort((a, b) => {
                     const valA = parseFloat(a.dataset[seccion] || 0);
                     const valB = parseFloat(b.dataset[seccion] || 0);
                     return valB - valA;
                 });
-                rows.forEach(row => tableBody.appendChild(row));
             } else {
-                // Volver a ordenar alfabéticamente por nombre
-                const rows = getRows();
                 rows.sort((a, b) => (a.dataset.name || '').localeCompare(b.dataset.name || ''));
-                rows.forEach(row => tableBody.appendChild(row));
             }
+            rows.forEach(row => tableBody.appendChild(row));
 
             applyFilters();
         }
 
         // 4. Modal Detalle del Participante
         function abrirModalDetalle(aprendiz) {
-            document.getElementById('modal-avatar').textContent = aprendiz.iniciales || 'AP';
-            document.getElementById('modal-nombre').textContent = aprendiz.nombre || 'Sin nombre';
-            document.getElementById('modal-documento').textContent = 'CC - ' + (aprendiz.documento || 'N/A');
-            document.getElementById('modal-correo').textContent = aprendiz.correo || 'N/A';
+            const avatarContainer = document.getElementById('modal-avatar');
+            if (aprendiz.avatar_url) {
+                avatarContainer.innerHTML = `<img src="${aprendiz.avatar_url}" alt="${aprendiz.nombre || ''}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<div class="w-full h-full bg-slate-200 text-slate-400 flex items-center justify-center text-sm"><i class="fas fa-user"></i></div>`;
+            }
+            const docTipo = (aprendiz.tipo_documento && aprendiz.tipo_documento !== 'Sin asignar') ? (aprendiz.tipo_documento + ' - ') : '';
+            document.getElementById('modal-documento').textContent = docTipo + (aprendiz.documento || 'Sin asignar');
+            document.getElementById('modal-correo').textContent = aprendiz.correo || 'Sin asignar';
             document.getElementById('modal-ficha').textContent = aprendiz.ficha || 'Sin asignar';
 
-            // Calidad
-            const cal = aprendiz.calidad || 0;
-            document.getElementById('modal-calidad').textContent = cal + '%';
-            const calBadge = document.getElementById('modal-calidad-badge');
-            calBadge.textContent = cal >= 70 ? 'Aprobado' : (cal > 0 ? 'En progreso' : 'Sin iniciar');
-            calBadge.className = cal >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (cal > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+            // Rendimiento por sección dinámico (Cero código quemado)
+            const contSecciones = document.getElementById('modal-secciones-container');
+            if (contSecciones) {
+                contSecciones.innerHTML = '';
+                const secciones = Array.isArray(aprendiz.secciones) ? aprendiz.secciones : [];
 
-            // SST
-            const sst = aprendiz.sst || 0;
-            document.getElementById('modal-sst').textContent = sst + '%';
-            const sstBadge = document.getElementById('modal-sst-badge');
-            sstBadge.textContent = sst >= 70 ? 'Aprobado' : (sst > 0 ? 'En progreso' : 'Sin iniciar');
-            sstBadge.className = sst >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (sst > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+                if (secciones.length > 0) {
+                    secciones.forEach(sec => {
+                        const pct = parseInt(sec.porcentaje) || 0;
+                        let badgeColor = 'text-slate-400';
+                        let badgeText = 'Sin iniciar';
+                        let pctColor = 'text-slate-800';
 
-            // Ambiental
-            const amb = aprendiz.ambiental || 0;
-            document.getElementById('modal-ambiental').textContent = amb + '%';
-            const ambBadge = document.getElementById('modal-ambiental-badge');
-            ambBadge.textContent = amb >= 70 ? 'Aprobado' : (amb > 0 ? 'En progreso' : 'Sin iniciar');
-            ambBadge.className = amb >= 70 ? 'text-[10px] font-semibold text-emerald-600' : (amb > 0 ? 'text-[10px] font-semibold text-amber-600' : 'text-[10px] font-semibold text-slate-400');
+                        if (pct >= 70) {
+                            badgeColor = 'text-emerald-600';
+                            badgeText = 'Aprobado';
+                            pctColor = 'text-emerald-600';
+                        } else if (pct > 0) {
+                            badgeColor = 'text-amber-600';
+                            badgeText = 'En progreso';
+                            pctColor = 'text-amber-600';
+                        }
+
+                        const normaText = sec.norma 
+                            ? (sec.norma.toLowerCase().startsWith('iso') ? 'Norma ' + sec.norma : sec.norma) 
+                            : 'Módulo Formativo';
+                        const icono = sec.icono || 'fas fa-layer-group';
+                        const iconBg = sec.icon_bg || 'bg-slate-100 text-slate-600';
+
+                        const item = document.createElement('div');
+                        item.className = 'p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4 transition-all hover:border-slate-300';
+                        item.innerHTML = `
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-xl ${iconBg} flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                    <i class="${icono}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="font-bold text-slate-800 text-xs block truncate">${sec.titulo || 'Módulo'}</span>
+                                    <span class="text-[10px] text-slate-400 block truncate">${normaText}</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <span class="text-xs font-extrabold ${pctColor} block">${pct}%</span>
+                                <span class="text-[10px] font-semibold ${badgeColor}">${badgeText}</span>
+                            </div>
+                        `;
+                        contSecciones.appendChild(item);
+                    });
+                } else {
+                    contSecciones.innerHTML = `
+                        <div class="p-3 text-center text-slate-400 text-xs bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                            No hay secciones formativas registradas en el sistema.
+                        </div>
+                    `;
+                }
+            }
 
             // Estado general pill
             const pill = document.getElementById('modal-estado-pill');
@@ -579,10 +583,12 @@
             }
 
             document.getElementById('modal-detalle-aprendiz').classList.remove('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(true);
         }
 
         function cerrarModalDetalle() {
             document.getElementById('modal-detalle-aprendiz').classList.add('hidden');
+            if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
         // Cerrar modal al hacer click en el backdrop

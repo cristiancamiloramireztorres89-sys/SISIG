@@ -123,12 +123,14 @@
         confirmBtn.disabled = false;
 
         modal.classList.remove('hidden');
+        if (window.lockBodyScroll) window.lockBodyScroll(true);
     };
 
     window.cerrarModalConfirmacion = function() {
         const modal = document.getElementById('modal-confirmacion-global');
         if (modal) modal.classList.add('hidden');
         window._accionConfirmacion = null;
+        if (window.lockBodyScroll) window.lockBodyScroll(false);
     };
 
     window.ejecutarAccionConfirmada = function() {

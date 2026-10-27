@@ -65,7 +65,7 @@ class GestionModulosController extends Controller
         if ($request->filled('imagen_recortada') || $request->hasFile('imagen')) {
             $nuevaImagen = $this->procesarImagenModulo($request);
             if ($nuevaImagen) {
-                if ($modulo->imagen && file_exists(public_path($modulo->imagen))) {
+                if ($modulo->imagen && str_contains($modulo->imagen, 'modulos/') && file_exists(public_path($modulo->imagen))) {
                     @unlink(public_path($modulo->imagen));
                 }
                 $modulo->imagen = $nuevaImagen;
