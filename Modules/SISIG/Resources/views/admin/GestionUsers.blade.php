@@ -112,9 +112,18 @@
 
                     <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
                         <span class="text-slate-400 font-bold px-2 hidden sm:inline">Estado:</span>
-                        <button type="button" onclick="filterByStatus('todos')" class="status-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm" data-status="todos">Todos</button>
-                        <button type="button" onclick="filterByStatus('activo')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="activo">Activos</button>
-                        <button type="button" onclick="filterByStatus('inactivo')" class="status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200" data-status="inactivo">Inactivos</button>
+                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'activos'])) }}" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? 'activos') === 'activos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            Activos
+                        </a>
+                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'inactivos'])) }}" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? '') === 'inactivos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            Inactivos @if(isset($totalInactivos) && $totalInactivos > 0) <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] {{ ($status ?? '') === 'inactivos' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $totalInactivos }}</span> @endif
+                        </a>
+                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'todos'])) }}" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? '') === 'todos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                            Todos
+                        </a>
                     </div>
                 </div>
 
@@ -470,7 +479,7 @@
     <!-- SCRIPTS DE INTERACCIÓN REACTIVA -->
     <script>
         let currentRoleFilter = 'todos';
-        let currentStatusFilter = 'todos';
+        let currentStatusFilter = '{{ $status ?? "activos" }}';
         const searchInput = document.getElementById('user-search-input');
         const rows = document.querySelectorAll('.user-row');
         const counter = document.getElementById('filtered-counter');
@@ -495,7 +504,9 @@
                     || (currentRoleFilter === 'editor' && role === 'editor_sisig')
                     || (currentRoleFilter === 'aprendiz' && (role === 'aprendiz_sisig' || role === 'sisig.aprendiz'));
 
-                let matchesStatus = currentStatusFilter === 'todos' || (status === currentStatusFilter);
+                let matchesStatus = currentStatusFilter === 'todos' 
+                    || ((currentStatusFilter === 'activos' || currentStatusFilter === 'activo') && status === 'activo')
+                    || ((currentStatusFilter === 'inactivos' || currentStatusFilter === 'inactivo') && status === 'inactivo');
 
                 const isVisible = matchesSearch && matchesRole && matchesStatus;
                 row.style.display = isVisible ? '' : 'none';
@@ -519,13 +530,9 @@
         }
 
         function filterByStatus(status) {
-            currentStatusFilter = status;
-            document.querySelectorAll('.status-filter-btn').forEach(btn => {
-                btn.className = btn.dataset.status === status 
-                    ? 'status-filter-btn px-3 py-1 rounded-xl font-bold bg-slate-900 text-white shadow-sm'
-                    : 'status-filter-btn px-3 py-1 rounded-xl font-bold text-slate-600 hover:bg-slate-200';
-            });
-            applyFilters();
+            const url = new URL(window.location.href);
+            url.searchParams.set('status', status);
+            window.location.href = url.toString();
         }
 
         // 2. Control del Modal Polimórfico (Crear y Editar)
