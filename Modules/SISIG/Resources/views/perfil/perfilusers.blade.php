@@ -57,9 +57,7 @@
 
             <!-- Columna Izquierda: Tarjeta de Identidad -->
             <div class="lg:col-span-4 space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 right-0 h-2 bg-sena-green"></div>
-
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
                     @php
                         $initials = 'U';
                         if ($person && $person->first_name) {
@@ -67,35 +65,7 @@
                         } elseif ($user->name) {
                             $initials = strtoupper(substr($user->name, 0, 2));
                         }
-                    @endphp
 
-                    <!-- Avatar / Foto con botón de cambio -->
-                    <div class="relative mx-auto w-24 h-24 mt-2 group">
-                        <div id="avatar-container" class="w-24 h-24 rounded-full bg-slate-900 text-white flex items-center justify-center text-3xl font-black shadow-md border-4 border-white overflow-hidden">
-                            @if($person && $person->avatar)
-                                <img id="avatar-img" src="{{ asset('storage/' . $person->avatar) }}" alt="Foto de Perfil" class="w-full h-full object-cover">
-                            @else
-                                <span id="avatar-initials">{{ $initials }}</span>
-                                <img id="avatar-img" src="" alt="Foto de Perfil" class="w-full h-full object-cover hidden">
-                            @endif
-                        </div>
-                        <label for="avatar_file" title="Cambiar Foto de Perfil" class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-sena-green hover:bg-sena-green-hover text-white flex items-center justify-center shadow-md cursor-pointer transition-all hover:scale-110 border-2 border-white">
-                            <i class="fas fa-camera text-[11px]"></i>
-                        </label>
-                    </div>
-
-                    @if($person && $person->avatar)
-                        <button type="button" onclick="submitRemoveAvatar()" class="mt-2 text-[11px] text-rose-500 hover:text-rose-700 font-semibold inline-flex items-center gap-1 transition-colors">
-                            <i class="fas fa-trash-alt text-[10px]"></i>
-                            <span>Quitar foto actual</span>
-                        </button>
-                    @endif
-
-                    <h2 class="text-base sm:text-lg font-black text-slate-900 mt-3 leading-snug">
-                        {{ $person ? trim($person->first_name . ' ' . $person->first_last_name . ' ' . ($person->second_last_name ?? '')) : $user->name }}
-                    </h2>
-
-                    @php
                         $badgeRol = 'Aprendiz SISIG';
                         if ($roles->isNotEmpty()) {
                             $badgeRol = $roles->pluck('name')->join(', ');
@@ -105,25 +75,78 @@
                             $badgeRol = 'Editor SISIG';
                         }
                     @endphp
-                    <div class="mt-3">
-                        <span class="text-xs font-extrabold tracking-wide uppercase text-sena-green flex items-center justify-center gap-1.5">
-                            <i class="fas fa-shield-alt text-sm"></i>
-                            <span>{{ $badgeRol }}</span>
-                        </span>
+
+                    <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-6 text-white text-center relative rounded-t-2xl flex flex-col items-center">
+                        <!-- Avatar / Foto con botón de cambio -->
+                        <div class="relative mx-auto w-24 h-24 group">
+                            <div id="avatar-container" class="w-24 h-24 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-md border-4 border-white/20 overflow-hidden">
+                                @if($person && $person->avatar)
+                                    <img id="avatar-img" 
+                                         src="{{ asset('storage/' . $person->avatar) }}" 
+                                         alt="" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.classList.add('hidden'); document.getElementById('avatar-initials').classList.remove('hidden');">
+                                    <span id="avatar-initials" class="hidden text-3xl font-black text-white">{{ $initials }}</span>
+                                @else
+                                    <span id="avatar-initials" class="text-3xl font-black text-white">{{ $initials }}</span>
+                                    <img id="avatar-img" src="" alt="" class="w-full h-full object-cover hidden" onerror="this.classList.add('hidden'); document.getElementById('avatar-initials').classList.remove('hidden');">
+                                @endif
+                            </div>
+                            <label for="avatar_file" title="Cambiar Foto de Perfil" class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] flex items-center justify-center shadow-md cursor-pointer transition-all hover:scale-110 border-2 border-white">
+                                <i class="fas fa-camera text-[11px]"></i>
+                            </label>
+                        </div>
+
+                        @if($person && $person->avatar)
+                            <button type="button" onclick="submitRemoveAvatar()" class="mt-2.5 text-[11px] text-rose-300 hover:text-rose-100 font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer">
+                                <i class="fas fa-trash-alt text-[10px]"></i>
+                                <span>Quitar foto actual</span>
+                            </button>
+                        @endif
+
+                        <h2 class="text-base sm:text-lg font-black text-white mt-3 leading-snug tracking-tight" style="color: #ffffff !important;">
+                            {{ $person ? trim($person->first_name . ' ' . $person->first_last_name . ' ' . ($person->second_last_name ?? '')) : $user->name }}
+                        </h2>
+
+                        <div class="mt-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30 shadow-xs">
+                                <i class="fas fa-shield-alt text-xs"></i>
+                                <span>{{ $badgeRol }}</span>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="mt-6 pt-5 border-t border-slate-100 text-left space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-500 font-medium">Documento:</span>
-                            <span class="font-bold text-slate-800">{{ $person->document_type ?? 'CC' }}: {{ $person->document_number ?? 'N/D' }}</span>
+                    <!-- 2. Cuerpo de la Tarjeta (Información del Usuario Ajustada con Buen Espacio y Padding) -->
+                    <div class="p-6 bg-white space-y-4">
+                        <!-- Documento -->
+                        <div class="flex items-start justify-between gap-3 pb-3 border-b border-slate-100 text-xs">
+                            <span class="text-slate-400 font-semibold flex items-center gap-1.5 flex-shrink-0">
+                                <i class="fas fa-id-card text-slate-400"></i> Documento:
+                            </span>
+                            <span class="font-bold text-slate-800 text-right">
+                                {{ $person->document_type ?? 'CC' }}: {{ $person->document_number ?? 'N/D' }}
+                            </span>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-500 font-medium">Correo Institucional:</span>
-                            <span class="font-semibold text-slate-800 truncate max-w-[180px]" title="{{ $user->email }}">{{ $user->email }}</span>
+
+                        <!-- Correo Institucional -->
+                        <div class="flex items-start justify-between gap-3 pb-3 border-b border-slate-100 text-xs">
+                            <span class="text-slate-400 font-semibold flex items-center gap-1.5 flex-shrink-0">
+                                <i class="fas fa-envelope text-slate-400"></i> Correo Institucional:
+                            </span>
+                            <span class="font-bold text-slate-800 text-right truncate max-w-[170px]" title="{{ $user->email }}">
+                                {{ $user->email }}
+                            </span>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-500 font-medium">Correo Personal:</span>
-                            <span class="font-semibold text-slate-800 truncate max-w-[180px]" title="{{ $person->personal_email ?? 'No registrado' }}">{{ $person->personal_email ?? 'No registrado' }}</span>
+
+                        <!-- Correo Personal -->
+                        <div class="flex items-start justify-between gap-3 text-xs">
+                            <span class="text-slate-400 font-semibold flex items-center gap-1.5 flex-shrink-0">
+                                <i class="fas fa-at text-slate-400"></i> Correo Personal:
+                            </span>
+                            <span class="font-bold text-slate-800 text-right truncate max-w-[170px]" title="{{ $person->personal_email ?? 'No registrado' }}">
+                                {{ $person->personal_email ?? 'No registrado' }}
+                            </span>
                         </div>
                     </div>
                 </div>

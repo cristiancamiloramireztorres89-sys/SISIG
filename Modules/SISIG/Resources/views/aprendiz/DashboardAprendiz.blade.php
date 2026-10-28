@@ -8,8 +8,8 @@
             title="¡Hola, <span class='text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-emerald-300'>{{ auth()->user()->full_name ?? auth()->user()->name }}</span>!"
             subtitle="Bienvenido a tu panel de control de la inducción formativa en el Sistema Integrado de Gestión (SIG) del Centro Agroindustrial 'La Angostura'. Aquí puedes consultar el resumen de tu avance, estados de aprobación e historial de evaluaciones.">
             <x-slot:action>
-                <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
-                    <i class="far fa-calendar-check text-sena-green text-lg"></i>
+                <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/15 text-white shadow-sm">
+                    <i class="far fa-calendar-check text-[#33FF57] text-base"></i>
                     <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
                         {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
@@ -26,7 +26,7 @@
                 color="emerald">
                 <x-slot:footer>
                     <span class="text-slate-500 font-medium">Contenidos revisados</span>
-                    <span class="text-xs font-bold {{ $progresoGeneral >= 100 ? 'text-emerald-600' : 'text-slate-700' }}">
+                    <span class="text-xs font-bold {{ $progresoGeneral >= 100 ? 'text-[#2E6F40]' : 'text-slate-700' }}">
                         {{ $progresoGeneral >= 100 ? 'Al día' : 'En curso' }}
                     </span>
                 </x-slot:footer>
@@ -39,7 +39,7 @@
                 color="sky">
                 <x-slot:footer>
                     <span class="text-slate-500 font-medium">Módulos habilitados</span>
-                    <span class="text-xs font-black text-sky-600">
+                    <span class="text-xs font-black text-[#00BCD4]">
                         {{ $totalSecciones > 0 && $seccionesCompletadas >= $totalSecciones ? 'Finalizados' : 'En proceso' }}
                     </span>
                 </x-slot:footer>
@@ -52,7 +52,7 @@
                 color="teal">
                 <x-slot:footer>
                     <span class="text-slate-500 font-medium">Evaluaciones aprobadas</span>
-                    <span class="text-xs font-bold text-teal-600">
+                    <span class="text-xs font-bold text-[#00BCD4]">
                         {{ $totalEvaluacionesPresentadas }} presentadas
                     </span>
                 </x-slot:footer>
@@ -60,16 +60,16 @@
         </div>
 
         <!-- 3. Requisitos e Información Clave de Inducción -->
-        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div>
                     <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2.5">
-                        <i class="fas fa-info-circle text-sky-600"></i>
+                        <i class="fas fa-info-circle text-[#00BCD4]"></i>
                         <span>Requisitos de Aprobación de la Inducción SIG</span>
                     </h3>
                     <p class="text-xs text-slate-500 mt-0.5">Lineamientos oficiales para acreditar tu inducción en SENA Empresa</p>
                 </div>
-                <a href="{{ route('sisig.perfil.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-sena-green hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-1.5 rounded-xl transition-all self-start sm:self-auto">
+                <a href="{{ route('sisig.perfil.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-[#2E6F40] hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-4 py-2 rounded-full transition-all self-start sm:self-auto border border-emerald-200/60 shadow-2xs">
                     <i class="fas fa-user-circle"></i>
                     <span>Ver Mi Perfil</span>
                     <i class="fas fa-arrow-right text-[10px]"></i>
@@ -115,65 +115,101 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @forelse($secciones as $sec)
-                    <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow">
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                                    {{ $sec->badge }}
-                                </span>
-                                @if(!empty($sec->imagen))
-                                    <img src="{{ asset($sec->imagen) }}" alt="{{ $sec->titulo }}" class="w-10 h-10 object-cover rounded-xl border border-slate-200/80 shadow-xs flex-shrink-0">
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden">
+                        <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
+                        <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    @if(!empty($sec->imagen))
+                                        <img src="{{ asset($sec->imagen) }}" alt="{{ $sec->titulo }}" class="w-7 h-7 rounded-full object-cover border border-white/30 shadow-xs flex-shrink-0">
+                                    @else
+                                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
+                                            <i class="{{ $sec->icono ?? 'fas fa-layer-group' }}"></i>
+                                        </div>
+                                    @endif
+                                    <span class="text-[11px] font-bold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/15 truncate max-w-[170px]" style="color: #ffffff !important;">
+                                        {{ $sec->badge }}
+                                    </span>
+                                </div>
+
+                                <!-- Estado del Quiz -->
+                                @if($sec->quiz)
+                                    @if($sec->quiz->aprobado)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#33FF57]"></span>
+                                            Aprobado
+                                        </span>
+                                    @elseif($sec->quiz->puede_presentar)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                                            Disponible
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                            Agotado
+                                        </span>
+                                    @endif
                                 @else
-                                    <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-sena-green flex items-center justify-center text-sm font-bold">
-                                        <i class="{{ $sec->icono }}"></i>
-                                    </div>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-500/20 text-slate-300 border border-slate-400/30 shadow-xs">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                        Sin Quiz
+                                    </span>
                                 @endif
                             </div>
-                            <div>
-                                <h3 class="text-sm font-extrabold text-slate-800 leading-snug">
-                                    {{ $sec->titulo }}
-                                </h3>
-                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">
-                                    {{ $sec->descripcion ?? 'Módulo formativo del Sistema Integrado de Gestión.' }}
-                                </p>
-                            </div>
+
+                            <h3 class="font-extrabold text-white text-lg tracking-tight leading-tight line-clamp-1" style="color: #ffffff !important;">
+                                {{ $sec->titulo }}
+                            </h3>
+                            <p class="text-xs text-slate-200 mt-1 line-clamp-1 font-medium flex items-center gap-1.5" style="color: #e2e8f0 !important;">
+                                <i class="fas fa-layer-group text-[10px] text-slate-300"></i>
+                                <span>{{ $sec->badge }}</span>
+                            </p>
                         </div>
 
-                        <!-- Estado del Quiz / Botón de Presentación -->
-                        <div class="pt-3 border-t border-slate-100 space-y-3">
-                            @if($sec->quiz)
-                                <div class="flex items-center justify-between text-xs">
-                                    <span class="text-slate-400 font-medium">Evaluación:</span>
-                                    <span class="font-bold text-slate-700 truncate max-w-[140px]">{{ $sec->quiz->titulo }}</span>
-                                </div>
+                        <!-- Cuerpo de la Tarjeta con datos 100% reales -->
+                        <div class="p-5 flex-1 flex flex-col justify-between bg-white rounded-b-2xl space-y-4">
+                            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                                {{ $sec->descripcion ?? 'Módulo formativo del Sistema Integrado de Gestión.' }}
+                            </p>
 
-                                @if($sec->quiz->aprobado)
-                                    <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
-                                        <div class="flex items-center gap-2 text-emerald-800 text-xs font-black">
-                                            <i class="fas fa-check-circle text-emerald-600"></i>
-                                            <span>Aprobado ({{ number_format($sec->quiz->mejor_puntaje, 0) }}%)</span>
-                                        </div>
-                                        @if($sec->quiz->ultimo_intento)
-                                            <a href="{{ route('sisig.aprendiz.evaluaciones.resultado', $sec->quiz->ultimo_intento->id_resultado) }}" class="text-[11px] font-bold text-emerald-700 hover:underline">
-                                                Ver detalle
-                                            </a>
-                                        @endif
+                            <!-- Estado del Quiz / Botón de Presentación -->
+                            <div class="pt-3 border-t border-slate-100 space-y-3 mt-auto">
+                                @if($sec->quiz)
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-400 font-medium">Evaluación:</span>
+                                        <span class="font-bold text-slate-700 truncate max-w-[140px]">{{ $sec->quiz->titulo }}</span>
                                     </div>
-                                @elseif($sec->quiz->puede_presentar)
-                                    <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $sec->quiz->id_quiz) }}" class="w-full py-2.5 px-4 rounded-2xl bg-sena-green hover:bg-emerald-600 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2">
-                                        <i class="fas fa-play text-[10px]"></i>
-                                        <span>Presentar Evaluación (Intento {{ $sec->quiz->intentos_realizados + 1 }}/{{ $sec->quiz->intentos_permitidos }})</span>
-                                    </a>
+
+                                    @if($sec->quiz->aprobado)
+                                        <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
+                                            <div class="flex items-center gap-2 text-[#2E6F40] text-xs font-black">
+                                                <i class="fas fa-check-circle text-[#2E6F40]"></i>
+                                                <span>Aprobado ({{ number_format($sec->quiz->mejor_puntaje, 0) }}%)</span>
+                                            </div>
+                                            @if($sec->quiz->ultimo_intento)
+                                                <a href="{{ route('sisig.aprendiz.evaluaciones.resultado', $sec->quiz->ultimo_intento->id_resultado) }}" class="text-[11px] font-bold text-[#2E6F40] hover:underline">
+                                                    Ver detalle
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @elseif($sec->quiz->puede_presentar)
+                                        <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $sec->quiz->id_quiz) }}" 
+                                           class="w-full py-2.5 px-4 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] font-black text-xs shadow-md shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+                                            <i class="fas fa-play text-[10px]"></i>
+                                            <span>Presentar Evaluación (Intento {{ $sec->quiz->intentos_realizados + 1 }}/{{ $sec->quiz->intentos_permitidos }})</span>
+                                        </a>
+                                    @else
+                                        <div class="p-3 rounded-full bg-slate-100 text-slate-500 text-xs font-bold text-center border border-slate-200">
+                                            Intentos agotados ({{ $sec->quiz->intentos_realizados }}/{{ $sec->quiz->intentos_permitidos }})
+                                        </div>
+                                    @endif
                                 @else
-                                    <div class="p-3 rounded-2xl bg-slate-100 text-slate-500 text-xs font-bold text-center">
-                                        Intentos agotados ({{ $sec->quiz->intentos_realizados }}/{{ $sec->quiz->intentos_permitidos }})
+                                    <div class="text-[11px] text-slate-400 italic py-1 text-center">
+                                        Sin evaluación configurada actualmente
                                     </div>
                                 @endif
-                            @else
-                                <div class="text-[11px] text-slate-400 italic py-1">
-                                    Sin evaluación configurada actualmente
-                                </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
                 @empty

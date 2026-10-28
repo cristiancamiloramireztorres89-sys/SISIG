@@ -64,16 +64,21 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
             @foreach($kpisReportes as $kpi)
-                <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r {{ $kpi['bar'] }}"></div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">{{ $kpi['title'] }}</span>
-                        <i class="fas {{ $kpi['icon'] }} text-2xl group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xs font-semibold text-slate-500">{{ $kpi['title'] }}</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="fas {{ $kpi['icon'] }}"></i>
+                        </div>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-3">
                         <div class="flex items-baseline gap-1.5">
-                            <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $kpi['value'] }}</h3>
-                            <span class="text-sm font-bold text-slate-400">{{ $kpi['sub'] }}</span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $kpi['value'] }}</h3>
+                            <span class="text-xs font-bold text-slate-400">{{ $kpi['sub'] }}</span>
+                        </div>
+                        <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                            <span>Métrica oficial</span>
+                            <span class="text-xs font-bold text-[#2E6F40]">Reporte</span>
                         </div>
                     </div>
                 </div>

@@ -15,64 +15,72 @@
         </div>
 
         <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo Premium y Degradados -->
+        <!-- 2. Tarjetas de Métricas Clave (KPIs con Estilo de Referencia Image 1) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            
             <!-- Total Evaluaciones -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Creados</span>
-                    <i class="fas fa-clipboard-list text-2xl text-blue-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Total Creados</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalEvaluaciones }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Evaluaciones en el sistema</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalEvaluaciones }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Evaluaciones en el sistema</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Quices</span>
                     </div>
                 </div>
             </div>
 
             <!-- Aprobadas -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sena-green to-[#237000]"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Aprobadas</span>
-                    <i class="fas fa-check-circle text-2xl text-sena-green group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Aprobadas</span>
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-[#2E6F40] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalAprobadas }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Evaluaciones superadas</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalAprobadas }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Evaluaciones superadas</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Acreditadas</span>
                     </div>
                 </div>
             </div>
 
             <!-- Total Intentos Presentados -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Intentos</span>
-                    <i class="fas fa-history text-2xl text-amber-500 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Total Intentos</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-history"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalIntentosRealizados }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Pruebas presentadas</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalIntentosRealizados }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Pruebas presentadas</span>
+                        <span class="text-xs font-bold text-amber-600">Intentos</span>
                     </div>
                 </div>
             </div>
 
             <!-- Promedio General -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-emerald-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Promedio General</span>
-                    <i class="fas fa-chart-line text-2xl text-teal-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Promedio General</span>
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 text-[#00BCD4] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ number_format($promedioGeneral, 1) }}%</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Rendimiento académico</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ number_format($promedioGeneral, 1) }}%</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Rendimiento académico</span>
+                        <span class="text-xs font-bold text-[#00BCD4]">Promedio</span>
                     </div>
                 </div>
             </div>
@@ -205,99 +213,109 @@
                         @php
                             $estadoModulo = $mod->aprobado ? 'aprobado' : ($mod->total_intentos > 0 ? 'reprobado' : 'pendiente');
                         @endphp
-                        <div class="card-modulo-historial bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full"
+                        <div class="card-modulo-historial bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden h-full"
                              data-titulo="{{ strtolower($mod->quiz_titulo) }}"
                              data-modulo="{{ strtolower($mod->modulo_titulo) }}"
                              data-estado="{{ $estadoModulo }}">
 
-                            <!-- Encabezado de la Tarjeta -->
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex items-center gap-3.5">
-                                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-sena-green flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                                        <i class="fas fa-graduation-cap text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-extrabold text-slate-800 text-base leading-tight">{{ $mod->quiz_titulo }}</h3>
-                                        <div class="flex items-center gap-1.5 mt-1 text-slate-500 text-xs font-medium">
-                                            <i class="fas fa-layer-group text-slate-400"></i>
-                                            <span>{{ $mod->modulo_titulo }}</span>
+                            <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
+                            <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
+                                <div class="flex items-center justify-between gap-3 mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
+                                            <i class="fas fa-graduation-cap"></i>
                                         </div>
+                                        <span class="text-[11px] font-bold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/15 truncate max-w-[170px]" style="color: #ffffff !important;">
+                                            {{ $mod->modulo_titulo }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Estado -->
+                                    @if($mod->aprobado)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#33FF57]"></span>
+                                            Aprobado
+                                        </span>
+                                    @elseif($mod->total_intentos > 0)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                            No Aprobado
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-500/20 text-slate-300 border border-slate-400/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                            Pendiente
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <h3 class="font-extrabold text-white text-lg tracking-tight leading-tight line-clamp-1" style="color: #ffffff !important;">
+                                    {{ $mod->quiz_titulo }}
+                                </h3>
+                                <p class="text-xs text-slate-200 mt-1 line-clamp-1 font-medium flex items-center gap-1.5" style="color: #e2e8f0 !important;">
+                                    <i class="fas fa-layer-group text-[10px] text-slate-300"></i>
+                                    <span>{{ $mod->modulo_titulo }}</span>
+                                </p>
+                            </div>
+
+                            <!-- Cuerpo de la Tarjeta con datos 100% reales -->
+                            <div class="p-5 flex-1 flex flex-col justify-between bg-white rounded-b-2xl space-y-4">
+                                <!-- Métricas: Mejor Nota, Nota Mínima -->
+                                <div class="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Mejor Nota</span>
+                                        <span class="text-base font-black {{ $mod->aprobado ? 'text-[#2E6F40]' : 'text-slate-800' }} mt-0.5 block">
+                                            {{ number_format($mod->mejor_puntaje, 1) }}%
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-col items-center justify-center border-l border-slate-200">
+                                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Nota Mínima</span>
+                                        <span class="text-base font-black text-slate-700 mt-0.5 block">
+                                            {{ $mod->puntaje_minimo }}%
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <!-- Distintivo de Estado Limpio (Criterio 2) -->
-                            <div class="absolute top-6 right-6">
-                                @if($mod->aprobado)
-                                    <span class="text-xs font-black tracking-wide uppercase text-emerald-600 flex items-center gap-1">
-                                        <i class="fas fa-check-circle"></i> Aprobado
-                                    </span>
-                                @elseif($mod->total_intentos > 0)
-                                    <span class="text-xs font-black tracking-wide uppercase text-rose-600 flex items-center gap-1">
-                                        <i class="fas fa-times-circle"></i> No Aprobado
-                                    </span>
-                                @else
-                                    <span class="text-xs font-black tracking-wide uppercase text-slate-400 flex items-center gap-1">
-                                        <i class="fas fa-clock"></i> Pendiente
-                                    </span>
-                                @endif
-                            </div>
 
-                            <!-- Métricas de Desempeño del Módulo -->
-                            <div class="grid grid-cols-2 gap-3 my-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-center">
-                                <div>
-                                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Mejor Nota</span>
-                                    <span class="text-base font-black {{ $mod->aprobado ? 'text-sena-green' : 'text-slate-800' }} mt-0.5 block">
-                                        {{ number_format($mod->mejor_puntaje, 1) }}%
-                                    </span>
-                                </div>
-                                <div class="border-l border-slate-200">
-                                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Nota Mínima</span>
-                                    <span class="text-base font-black text-slate-700 mt-0.5 block">
-                                        {{ $mod->puntaje_minimo }}%
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Control de Intentos Restantes Disponibles (Criterio 4) -->
-                            <div class="mb-5 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-slate-600 font-bold">Intentos utilizados</span>
-                                    <span class="font-black text-slate-800">{{ $mod->total_intentos }} / {{ $mod->intentos_permitidos }}</span>
-                                </div>
-                                <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden shadow-inner">
-                                    @php
-                                        $porcentajeBarra = $mod->intentos_permitidos > 0 ? min(100, ($mod->total_intentos / $mod->intentos_permitidos) * 100) : 0;
-                                    @endphp
-                                    <div class="h-1.5 rounded-full transition-all {{ $mod->aprobado ? 'bg-sena-green' : ($mod->intentos_restantes <= 0 ? 'bg-rose-500' : 'bg-amber-500') }}" style="width: {{ $porcentajeBarra }}%"></div>
-                                </div>
-                                <div class="flex justify-between text-[11px] pt-1 font-semibold">
-                                    <span class="text-slate-500">Intentos disponibles:</span>
-                                    <span class="{{ $mod->intentos_restantes > 0 ? 'text-sena-green font-bold' : 'text-rose-600 font-bold' }}">
-                                        {{ $mod->intentos_restantes }} restantes
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Botón de Acción -->
-                            <div class="pt-4 border-t border-slate-100 mt-auto">
-                                @if($mod->aprobado)
-                                    <div class="text-center py-2 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-center gap-2">
-                                        <i class="fas fa-check-double text-sena-green"></i> Módulo Acreditado
+                                <!-- Control de Intentos Restantes -->
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-600 font-bold">Intentos utilizados</span>
+                                        <span class="font-black text-slate-800">{{ $mod->total_intentos }} / {{ $mod->intentos_permitidos }}</span>
                                     </div>
-                                @elseif($mod->puede_reintentar)
-                                    <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $mod->id_quiz) }}" 
-                                       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all w-full">
-                                        <i class="fas fa-play text-xs"></i>
-                                        <span>Presentar Intento (Intento {{ $mod->total_intentos + 1 }})</span>
-                                    </a>
-                                @else
-                                    <div class="text-center py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-2xl border border-slate-200">
-                                        <i class="fas fa-ban"></i> Sin Oportunidades Restantes
+                                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden shadow-inner">
+                                        @php
+                                            $porcentajeBarra = $mod->intentos_permitidos > 0 ? min(100, ($mod->total_intentos / $mod->intentos_permitidos) * 100) : 0;
+                                        @endphp
+                                        <div class="h-2 rounded-full transition-all {{ $mod->aprobado ? 'bg-gradient-to-r from-[#2E6F40] to-[#33FF57]' : ($mod->intentos_restantes <= 0 ? 'bg-rose-500' : 'bg-amber-500') }}" style="width: {{ $porcentajeBarra }}%"></div>
                                     </div>
-                                @endif
-                            </div>
+                                    <div class="flex justify-between text-[11px] pt-1 font-semibold">
+                                        <span class="text-slate-500">Intentos disponibles:</span>
+                                        <span class="{{ $mod->intentos_restantes > 0 ? 'text-[#2E6F40] font-bold' : 'text-rose-600 font-bold' }}">
+                                            {{ $mod->intentos_restantes }} restantes
+                                        </span>
+                                    </div>
+                                </div>
 
+                                <!-- Botón de Acción -->
+                                <div class="pt-3 border-t border-slate-100 mt-auto">
+                                    @if($mod->aprobado)
+                                        <div class="text-center py-2.5 px-4 text-xs font-bold text-[#2E6F40] bg-emerald-50 rounded-full border border-emerald-200 flex items-center justify-center gap-2">
+                                            <i class="fas fa-check-double text-[#2E6F40]"></i> <span>Módulo Acreditado</span>
+                                        </div>
+                                    @elseif($mod->puede_reintentar)
+                                        <a href="{{ route('sisig.aprendiz.evaluaciones.iniciar', $mod->id_quiz) }}" 
+                                           class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all w-full group-hover:scale-[1.02]">
+                                            <i class="fas fa-play text-xs"></i>
+                                            <span>Presentar Intento (Intento {{ $mod->total_intentos + 1 }})</span>
+                                            <i class="fas fa-arrow-right text-[10px]"></i>
+                                        </a>
+                                    @else
+                                        <div class="text-center py-2.5 px-4 text-xs font-bold text-slate-400 bg-slate-100 rounded-full border border-slate-200 flex items-center justify-center gap-2">
+                                            <i class="fas fa-ban"></i> <span>Sin Oportunidades Restantes</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>

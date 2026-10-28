@@ -35,7 +35,7 @@
                 @endif
 
                 <a href="{{ route('sisig.aprendiz.induccion.index') }}" 
-                   class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all">
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all cursor-pointer">
                     <i class="fas fa-th-large text-xs"></i>
                     <span>Ver Catálogo</span>
                 </a>
@@ -43,26 +43,26 @@
         </div>
 
         <!-- 2. Encabezado del Módulo (Estilo Banner SIG) -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-6 sm:p-7 text-white shadow-xl">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1A2B4C] via-[#1E3A5F] to-[#243B66] border border-slate-700/60 p-6 sm:p-7 text-white shadow-xl">
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-[#33FF57]/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-[#00BCD4]/15 rounded-full blur-2xl pointer-events-none"></div>
 
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="space-y-2 max-w-3xl">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" style="color: #ffffff !important;">
                         {{ $modulo->titulo }}
                     </h1>
 
                     @if($modulo->descripcion)
-                        <p class="text-slate-300 text-xs sm:text-sm font-normal leading-relaxed">
+                        <p class="text-slate-200 text-xs sm:text-sm font-normal leading-relaxed" style="color: #e2e8f0 !important;">
                             {{ $modulo->descripcion }}
                         </p>
                     @endif
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/15 text-slate-200 text-xs font-semibold flex items-center gap-2">
-                        <i class="far fa-clock text-sena-green"></i>
+                    <div class="bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-full border border-white/15 text-slate-200 text-xs font-semibold flex items-center gap-2">
+                        <i class="far fa-clock text-[#33FF57]"></i>
                         <span>Lectura interactiva</span>
                     </div>
                 </div>
@@ -72,18 +72,18 @@
         <!-- 3. Selector de Temáticas de Inducción en Pestañas Horizontales -->
         <div class="space-y-2">
             <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                <i class="fas fa-layer-group text-sena-green"></i>
+                <i class="fas fa-layer-group text-[#2E6F40]"></i>
                 <span>Temáticas de Inducción</span>
             </h3>
 
             <div class="flex flex-wrap items-center gap-2.5">
                 @foreach($todosModulos as $mod)
                     <a href="{{ route('sisig.aprendiz.induccion.show', $mod->id) }}" 
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all duration-200 {{ $mod->id == $modulo->id ? 'bg-sena-green text-white border-sena-green shadow-sena' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300' }}">
-                        <i class="{{ $mod->id == $modulo->id ? 'fas fa-book-open text-white' : 'fas fa-file-alt text-slate-400' }}"></i>
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold border transition-all duration-200 {{ $mod->id == $modulo->id ? 'bg-[#1A2B4C] text-white border-[#1A2B4C] shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300' }}">
+                        <i class="{{ $mod->id == $modulo->id ? 'fas fa-book-open text-[#33FF57]' : 'fas fa-file-alt text-slate-400' }}"></i>
                         <span>{{ $mod->titulo }}</span>
                         @if($mod->id == $modulo->id)
-                            <span class="w-2 h-2 rounded-full bg-white flex-shrink-0 animate-ping"></span>
+                            <span class="w-2 h-2 rounded-full bg-[#33FF57] flex-shrink-0"></span>
                         @endif
                     </a>
                 @endforeach

@@ -2,24 +2,106 @@
     <div class="space-y-6 sm:space-y-8 animate-fade-in pb-12">
 
         <!-- 1. Encabezado de la Sección (Estilo Limpio y Unificado) -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                    <i class="fas fa-clipboard-list text-sena-green"></i>
+                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1">
+                    <span class="text-[#2E6F40]">Inicio</span>
+                    <span>/</span>
+                    <span class="text-slate-600">Exámenes</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-[#343A40] tracking-tight flex items-center gap-2.5">
+                    <i class="fas fa-clipboard-list text-[#2E6F40]"></i>
                     <span>Gestión de Exámenes</span>
                 </h1>
             </div>
 
             <div class="self-start lg:self-auto">
                 <button type="button" onclick="openExamenModal()"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
                     <i class="fas fa-plus text-xs"></i>
-                    <span>Crear Examen</span>
+                    <span>+ Crear Examen</span>
                 </button>
             </div>
         </div>
 
 
+
+        <!-- 2. Tarjetas de Métricas Clave (KPIs con Estilo de Referencia Image 1) -->
+        @php
+            $totalQuicesCount = $quices->count();
+            $quicesActivosCount = $quices->where('activo', 1)->count();
+            $quicesInactivosCount = $quices->where('activo', 0)->count();
+            $totalPreguntasCount = $quices->sum('numero_preguntas');
+        @endphp
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Total Exámenes -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Total Exámenes</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalQuicesCount }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Quices en el sistema</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Evaluaciones</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exámenes Activos -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Exámenes Activos</span>
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-[#2E6F40] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $quicesActivosCount }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Habilitados para aprendices</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">En línea</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exámenes Inactivos -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">En Pausa / Inactivos</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $quicesInactivosCount }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Borradores o pausados</span>
+                        <span class="text-xs font-bold text-amber-600">Pausados</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Preguntas -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Banco de Preguntas</span>
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 text-[#00BCD4] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalPreguntasCount }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Preguntas configuradas</span>
+                        <span class="text-xs font-bold text-[#00BCD4]">Reactivos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Barra de Filtros y Acciones -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-20">
@@ -46,95 +128,119 @@
         <!-- Listado de Exámenes -->
         <div>
             <div class="flex items-center gap-2 text-xs font-black text-slate-400 tracking-wider mb-5 uppercase ml-1">
-                <i class="fas fa-clipboard-check text-sena-green"></i> Exámenes del SIG
+                <i class="fas fa-clipboard-check text-[#2E6F40]"></i> Exámenes del SIG
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($quices as $quiz)
-                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden flex flex-col h-full">
-                        <!-- Cabecera Card -->
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-check-circle text-2xl {{ $quiz->activo ? 'text-emerald-500' : 'text-slate-400' }} flex-shrink-0"></i>
-                                <div>
-                                    <h3 class="font-bold text-slate-800 text-lg leading-tight">{{ $quiz->titulo }}</h3>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mt-0.5 block">
-                                        <i class="fas fa-tag mr-1"></i> {{ $quiz->modulo->titulo ?? 'Sin Módulo' }}
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden">
+                        <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
+                        <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    @if(!empty($quiz->modulo->imagen))
+                                        <img src="{{ asset($quiz->modulo->imagen) }}" alt="{{ $quiz->modulo->titulo ?? 'Módulo' }}" class="w-7 h-7 rounded-full object-cover border border-white/30 shadow-xs flex-shrink-0">
+                                    @else
+                                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
+                                            <i class="fas fa-clipboard-check"></i>
+                                        </div>
+                                    @endif
+                                    <span class="text-[11px] font-bold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/15 truncate max-w-[170px]" style="color: #ffffff !important;">
+                                        {{ $quiz->modulo->titulo ?? 'Módulo General' }}
                                     </span>
                                 </div>
+
+                                <!-- Estado Activo / Inactivo -->
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs {{ $quiz->activo ? 'bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30' : 'bg-slate-500/20 text-slate-300 border border-slate-400/30' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $quiz->activo ? 'bg-[#33FF57]' : 'bg-slate-400' }}"></span>
+                                    {{ $quiz->activo ? 'Activo' : 'Inactivo' }}
+                                </span>
                             </div>
-                            <span class="text-xs font-black tracking-wide uppercase {{ $quiz->activo ? 'text-emerald-600' : 'text-slate-400' }}">
-                                {{ $quiz->activo ? 'Activo' : 'Inactivo' }}
-                            </span>
+
+                            <h3 class="font-extrabold text-white text-lg tracking-tight leading-tight line-clamp-1" style="color: #ffffff !important;">
+                                {{ $quiz->titulo }}
+                            </h3>
+                            <p class="text-xs text-slate-200 mt-1 line-clamp-1 font-medium flex items-center gap-1.5" style="color: #e2e8f0 !important;">
+                                <i class="fas fa-tag text-[10px] text-slate-300"></i>
+                                <span>{{ $quiz->modulo->titulo ?? 'Sin Módulo Asignado' }}</span>
+                            </p>
                         </div>
 
-                        <!-- Badge de la sección -->
-                        <div class="w-full bg-slate-100/50 rounded-lg p-2 flex items-center gap-2 mb-4 border border-slate-100">
-                            <span class="w-2 h-2 rounded-full bg-sena-green"></span>
-                            <span class="text-xs font-bold text-slate-600">{{ $quiz->modulo->titulo ?? 'Módulo General' }}</span>
-                        </div>
+                        <!-- Cuerpo de la Tarjeta con datos 100% reales -->
+                        <div class="p-5 flex-1 flex flex-col justify-between bg-white rounded-b-2xl space-y-4">
+                            <!-- Badge de la sección -->
+                            <div class="w-full bg-slate-50 rounded-xl p-2.5 flex items-center gap-2 border border-slate-100">
+                                <span class="w-2 h-2 rounded-full bg-[#2E6F40]"></span>
+                                <span class="text-xs font-bold text-slate-700 truncate">{{ $quiz->modulo->titulo ?? 'Módulo General' }}</span>
+                            </div>
 
-                        <!-- Detalles -->
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50">
-                                <div class="flex items-center gap-1.5 text-emerald-600 font-bold mb-0.5">
-                                    <i class="fas fa-list-ol text-xs"></i>
-                                    <span class="text-sm">{{ $quiz->numero_preguntas }}</span>
+                            <!-- Métricas: Preguntas, Intentos, Min % -->
+                            <div class="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="flex items-center gap-1 text-[#2E6F40] font-extrabold mb-0.5">
+                                        <i class="fas fa-list-ol text-xs"></i>
+                                        <span class="text-sm">{{ $quiz->numero_preguntas }}</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-slate-500">Preguntas</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-slate-500">Preguntas</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50">
-                                <div class="flex items-center gap-1.5 text-sky-600 font-bold mb-0.5">
-                                    <i class="fas fa-redo text-xs"></i>
-                                    <span class="text-sm">{{ $quiz->numero_intentos }}</span>
+                                <div class="flex flex-col items-center justify-center border-x border-slate-200">
+                                    <div class="flex items-center gap-1 text-sky-600 font-extrabold mb-0.5">
+                                        <i class="fas fa-redo text-xs"></i>
+                                        <span class="text-sm">{{ $quiz->numero_intentos }}</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-slate-500">Intentos</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-slate-500">Intentos</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50">
-                                <div class="flex items-center gap-1.5 text-amber-600 font-bold mb-0.5">
-                                    <i class="fas fa-medal text-xs"></i>
-                                    <span class="text-sm">{{ $quiz->puntaje_minimo }}%</span>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="flex items-center gap-1 text-amber-600 font-extrabold mb-0.5">
+                                        <i class="fas fa-medal text-xs"></i>
+                                        <span class="text-sm">{{ $quiz->puntaje_minimo }}%</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-slate-500">Mínimo</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-slate-500">Min.</span>
                             </div>
-                        </div>
 
-                        <!-- Fecha Límite -->
-                        <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-5">
-                            <i class="far fa-calendar-alt {{ $quiz->fecha_limite ? 'text-sena-green' : 'text-slate-400' }}"></i>
-                            @if($quiz->fecha_limite)
-                                <span class="text-slate-700 font-bold">Fecha límite: {{ \Carbon\Carbon::parse($quiz->fecha_limite)->format('d M Y') }}</span>
-                            @else
-                                <span class="italic">Sin fecha límite</span>
-                            @endif
-                        </div>
-
-                        <!-- Progreso -->
-                        <div class="mb-5 mt-auto">
-                            <div class="flex items-center justify-between text-[11px] mb-2">
-                                <span class="font-bold text-slate-600">Aprendices que completaron</span>
-                                <span class="font-bold {{ $quiz->activo ? 'text-sena-green' : 'text-slate-400' }}">0%</span>
+                            <!-- Fecha Límite -->
+                            <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+                                <i class="far fa-calendar-alt {{ $quiz->fecha_limite ? 'text-[#2E6F40]' : 'text-slate-400' }}"></i>
+                                @if($quiz->fecha_limite)
+                                    <span class="text-slate-700 font-bold">Fecha límite: {{ \Carbon\Carbon::parse($quiz->fecha_limite)->format('d M Y') }}</span>
+                                @else
+                                    <span class="italic text-slate-400">Sin fecha límite asignada</span>
+                                @endif
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-sena-green h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                            </div>
-                        </div>
 
-                        <!-- Botones de Acción -->
-                        <div class="flex items-center gap-2 pt-4 border-t border-slate-100 mt-auto">
-                            <a href="{{ route($routePrefix . '.examenes.preguntas.index', $quiz->id_quiz) }}" class="flex-1 py-2.5 rounded-xl bg-sena-green hover:bg-emerald-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sena">
-                                <i class="fas fa-cogs"></i> Gestionar preguntas
-                            </a>
-                            <button type="button" onclick="openExamenModal({{ $quiz->toJson() }})" title="Editar examen" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs" aria-label="Editar">
-                                <i class="fas fa-pencil-alt text-xs"></i>
-                            </button>
-                            <form id="form-toggle-quiz-{{ $quiz->id_quiz }}" action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="button" onclick="confirmarToggleQuiz(document.getElementById('form-toggle-quiz-{{ $quiz->id_quiz }}'), '{{ addslashes($quiz->titulo) }}', {{ $quiz->activo ? 'true' : 'false' }})" title="{{ $quiz->activo ? 'Desactivar examen' : 'Activar examen' }}" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-amber-500 hover:border-amber-200 hover:bg-amber-50 transition-all flex items-center justify-center cursor-pointer shadow-xs" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
-                                    <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }} text-xs"></i>
+                            <!-- Barra de Aprendices que completaron -->
+                            <div class="space-y-1.5 mt-auto">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-medium text-slate-500">Aprendices que completaron</span>
+                                    <span class="font-bold {{ $quiz->activo ? 'text-[#2E6F40]' : 'text-slate-400' }}">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden shadow-inner">
+                                    <div class="bg-gradient-to-r from-[#2E6F40] to-[#33FF57] h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="flex items-center gap-2 pt-3 border-t border-slate-100 mt-auto">
+                                <a href="{{ route($routePrefix . '.examenes.preguntas.index', $quiz->id_quiz) }}" 
+                                   class="flex-1 py-2.5 px-4 rounded-full bg-[#2E6F40] hover:bg-[#235833] text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-cogs text-xs"></i>
+                                    <span>Gestionar preguntas</span>
+                                </a>
+                                <button type="button" onclick="openExamenModal({{ $quiz->toJson() }})" title="Editar examen" 
+                                        class="w-9 h-9 rounded-full bg-slate-50 hover:bg-[#1A2B4C] border border-slate-200 hover:border-[#1A2B4C] text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs" aria-label="Editar">
+                                    <i class="fas fa-pencil-alt text-xs"></i>
                                 </button>
-                            </form>
+                                <form id="form-toggle-quiz-{{ $quiz->id_quiz }}" action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="button" onclick="confirmarToggleQuiz(document.getElementById('form-toggle-quiz-{{ $quiz->id_quiz }}'), '{{ addslashes($quiz->titulo) }}', {{ $quiz->activo ? 'true' : 'false' }})" 
+                                            title="{{ $quiz->activo ? 'Desactivar examen' : 'Activar examen' }}" 
+                                            class="w-9 h-9 rounded-full bg-slate-50 hover:bg-rose-500 border border-slate-200 hover:border-rose-500 text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
+                                        <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }} text-xs"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -142,7 +248,7 @@
                         <i class="fas fa-paste text-4xl text-slate-300 mb-3 block"></i>
                         <h3 class="text-lg font-bold text-slate-700 mb-1">No hay exámenes registrados</h3>
                         <p class="text-sm text-slate-500 mb-4">Aún no has creado ningún quiz para los módulos.</p>
-                        <button onclick="openExamenModal()" class="px-5 py-2 rounded-xl bg-sena-green text-white font-bold text-sm shadow-sena hover:bg-emerald-600 transition-all">
+                        <button onclick="openExamenModal()" class="px-5 py-2.5 rounded-full bg-[#2E6F40] hover:bg-[#235833] text-white font-bold text-sm shadow-sm transition-all cursor-pointer">
                             <i class="fas fa-plus mr-1"></i> Crear mi primer examen
                         </button>
                     </div>

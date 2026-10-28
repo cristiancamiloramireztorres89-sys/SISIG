@@ -73,61 +73,81 @@
         </section>
 
         <!-- 2. KPI / Metrics Summary Section -->
-        <section id="indicadores" class="scroll-mt-28 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section id="indicadores" class="scroll-mt-28 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             <!-- Metric 1: Quices -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4">
-                <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100 flex-shrink-0">
-                    <i class="fas fa-file-signature"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Evaluaciones SIG</span>
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-[#2E6F40] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Evaluaciones SIG</span>
-                    <h3 class="text-2xl font-black text-slate-800 mt-0.5">Quices</h3>
-                    <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-                        <i class="fas fa-check-circle text-[10px]"></i> Medición de Saberes
-                    </span>
+                <div class="mt-3">
+                    <div class="flex items-baseline gap-1.5">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">Quices</h3>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Medición de Saberes</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Evaluación</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Metric 2: Secciones e Inducción -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4">
-                <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl border border-blue-100 flex-shrink-0">
-                    <i class="fas fa-book-open"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Módulos Temáticos</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#00BCD4] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-book-open"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Módulos Temáticos</span>
-                    <h3 class="text-2xl font-black text-slate-800 mt-0.5">Secciones</h3>
-                    <span class="text-xs text-blue-600 font-semibold flex items-center gap-1 mt-1">
-                        <i class="fas fa-photo-video text-[10px]"></i> Guías y Videos
-                    </span>
+                <div class="mt-3">
+                    <div class="flex items-baseline gap-1.5">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">Secciones</h3>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Guías y Videos</span>
+                        <span class="text-xs font-bold text-[#00BCD4]">Formativo</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Metric 3: Aprobación -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4">
-                <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100 flex-shrink-0">
-                    <i class="fas fa-chart-line"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Calificaciones</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Calificaciones</span>
-                    <h3 class="text-2xl font-black text-slate-800 mt-0.5">Resultados</h3>
-                    <span class="text-xs text-amber-600 font-semibold flex items-center gap-1 mt-1">
-                        <i class="fas fa-award text-[10px]"></i> Control de Intentos
-                    </span>
+                <div class="mt-3">
+                    <div class="flex items-baseline gap-1.5">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">Resultados</h3>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Control de Intentos</span>
+                        <span class="text-xs font-bold text-amber-600">Historial</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Metric 4: Seguridad & Control -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4">
-                <div class="w-14 h-14 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl border border-teal-100 flex-shrink-0">
-                    <i class="fas fa-user-shield"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Anti-Fraude</span>
+                    <div class="w-8 h-8 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Anti-Fraude</span>
-                    <h3 class="text-2xl font-black text-slate-800 mt-0.5">Infracciones</h3>
-                    <span class="text-xs text-teal-600 font-semibold flex items-center gap-1 mt-1">
-                        <i class="fas fa-shield-alt text-[10px]"></i> Monitoreo Activo
-                    </span>
+                <div class="mt-3">
+                    <div class="flex items-baseline gap-1.5">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">Infracciones</h3>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Monitoreo Activo</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Auditoría</span>
+                    </div>
                 </div>
             </div>
 
@@ -137,7 +157,7 @@
         <section id="submodulos" class="scroll-mt-28 space-y-6">
             <div class="border-b border-slate-200 pb-4">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-                    <span class="w-3.5 h-8 rounded-full bg-sena-green inline-block"></span>
+                    <span class="w-3.5 h-8 rounded-full bg-[#2E6F40] inline-block"></span>
                     Submódulos y Operaciones de SISIG
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">Administra los contenidos de inducción, diseña evaluaciones y realiza seguimiento al conocimiento de los aprendices</p>
@@ -146,58 +166,118 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <!-- Card 1: Secciones y Contenidos -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-sena-green/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-layer-group"></i>
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                Formación
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-layer-group"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Secciones y Contenidos
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Material didáctico e inductivo
+                        </p>
                     </div>
-                    <div>
-                        <span class="text-xs uppercase tracking-wider font-extrabold text-emerald-600 block">Material Formativo</span>
-                        <h3 class="text-base font-bold text-slate-900 mt-1">Secciones y Contenidos</h3>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
                             Organización de temas por ejes temáticos, cargue de manuales PDF, videos interactivos e infografías de SST, Calidad y Gestión Ambiental.
                         </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Recursos</span>
+                            <span class="font-bold text-[#2E6F40]">Multimedia</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Card 2: Quices y Preguntas -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div>
-                        <span class="text-xs uppercase tracking-wider font-extrabold text-blue-600 block">Evaluación de Saberes</span>
-                        <h3 class="text-base font-bold text-slate-900 mt-1">Quices y Preguntas</h3>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            Cuestionarios por módulo, configuración de puntajes mínimos, cantidad de intentos personalizados por el instructor y preguntas de opción múltiple.
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                Evaluación
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-tasks"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Quices y Preguntas
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Medición de conocimientos
                         </p>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                            Cuestionarios por módulo, configuración de puntajes mínimos, cantidad de intentos personalizados por el instructor y preguntas interactivas.
+                        </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Cuestionarios</span>
+                            <span class="font-bold text-[#00BCD4]">Supervisados</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Card 3: Resultados e Infracciones -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-chart-bar"></i>
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                Trazabilidad
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-chart-bar"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Resultados e Infracciones
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Control y supervisión
+                        </p>
                     </div>
-                    <div>
-                        <span class="text-xs uppercase tracking-wider font-extrabold text-amber-600 block">Trazabilidad & Control</span>
-                        <h3 class="text-base font-bold text-slate-900 mt-1">Resultados e Infracciones</h3>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
                             Calificaciones por aprendiz, estado de aprobación para SENA Empresa y detección de eventos de alerta o cambio de pestaña durante las pruebas.
                         </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Seguridad</span>
+                            <span class="font-bold text-amber-600">Anti-Fraude</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Card 4: Gestión de Usuarios y Roles -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-purple-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-users-cog"></i>
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                Accesos
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-users-cog"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Gestión de Usuarios
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Roles y permisos
+                        </p>
                     </div>
-                    <div>
-                        <span class="text-xs uppercase tracking-wider font-extrabold text-purple-600 block">Control de Acceso</span>
-                        <h3 class="text-base font-bold text-slate-900 mt-1">Gestión de Usuarios</h3>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
                             Administración de instructores, editores y aprendices, asignación de roles y permisos en SISIG, y consulta de perfiles con foto e historial de inducción.
                         </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Plataforma</span>
+                            <span class="font-bold text-[#2E6F40]">SENA Empresa</span>
+                        </div>
                     </div>
                 </div>
 
@@ -208,7 +288,7 @@
         <section id="areas" class="scroll-mt-28 space-y-6">
             <div class="border-b border-slate-200 pb-4">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-                    <span class="w-3.5 h-8 rounded-full bg-sena-navy inline-block"></span>
+                    <span class="w-3.5 h-8 rounded-full bg-[#1A2B4C] inline-block"></span>
                     Ejes Temáticos del Sistema Integrado de Gestión (SIG)
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">Conocimientos fundamentales que cada aprendiz debe cursar y demostrar al ingresar a su etapa en SENA Empresa</p>
@@ -217,66 +297,118 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <!-- Area 1: Seguridad y Salud en el Trabajo (SST) -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-sena-green/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-hard-hat"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-base">Seguridad y Salud en el Trabajo (SST)</h4>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            Identificación de peligros, valoración de riesgos laborales, prevención de accidentes y uso correcto de Elementos de Protección Personal (EPP).
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                ISO 45001
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-hard-hat"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Seguridad y Salud (SST)
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Prevención de riesgos
                         </p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
-                        <i class="fas fa-check-circle text-[11px]"></i> Autocuidado & Prevención
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                            Identificación de peligros, valoración de riesgos laborales, prevención de accidentes y uso correcto de Elementos de Protección Personal (EPP).
+                        </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Norma</span>
+                            <span class="font-bold text-[#2E6F40]">Autocuidado</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Area 2: Gestión de la Calidad -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-base">Gestión de la Calidad</h4>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            Estandarización de procesos, Buenas Prácticas (BPM/BPA), aseguramiento del servicio, control de calidad y enfoque en mejora continua.
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                ISO 9001
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-award"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Gestión de la Calidad
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Estándares y procesos
                         </p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-blue-600">
-                        <i class="fas fa-check-circle text-[11px]"></i> Estándares y Mejora
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                            Estandarización de procesos, Buenas Prácticas (BPM/BPA), aseguramiento del servicio, control de calidad y enfoque en mejora continua.
+                        </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Norma</span>
+                            <span class="font-bold text-[#00BCD4]">Mejora Continua</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Area 3: Gestión Ambiental -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-base">Gestión Ambiental</h4>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            Separación de residuos en la fuente por código de colores, manejo de sustancias especiales, uso eficiente de agua y energía, y conservación del entorno.
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                ISO 14001
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-leaf"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Gestión Ambiental
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Sostenibilidad ecológica
                         </p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-amber-600">
-                        <i class="fas fa-check-circle text-[11px]"></i> Sostenibilidad & Reciclaje
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                            Separación de residuos en la fuente por código de colores, manejo de sustancias especiales, uso eficiente de agua y energía, y conservación del entorno.
+                        </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Norma</span>
+                            <span class="font-bold text-[#2E6F40]">Reciclaje</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Area 4: Prevención y Respuesta a Emergencias -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-rose-400/50 transition-all duration-300 space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xl font-bold">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-base">Emergencias y Contingencias</h4>
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            Rutas de evacuación, puntos de encuentro institucionales, plan de contingencias, reporte de incidentes y protocolos de atención inmediata.
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                Contingencias
+                            </span>
+                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
+                            Emergencias y Contingencias
+                        </h3>
+                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
+                            Atención y evacuación
                         </p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-rose-600">
-                        <i class="fas fa-check-circle text-[11px]"></i> Protocolos de Seguridad
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                            Rutas de evacuación, puntos de encuentro institucionales, plan de contingencias, reporte de incidentes y protocolos de atención inmediata.
+                        </p>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Protocolo</span>
+                            <span class="font-bold text-rose-600">Seguridad</span>
+                        </div>
                     </div>
                 </div>
 

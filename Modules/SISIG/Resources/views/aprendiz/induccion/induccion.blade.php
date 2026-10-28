@@ -14,65 +14,69 @@
             </div>
         </div>
 
-        <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo Premium -->
+        <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo de Referencia Image 1 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             <!-- Total Módulos -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Creados</span>
-                    <i class="fas fa-layer-group text-2xl text-blue-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Total Creados</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalModulos }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Módulos en el sistema</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalModulos }}</h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        <span>Módulos en el sistema</span>
                     </div>
                 </div>
             </div>
 
             <!-- Publicados / Disponibles -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sena-green to-[#237000]"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Publicados</span>
-                    <i class="fas fa-eye text-2xl text-sena-green group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Publicados</span>
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-[#2E6F40] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-check"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $modulos->where('estado', 'publicado')->count() }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Visibles para aprendices</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $modulos->where('estado', 'publicado')->count() }}</h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        <span>Visibles para aprendices</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Con Contenido Didáctico -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+            <!-- En revisión -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">En Revisión</span>
-                    <i class="fas fa-pencil-alt text-2xl text-amber-500 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">En Revisión</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $modulos->where('estado', 'revision')->count() }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Borradores pendientes</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $modulos->where('estado', 'revision')->count() }}</h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        <span>Borradores pendientes</span>
                     </div>
                 </div>
             </div>
 
             <!-- Inactivos -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 to-red-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Inactivos</span>
-                    <i class="fas fa-archive text-2xl text-rose-500 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Inactivos</span>
+                    <div class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-archive"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $modulos->where('estado', 'inactivo')->count() }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Ocultos o dados de baja</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $modulos->where('estado', 'inactivo')->count() }}</h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        <span>Ocultos o dados de baja</span>
                     </div>
                 </div>
             </div>
@@ -130,88 +134,94 @@
                 <!-- Grid de Módulos Dinámicos -->
                 <div id="gridModulos" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     @foreach($modulos as $modulo)
-                        <div class="card-modulo bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full"
+                        <div class="card-modulo bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col h-full overflow-hidden"
                              data-titulo="{{ strtolower($modulo->titulo) }}"
                              data-norma="{{ strtolower($modulo->norma ?? '') }}"
                              data-estado="{{ strtolower($modulo->estado) }}">
 
-                            <!-- Encabezado de la Tarjeta -->
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex items-center gap-3.5">
-                                    @php
-                                        // Extraer el icono base (ej: 'fas fa-layer-group') removiendo clases de color azul para aplicar el verde SENA
-                                        $baseIcon = trim(str_replace(['text-blue-600', 'text-sky-600', 'text-[#00324D]', 'text-blue-500', 'text-blue-700'], '', $modulo->icon_class ?? 'fas fa-layer-group'));
-                                        if (empty($baseIcon)) {
-                                            $baseIcon = 'fas fa-layer-group';
-                                        }
-                                    @endphp
-                                    <div class="w-12 h-12 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                                        <i class="{{ $baseIcon }} text-sena-green text-2xl"></i>
+                            <!-- 1. Cabecera estilo Image 1: Dark Navy con texto blanco de alto contraste -->
+                            <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <!-- Imagen o Ícono circular del módulo -->
+                                        @if($modulo->imagen)
+                                            <img src="{{ asset($modulo->imagen) }}" alt="{{ $modulo->titulo }}" class="w-9 h-9 object-cover rounded-full border border-white/30 shadow-xs flex-shrink-0">
+                                        @else
+                                            <div class="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white text-xs flex-shrink-0">
+                                                <i class="{{ $modulo->icon_class ?? 'fas fa-layer-group' }}"></i>
+                                            </div>
+                                        @endif
+                                        <span class="px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-[10px] font-bold text-slate-100">
+                                            {{ $modulo->norma ?: 'SIG Institucional' }}
+                                        </span>
                                     </div>
+
+                                    <!-- Estado original de SISIG con pill estilo Image 1 -->
                                     <div>
-                                        <h3 class="font-extrabold text-slate-800 text-base leading-tight">{{ $modulo->titulo }}</h3>
-                                        <div class="flex items-center gap-1.5 mt-1 text-slate-500 text-xs font-medium">
-                                            <i class="fas fa-tags text-slate-400"></i>
-                                            <span>{{ $modulo->norma ?: 'SIG Institucional' }}</span>
-                                        </div>
+                                        @if($modulo->estado == 'publicado')
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[#2E6F40] text-xs font-black shadow-xs">
+                                                <span class="w-2 h-2 rounded-full bg-[#33FF57]"></span>
+                                                <span>Publicado</span>
+                                            </span>
+                                        @elseif($modulo->estado == 'revision')
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-amber-700 text-xs font-black shadow-xs">
+                                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                                <span>En Revisión</span>
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-rose-700 text-xs font-black shadow-xs">
+                                                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                                                <span>Inactivo</span>
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <!-- Etiqueta de Estado Limpia -->
-                            <div class="absolute top-6 right-6">
-                                @if($modulo->estado == 'publicado')
-                                    <span class="text-xs font-black tracking-wide uppercase text-emerald-600">
-                                        Publicado
-                                    </span>
-                                @elseif($modulo->estado == 'revision')
-                                    <span class="text-xs font-black tracking-wide uppercase text-amber-600">
-                                        En Revisión
-                                    </span>
-                                @else
-                                    <span class="text-xs font-black tracking-wide uppercase text-rose-600">
-                                        Inactivo
-                                    </span>
-                                @endif
+
+                                <!-- Título y Norma en texto blanco hiperlegible -->
+                                <h3 class="font-extrabold text-white text-lg tracking-tight leading-snug" style="color: #ffffff !important;">{{ $modulo->titulo }}</h3>
+                                <p class="text-xs text-slate-200 font-medium mt-0.5" style="color: #e2e8f0 !important;"><i class="fas fa-tags text-slate-300 mr-1"></i> {{ $modulo->norma ?: 'SIG Institucional' }}</p>
                             </div>
 
-                            <!-- Descripción del Módulo -->
-                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5 flex-grow">
-                                {{ $modulo->descripcion ?: 'Este módulo contiene guías pedagógicas, normativas de bioseguridad y material explicativo interactivo.' }}
-                            </p>
+                            <!-- 2. Cuerpo de la Tarjeta (Blanco con recursos, avance y botón de ingreso intactos) -->
+                            <div class="p-5 flex flex-col flex-grow justify-between space-y-4 bg-white">
+                                <!-- Descripción del Módulo -->
+                                <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                                    {{ $modulo->descripcion ?: 'Este módulo contiene guías pedagógicas, normativas de bioseguridad y material explicativo interactivo.' }}
+                                </p>
 
-                            <!-- Medios y Recursos Disponibles -->
-                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5">
-                                <span class="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
-                                    <i class="fas fa-file-alt text-emerald-500"></i> Guía Didáctica
-                                </span>
-                                <span class="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
-                                    <i class="fas fa-image text-sky-500"></i> Esquemas y Señales
-                                </span>
-                                <span class="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
-                                    <i class="fas fa-play-circle text-purple-500"></i> Video Instructivo
-                                </span>
-                            </div>
-
-                            <!-- Barra de Progreso del Módulo -->
-                            <div class="mb-5 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
-                                <div class="flex justify-between text-xs mb-1.5">
-                                    <span class="text-slate-600 font-bold">Avance temático</span>
-                                    <span class="font-black text-sena-green">{{ $modulo->progreso ?? 0 }}%</span>
+                                <!-- Medios y Recursos Disponibles -->
+                                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 border-t border-slate-100">
+                                    <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                                        <i class="fas fa-file-alt text-[#2E6F40]"></i> Guía Didáctica
+                                    </span>
+                                    <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                                        <i class="fas fa-image text-sky-500"></i> Esquemas y Señales
+                                    </span>
+                                    <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                                        <i class="fas fa-play-circle text-purple-500"></i> Video Instructivo
+                                    </span>
                                 </div>
-                                <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden shadow-inner">
-                                    <div class="bg-sena-green h-1.5 rounded-full transition-all" style="width: {{ $modulo->progreso ?? 0 }}%"></div>
-                                </div>
-                            </div>
 
-                            <!-- Botón de Ingreso al Estudio -->
-                            <div class="pt-4 border-t border-slate-100 mt-auto">
-                                <a href="{{ route('sisig.aprendiz.induccion.show', $modulo->id) }}" 
-                                   class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all w-full group-hover:bg-emerald-600">
-                                    <i class="fas fa-book-reader text-xs"></i>
-                                    <span>Ingresar a Estudiar</span>
-                                    <i class="fas fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
-                                </a>
+                                <!-- Barra de Progreso del Módulo -->
+                                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-600 font-bold text-[11px]">Avance temático</span>
+                                        <span class="font-black text-[#2E6F40]">{{ $modulo->progreso ?? 0 }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden shadow-inner">
+                                        <div class="bg-[#2E6F40] h-1.5 rounded-full transition-all" style="width: {{ $modulo->progreso ?? 0 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Botón de Ingreso al Estudio en Pill -->
+                                <div class="pt-3 border-t border-slate-100 mt-auto">
+                                    <a href="{{ route('sisig.aprendiz.induccion.show', $modulo->id) }}" 
+                                       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover shadow-sena hover:shadow-lg transition-all w-full cursor-pointer">
+                                        <i class="fas fa-book-reader text-xs"></i>
+                                        <span>Ingresar a Estudiar</span>
+                                        <i class="fas fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                                    </a>
+                                </div>
                             </div>
 
                         </div>

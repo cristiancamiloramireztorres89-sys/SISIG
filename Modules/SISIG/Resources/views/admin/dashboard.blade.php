@@ -2,16 +2,16 @@
     <div class="space-y-8 w-full max-w-[1600px] mx-auto pb-10">
 
         <!-- 1. Banner Principal Ejecutivo de Bienvenida -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#001A29] via-[#002F48] to-[#004266] border border-slate-700/60 p-7 sm:p-9 text-white shadow-2xl">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1A2B4C] via-[#1E3A5F] to-[#243B66] border border-[#243B66] p-7 sm:p-9 text-white shadow-2xl">
             <!-- Destellos y brillos ambientales de fondo -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-sena-green/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-[#33FF57]/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-[#00BCD4]/15 rounded-full blur-2xl pointer-events-none"></div>
 
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <!-- Columna Izquierda: Información de bienvenida -->
                 <div class="space-y-3">
                     <div>
-                        <span class="text-sena-green text-xs font-black uppercase tracking-widest">
+                        <span class="text-[#33FF57] text-xs font-black uppercase tracking-widest">
                             Panel de Supervisión Estratégica SISIG
                         </span>
                     </div>
@@ -26,8 +26,8 @@
                 </div>
 
                 <!-- Columna Derecha: Fecha actual limpia -->
-                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 text-white shadow-sm">
-                    <i class="far fa-calendar-check text-sena-green text-lg"></i>
+                <div class="flex items-center gap-2.5 self-start lg:self-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/15 text-white shadow-sm">
+                    <i class="far fa-calendar-check text-[#33FF57] text-base"></i>
                     <span class="text-xs sm:text-sm font-bold text-slate-100 capitalize">
                         {{ now()->isoFormat('dddd, D [de] MMMM') }}
                     </span>
@@ -35,72 +35,76 @@
             </div>
         </div>
 
-        <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo Premium -->
+        <!-- 2. Tarjetas de Métricas Clave (KPIs) con Estilo de Referencia Image 1 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             <!-- KPI 1: Aprendices Registrados -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Aprendices SENA</span>
-                    <i class="fas fa-user-graduate text-2xl text-blue-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Aprendices SENA</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ number_format($totalAprendices) }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Asignados a formación</span>
-                        <span class="text-xs font-extrabold text-blue-600">Etapa Práctica</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ number_format($totalAprendices) }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Asignados a formación</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Etapa Práctica</span>
                     </div>
                 </div>
             </div>
 
             <!-- KPI 2: Evaluaciones Activas -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sena-green to-[#237000]"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Quices Activos</span>
-                    <i class="fas fa-clipboard-check text-2xl text-sena-green group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div class="mt-4">
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $quicesActivos }}</h3>
-                        <span class="text-sm font-bold text-slate-400">/ {{ $totalQuices }} creados</span>
+                    <span class="text-xs font-semibold text-slate-500">Quices Activos</span>
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-[#2E6F40] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Habilitados para presentar</span>
-                        <span class="text-xs font-black text-sena-green">Disponibles</span>
+                </div>
+                <div class="mt-3">
+                    <div class="flex items-baseline gap-1.5">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $quicesActivos }}</h3>
+                        <span class="text-xs font-semibold text-slate-400">/ {{ $totalQuices }} creados</span>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Habilitados para presentar</span>
+                        <span class="text-xs font-bold text-[#2E6F40]">Disponibles</span>
                     </div>
                 </div>
             </div>
 
             <!-- KPI 3: Tasa de Aprobación -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Tasa de Aprobación</span>
-                    <i class="fas fa-chart-pie text-2xl text-teal-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Tasa de Aprobación</span>
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 text-[#00BCD4] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $tasaAprobacion }}%</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">{{ $evaluacionesAprobadas }} aprobados</span>
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $tasaAprobacion }}%</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>{{ $evaluacionesAprobadas }} aprobados</span>
                         <span class="text-rose-500 font-bold">{{ $evaluacionesReprobadas }} reprobados</span>
                     </div>
                 </div>
             </div>
 
             <!-- KPI 4: Monitoreo Anti-Fraude e Infracciones -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 to-rose-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Control Anti-Fraude</span>
-                    <i class="fas fa-shield-virus text-2xl text-amber-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold text-slate-500">Control Anti-Fraude</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ $totalInfracciones }}</h3>
-                    <div class="mt-2.5 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 font-medium">Alertas registradas</span>
-                        <span class="text-xs font-bold {{ $evaluacionesAnuladas > 0 ? 'text-rose-600' : 'text-emerald-600' }}">
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">{{ $totalInfracciones }}</h3>
+                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span>Alertas registradas</span>
+                        <span class="text-xs font-bold {{ $evaluacionesAnuladas > 0 ? 'text-rose-600' : 'text-[#2E6F40]' }}">
                             {{ $evaluacionesAnuladas }} Anuladas
                         </span>
                     </div>
@@ -166,25 +170,22 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 {{ $modulosEstadisticas->count() >= 4 ? 'xl:grid-cols-4' : '' }} gap-3 pt-4 border-t border-slate-100">
                         @foreach($modulosEstadisticas as $idx => $modStat)
-                            @php
-                                $col = $paletasModulos[$idx % count($paletasModulos)];
-                            @endphp
-                            <div class="p-3 rounded-2xl {{ $col['bg'] }} border {{ $col['border'] }} flex flex-col justify-between transition-all hover:shadow-xs">
-                                <div class="flex items-center justify-between gap-1 mb-1">
-                                    <span class="text-[10px] font-bold tracking-wider uppercase text-slate-500 truncate" title="{{ $modStat->norma ?? 'Módulo Registrado' }}">
-                                        {{ $modStat->norma ? Str::limit($modStat->norma, 18) : 'Módulo #'.$modStat->id }}
+                            <div class="rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                                <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] px-3 py-2 text-white flex items-center justify-between gap-1">
+                                    <span class="text-[10px] font-bold tracking-wider uppercase text-slate-200 truncate" title="{{ $modStat->norma ?? 'Módulo Registrado' }}" style="color: #e2e8f0 !important;">
+                                        {{ $modStat->norma ? Str::limit($modStat->norma, 16) : 'Módulo #'.$modStat->id }}
                                     </span>
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-extrabold {{ $modStat->tasa_aprobacion >= 70 ? 'bg-emerald-100 text-emerald-800' : ($modStat->total_evaluaciones > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600') }}">
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full font-extrabold {{ $modStat->tasa_aprobacion >= 70 ? 'bg-[#33FF57]/20 text-[#33FF57]' : ($modStat->total_evaluaciones > 0 ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-slate-300') }}">
                                         {{ $modStat->tasa_aprobacion }}%
                                     </span>
                                 </div>
-                                <div>
-                                    <strong class="{{ $col['text'] }} font-extrabold text-sm sm:text-base block truncate" title="{{ $modStat->titulo }}">
+                                <div class="p-3 bg-white">
+                                    <strong class="text-[#343A40] font-extrabold text-xs sm:text-sm block truncate" title="{{ $modStat->titulo }}">
                                         {{ ucfirst($modStat->titulo) }}
                                     </strong>
-                                    <div class="flex items-center justify-between text-[11px] text-slate-500 mt-1">
-                                        <span><i class="fas fa-file-signature text-[10px] mr-1"></i>{{ $modStat->total_quices }} {{ $modStat->total_quices == 1 ? 'quiz' : 'quices' }}</span>
-                                        <span><i class="fas fa-user-check text-[10px] mr-1"></i>{{ $modStat->total_evaluaciones }} {{ $modStat->total_evaluaciones == 1 ? 'eval' : 'evals' }}</span>
+                                    <div class="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-100">
+                                        <span><i class="fas fa-file-signature text-[10px] mr-1 text-[#2E6F40]"></i>{{ $modStat->total_quices }} {{ $modStat->total_quices == 1 ? 'quiz' : 'quices' }}</span>
+                                        <span><i class="fas fa-user-check text-[10px] mr-1 text-[#00BCD4]"></i>{{ $modStat->total_evaluaciones }} {{ $modStat->total_evaluaciones == 1 ? 'eval' : 'evals' }}</span>
                                     </div>
                                 </div>
                             </div>

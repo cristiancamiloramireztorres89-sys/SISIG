@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Tailwind CSS CDN with custom SENA palette -->
+    <!-- Tailwind CSS CDN with custom official palette -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,16 +25,28 @@
             theme: {
                 extend: {
                     colors: {
+                        // Nueva paleta oficial (Guía de Estilo)
+                        'dark-navy': '#1A2B4C',
+                        'forest-green': '#2E6F40',
+                        'neon-green': '#33FF57',
+                        'off-white': '#F4F5F7',
+                        'dark-grey': '#343A40',
+                        'cyan-blue': '#00BCD4',
+
+                        // Mapeo retrocompatible sena.*
                         sena: {
-                            green: '#39A900',
-                            'green-hover': '#2d8500',
-                            'green-light': '#E8F5E9',
-                            navy: '#00324D',
-                            'navy-light': '#004B73',
-                            dark: '#001A29',
-                            slate: '#0F2B3E',
-                            light: '#F8FAFC',
+                            green: '#2E6F40',
+                            'green-hover': '#245833',
+                            'green-neon': '#33FF57',
+                            'green-light': '#EBFBF0',
+                            navy: '#1A2B4C',
+                            'navy-light': '#243B66',
+                            dark: '#14223C',
+                            slate: '#1A2B4C',
+                            light: '#F4F5F7',
                             card: '#FFFFFF',
+                            grey: '#343A40',
+                            cyan: '#00BCD4',
                             orange: '#e65100',
                         }
                     },
@@ -41,9 +54,10 @@
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
                     boxShadow: {
-                        'sena': '0 10px 30px -5px rgba(57, 169, 0, 0.3)',
-                        'sena-navy': '0 12px 35px -5px rgba(0, 50, 77, 0.25)',
-                        'glow': '0 0 25px rgba(57, 169, 0, 0.35)',
+                        'sena': '0 10px 25px -5px rgba(46, 111, 64, 0.25)',
+                        'sena-neon': '0 10px 25px -5px rgba(51, 255, 87, 0.35)',
+                        'sena-navy': '0 12px 30px -5px rgba(26, 43, 76, 0.25)',
+                        'glow': '0 0 20px rgba(51, 255, 87, 0.40)',
                     }
                 }
             }
@@ -53,18 +67,19 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F8FAFC;
+            background-color: #F4F5F7;
+            color: #343A40;
         }
         .custom-glass-dark {
-            background: rgba(0, 26, 41, 0.94);
+            background: rgba(26, 43, 76, 0.96);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
 
         /* Nav links highlighting styles */
         .nav-spy-item {
-            color: #94a3b8; /* slate-400 */
-            font-weight: 500;
+            color: #cbd5e1;
+            font-weight: 600;
             transition: all 0.25s ease-in-out;
             position: relative;
         }
@@ -74,22 +89,22 @@
         }
 
         .nav-spy-item.active {
-            color: #39A900 !important; /* SENA Green */
+            color: #33FF57 !important; /* Neon Green */
             font-weight: 800 !important;
-            text-shadow: 0 0 16px rgba(57, 169, 0, 0.65);
+            text-shadow: 0 0 16px rgba(51, 255, 87, 0.65);
         }
 
         .nav-spy-item.active i {
-            color: #39A900 !important;
+            color: #33FF57 !important;
             transform: scale(1.1);
         }
     </style>
 </head>
 
-<body class="bg-sena-light text-slate-800 flex flex-col min-h-screen antialiased selection:bg-sena-green selection:text-white">
+<body class="bg-[#F4F5F7] text-[#343A40] flex flex-col min-h-screen antialiased selection:bg-[#33FF57] selection:text-[#1A2B4C] font-sans">
 
     <!-- Header / Navbar -->
-    <header class="sticky top-0 z-50 custom-glass-dark border-b-2 border-sena-green shadow-lg">
+    <header class="sticky top-0 z-50 custom-glass-dark border-b-2 border-[#33FF57] shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 
@@ -157,14 +172,122 @@
                                     <span>Mi Dashboard</span>
                                 </a>
                             @endif
-                            <a href="{{ route('sisig.perfil.index') }}" title="Ver Mi Perfil" class="text-xs sm:text-sm font-semibold text-slate-200 hover:text-white flex items-center gap-2 transition-colors">
-                                <i class="fas fa-user-circle text-sena-green text-lg"></i>
-                                <span>{{ auth()->user()->nickname ?? auth()->user()->email }}</span>
-                            </a>
-                            <a href="{{ route('logout') }}?redirect=/sisig" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 rounded-xl transition-all">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Cerrar Sesión</span>
-                            </a>
+                            @php
+                                $masterUser = auth()->user();
+                                $mInitials = '';
+                                if ($masterUser->person) {
+                                    $first = mb_substr(trim($masterUser->person->first_name ?? ''), 0, 1);
+                                    $last = mb_substr(trim($masterUser->person->first_last_name ?? ''), 0, 1);
+                                    $mInitials = strtoupper($first . $last);
+                                }
+                                if (empty($mInitials) && !empty($masterUser->name)) {
+                                    $parts = preg_split('/\s+/', trim($masterUser->name));
+                                    $mInitials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr($parts[1] ?? '', 0, 1));
+                                }
+                                if (empty($mInitials)) {
+                                    $mInitials = strtoupper(substr($masterUser->nickname ?? $masterUser->email ?? 'US', 0, 2));
+                                }
+                                $mDisplayName = strtoupper($masterUser->full_name ?? ($masterUser->person ? trim($masterUser->person->first_name . ' ' . $masterUser->person->first_last_name) : $masterUser->name));
+                                
+                                $mRoleName = 'APRENDIZ';
+                                if ($masterUser->hasRole('admin_sisig') || $masterUser->hasRole('sisig.admin')) {
+                                    $mRoleName = 'ADMINISTRADOR';
+                                } elseif ($masterUser->hasRole('editor_sisig') || $masterUser->hasRole('sisig.instructor')) {
+                                    $mRoleName = 'EDITOR';
+                                } elseif ($masterUser->roles && $masterUser->roles->isNotEmpty()) {
+                                    $firstR = strtoupper($masterUser->roles->first()->name ?? '');
+                                    if (str_contains($firstR, 'ADMIN')) $mRoleName = 'ADMINISTRADOR';
+                                    elseif (str_contains($firstR, 'EDIT') || str_contains($firstR, 'INSTRUCT')) $mRoleName = 'EDITOR';
+                                    elseif (str_contains($firstR, 'APRENDIZ')) $mRoleName = 'APRENDIZ';
+                                    else $mRoleName = $firstR;
+                                }
+                            @endphp
+
+                            <div class="relative" id="master-user-menu-container">
+                                <button type="button" 
+                                        id="master-user-menu-button" 
+                                        aria-expanded="false" 
+                                        aria-haspopup="true"
+                                        class="bg-white hover:bg-slate-50 text-[#343A40] pl-2 pr-3.5 py-1.5 rounded-full flex items-center gap-2.5 shadow-sm hover:shadow transition-all group cursor-pointer border border-slate-100 select-none">
+                                    <div class="w-8 h-8 rounded-full bg-[#39A900] text-white flex items-center justify-center font-bold text-xs tracking-wider overflow-hidden flex-shrink-0 shadow-xs">
+                                        @if($masterUser->person && $masterUser->person->avatar)
+                                            <img src="{{ asset('storage/' . $masterUser->person->avatar) }}" alt="{{ $mDisplayName }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span>{{ $mInitials }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="text-left hidden sm:block">
+                                        <span class="block text-xs font-black text-slate-800 tracking-tight uppercase leading-tight truncate max-w-[190px]">
+                                            {{ $mDisplayName }}
+                                        </span>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mt-0.5">
+                                            {{ $mRoleName }}
+                                        </span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-slate-600 transition-transform duration-200 ml-1" id="master-user-menu-chevron"></i>
+                                </button>
+
+                                <div id="master-user-menu-dropdown" 
+                                     class="hidden absolute right-0 top-full mt-2 w-48 sm:w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 transition-all duration-200 origin-top-right">
+                                    <a href="{{ route('sisig.perfil.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors group cursor-pointer">
+                                        <i class="fas fa-user text-[#39A900] text-sm w-5 text-center group-hover:scale-110 transition-transform"></i>
+                                        <span class="text-xs font-bold">Mi perfil</span>
+                                    </a>
+                                    <div class="h-px bg-slate-100 my-1"></div>
+                                    <a href="{{ route('logout') }}?redirect=/sisig" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-colors group cursor-pointer">
+                                        <i class="fas fa-arrow-right-from-bracket text-rose-500 text-sm w-5 text-center group-hover:translate-x-0.5 transition-transform"></i>
+                                        <span class="text-xs font-bold">Cerrar sesión</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <script>
+                                (function() {
+                                    function initMasterMenu() {
+                                        var btn = document.getElementById('master-user-menu-button');
+                                        var menu = document.getElementById('master-user-menu-dropdown');
+                                        var chevron = document.getElementById('master-user-menu-chevron');
+                                        if (!btn || !menu || btn.dataset.boundMasterMenu) return;
+                                        btn.dataset.boundMasterMenu = 'true';
+
+                                        btn.addEventListener('click', function(e) {
+                                            e.stopPropagation();
+                                            var isClosed = menu.classList.contains('hidden');
+                                            if (isClosed) {
+                                                menu.classList.remove('hidden');
+                                                btn.setAttribute('aria-expanded', 'true');
+                                                if (chevron) chevron.classList.add('rotate-180');
+                                            } else {
+                                                menu.classList.add('hidden');
+                                                btn.setAttribute('aria-expanded', 'false');
+                                                if (chevron) chevron.classList.remove('rotate-180');
+                                            }
+                                        });
+
+                                        document.addEventListener('click', function(e) {
+                                            if (!menu.classList.contains('hidden') && !btn.contains(e.target) && !menu.contains(e.target)) {
+                                                menu.classList.add('hidden');
+                                                btn.setAttribute('aria-expanded', 'false');
+                                                if (chevron) chevron.classList.remove('rotate-180');
+                                            }
+                                        });
+
+                                        document.addEventListener('keydown', function(e) {
+                                            if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+                                                menu.classList.add('hidden');
+                                                btn.setAttribute('aria-expanded', 'false');
+                                                if (chevron) chevron.classList.remove('rotate-180');
+                                            }
+                                        });
+                                    }
+
+                                    if (document.readyState === 'loading') {
+                                        document.addEventListener('DOMContentLoaded', initMasterMenu);
+                                    } else {
+                                        initMasterMenu();
+                                    }
+                                })();
+                            </script>
                         </div>
                     @else
                         <a href="{{ route('login') }}?redirect=/sisig" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
@@ -184,14 +307,14 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-sena-dark border-t border-slate-800 text-slate-400 text-sm mt-20">
+    <footer class="bg-[#1A2B4C] border-t-2 border-[#33FF57] text-slate-300 text-sm mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                 
                 <!-- Left -->
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                        <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow-sm">
+                    <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1.5 flex-shrink-0 shadow-sm">
+                        <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow-xs">
                     </div>
                     <div>
                         <h4 class="text-white font-bold text-base">SISIG - SENA Empresa</h4>
@@ -202,13 +325,13 @@
                 <!-- Center -->
                 <div class="text-center text-xs text-slate-400">
                     <p>Inducciones &bull; SST &bull; Gestión de la Calidad &bull; Gestión Ambiental</p>
-                    <p class="text-sena-green font-semibold mt-1">Servicio Nacional de Aprendizaje - SENA</p>
+                    <p class="text-[#33FF57] font-bold mt-1">Servicio Nacional de Aprendizaje - SENA</p>
                 </div>
 
                 <!-- Right -->
                 <div class="text-center md:text-right text-xs">
                     <p>&copy; {{ date('Y') }} Todos los derechos reservados.</p>
-                    <p class="text-slate-500 mt-0.5">Sistema Integrado de Gestión Institucional</p>
+                    <p class="text-slate-400 mt-0.5">Sistema Integrado de Gestión Institucional</p>
                 </div>
 
             </div>

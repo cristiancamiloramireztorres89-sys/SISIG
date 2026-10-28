@@ -42,72 +42,76 @@
             </div>
         </div>
 
-        <!-- 2. Tarjetas Resumen de Desempeño (KPIs con degradados superiores) -->
+        <!-- 2. Tarjetas Resumen de Desempeño (Estilo Unificado SISIG) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             <!-- Estado -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm">
-                <div class="absolute top-0 left-0 right-0 h-1.5 {{ $esAnulado ? 'bg-gradient-to-r from-rose-800 to-slate-900' : ($aprobado ? 'bg-gradient-to-r from-sena-green to-[#237000]' : 'bg-gradient-to-r from-rose-500 to-red-600') }}"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Resultado</span>
-                    <i class="fas {{ $esAnulado ? 'fa-ban text-rose-600' : ($aprobado ? 'fa-award text-sena-green' : 'fa-exclamation-triangle text-rose-500') }} text-2xl"></i>
+                    <span class="text-xs font-semibold text-slate-500">Resultado</span>
+                    <div class="w-8 h-8 rounded-full {{ $esAnulado ? 'bg-rose-50 text-rose-600' : ($aprobado ? 'bg-emerald-50 text-[#2E6F40]' : 'bg-rose-50 text-rose-500') }} flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas {{ $esAnulado ? 'fa-ban' : ($aprobado ? 'fa-award' : 'fa-exclamation-triangle') }}"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-2xl font-black {{ $esAnulado ? 'text-rose-700' : ($aprobado ? 'text-sena-green' : 'text-rose-600') }}">
+                <div class="mt-3">
+                    <h3 class="text-2xl font-extrabold {{ $esAnulado ? 'text-rose-700' : ($aprobado ? 'text-[#2E6F40]' : 'text-rose-600') }}">
                         {{ $esAnulado ? 'Anulado' : ($aprobado ? 'Aprobado' : 'No Aprobado') }}
                     </h3>
-                    <div class="mt-2 text-xs text-slate-500 font-medium">
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
                         {{ $esAnulado ? 'Faltas al protocolo' : 'Estado de este intento' }}
                     </div>
                 </div>
             </div>
 
             <!-- Preguntas Acertadas -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Aciertos</span>
-                    <i class="fas fa-check-double text-2xl text-blue-600"></i>
+                    <span class="text-xs font-semibold text-slate-500">Aciertos</span>
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#00BCD4] flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-check-double"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl font-black text-slate-800">
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">
                         {{ $respuestasCorrectas }} / {{ $totalPreguntas }}
                     </h3>
-                    <div class="mt-2 text-xs text-slate-500 font-medium">
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
                         Preguntas correctas
                     </div>
                 </div>
             </div>
 
             <!-- Intento Presentado -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Intento</span>
-                    <i class="fas fa-redo text-2xl text-amber-500"></i>
+                    <span class="text-xs font-semibold text-slate-500">Intento</span>
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-redo"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl font-black text-slate-800">
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">
                         {{ $intentoNumero }}
                     </h3>
-                    <div class="mt-2 text-xs text-slate-500 font-medium">
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
                         De {{ $intentosPermitidos }} intentos permitidos
                     </div>
                 </div>
             </div>
 
             <!-- Intentos Restantes -->
-            <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm">
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 to-indigo-600"></div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Oportunidades</span>
-                    <i class="fas fa-history text-2xl text-purple-500"></i>
+                    <span class="text-xs font-semibold text-slate-500">Oportunidades</span>
+                    <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-history"></i>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h3 class="text-3xl font-black text-slate-800">
+                <div class="mt-3">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-[#343A40] tracking-tight">
                         {{ $intentosRestantes }}
                     </h3>
-                    <div class="mt-2 text-xs text-slate-500 font-medium">
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
                         {{ $intentosRestantes > 0 ? 'Intentos aún disponibles' : 'Intentos agotados' }}
                     </div>
                 </div>

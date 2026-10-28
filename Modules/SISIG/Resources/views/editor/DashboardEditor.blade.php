@@ -138,39 +138,62 @@
             @if($modulos->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($modulos as $mod)
-                        <div class="p-5 rounded-2xl border border-slate-200/80 hover:border-slate-300 bg-white hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-                            <div>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {{ $mod->meta['bg'] }} {{ $mod->meta['color'] }} border {{ $mod->meta['border'] }}">
-                                        {{ $mod->meta['badge'] }}
-                                    </span>
-                                    <span class="text-[11px] font-extrabold text-slate-400">Orden #{{ $mod->orden }}</span>
+                        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden">
+                            <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
+                            <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
+                                <div class="flex items-center justify-between gap-3 mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
+                                            <i class="{{ $mod->meta['icono'] ?? 'fas fa-layer-group' }}"></i>
+                                        </div>
+                                        <span class="text-[11px] font-bold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/15 truncate max-w-[170px]" style="color: #ffffff !important;">
+                                            {{ $mod->meta['badge'] }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Estado Quiz -->
+                                    @if($mod->quiz && $mod->quiz->activo)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#33FF57]"></span>
+                                            Quiz Activo
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-500/20 text-slate-300 border border-slate-400/30 shadow-xs">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                            Sin Quiz
+                                        </span>
+                                    @endif
                                 </div>
-                                <h3 class="text-sm font-bold text-slate-800 mt-2.5 flex items-center gap-2">
-                                    <i class="{{ $mod->meta['icono'] }} {{ $mod->meta['color'] }}"></i>
-                                    <span>{{ $mod->nombre }}</span>
+
+                                <h3 class="font-extrabold text-white text-lg tracking-tight leading-tight line-clamp-1" style="color: #ffffff !important;">
+                                    {{ $mod->nombre }}
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                                    {{ $mod->descripcion ?? 'Sin descripción registrada para esta sección.' }}
+                                <p class="text-xs text-slate-200 mt-1 line-clamp-1 font-medium flex items-center gap-1.5" style="color: #e2e8f0 !important;">
+                                    <i class="fas fa-sort-numeric-down text-[10px] text-slate-300"></i>
+                                    <span>Orden de formación #{{ $mod->orden }}</span>
                                 </p>
                             </div>
 
-                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-                                <span class="flex items-center gap-1.5">
-                                    <i class="fas fa-file text-slate-400"></i>
-                                    <strong>{{ $mod->contenidos_count }}</strong> recursos
-                                </span>
-                                <span class="flex items-center gap-1.5">
-                                    <i class="fas fa-question text-slate-400"></i>
-                                    <strong>{{ $mod->preguntas_count }}</strong> preguntas
-                                </span>
-                                @if($mod->quiz && $mod->quiz->activo)
-                                    <span class="text-emerald-600 font-bold flex items-center gap-1">
-                                        <i class="fas fa-check-circle text-[10px]"></i> Quiz activo
+                            <!-- Cuerpo de la Tarjeta con datos 100% reales -->
+                            <div class="p-5 flex-1 flex flex-col justify-between bg-white rounded-b-2xl space-y-4">
+                                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                                    {{ $mod->descripcion ?? 'Sin descripción registrada para esta sección.' }}
+                                </p>
+
+                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 mt-auto">
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="fas fa-file text-[#2E6F40]"></i>
+                                        <strong>{{ $mod->contenidos_count }}</strong> recursos
                                     </span>
-                                @else
-                                    <span class="text-slate-400 font-medium">Sin quiz</span>
-                                @endif
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="fas fa-question text-[#00BCD4]"></i>
+                                        <strong>{{ $mod->preguntas_count }}</strong> preguntas
+                                    </span>
+                                    <a href="{{ route('sisig.editor.contenido.edit', $mod->id) }}" class="inline-flex items-center gap-1 text-[#2E6F40] hover:text-emerald-800 font-bold transition-colors">
+                                        <span>Editar</span>
+                                        <i class="fas fa-arrow-right text-[10px]"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     @endforeach

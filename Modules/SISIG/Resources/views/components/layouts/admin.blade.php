@@ -126,23 +126,35 @@
         }
     </script>
 
-    <!-- Tailwind CSS CDN with custom SENA palette -->
+    <!-- Tailwind CSS CDN with custom official palette -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
+                        // Nueva paleta oficial (Guía de Estilo)
+                        'dark-navy': '#1A2B4C',
+                        'forest-green': '#2E6F40',
+                        'neon-green': '#33FF57',
+                        'off-white': '#F4F5F7',
+                        'dark-grey': '#343A40',
+                        'cyan-blue': '#00BCD4',
+
+                        // Mapeo retrocompatible sena.*
                         sena: {
-                            green: '#39A900',
-                            'green-hover': '#2e8b00',
-                            'green-light': '#E8F5E9',
-                            navy: '#00324D',
-                            'navy-light': '#004B73',
-                            dark: '#001A29',
-                            slate: '#0F2B3E',
-                            light: '#F8FAFC',
+                            green: '#2E6F40',
+                            'green-hover': '#245833',
+                            'green-neon': '#33FF57',
+                            'green-light': '#EBFBF0',
+                            navy: '#1A2B4C',
+                            'navy-light': '#243B66',
+                            dark: '#14223C',
+                            slate: '#1A2B4C',
+                            light: '#F4F5F7',
                             card: '#FFFFFF',
+                            grey: '#343A40',
+                            cyan: '#00BCD4',
                             orange: '#e65100',
                         }
                     },
@@ -150,9 +162,10 @@
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
                     boxShadow: {
-                        'sena': '0 10px 25px -5px rgba(57, 169, 0, 0.25)',
-                        'sena-navy': '0 12px 30px -5px rgba(0, 50, 77, 0.20)',
-                        'glow': '0 0 20px rgba(57, 169, 0, 0.35)',
+                        'sena': '0 10px 25px -5px rgba(46, 111, 64, 0.25)',
+                        'sena-neon': '0 10px 25px -5px rgba(51, 255, 87, 0.35)',
+                        'sena-navy': '0 12px 30px -5px rgba(26, 43, 76, 0.25)',
+                        'glow': '0 0 20px rgba(51, 255, 87, 0.40)',
                     }
                 }
             }
@@ -161,11 +174,19 @@
 
     <style>
         :root {
-            --color-primario: #39A900;
-            --color-sidebar: #001A29;
+            --color-dark-navy: #1A2B4C;
+            --color-forest-green: #2E6F40;
+            --color-neon-green: #33FF57;
+            --color-off-white: #F4F5F7;
+            --color-dark-grey: #343A40;
+            --color-cyan-blue: #00BCD4;
+            --color-primario: #2E6F40;
+            --color-sidebar: #1A2B4C;
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F4F5F7;
+            color: #343A40;
         }
         #contenedor-alertas-globales:empty {
             display: none !important;
@@ -189,14 +210,14 @@
             width: 4px;
         }
         #sidebar-menu::-webkit-scrollbar-track {
-            background: var(--color-sidebar, #001A29);
+            background: #1A2B4C;
         }
         #sidebar-menu::-webkit-scrollbar-thumb {
-            background: #1e293b;
+            background: #243B66;
             border-radius: 4px;
         }
         #sidebar-menu::-webkit-scrollbar-thumb:hover {
-            background: #334155;
+            background: #334e80;
         }
 
         /* Transiciones fluidas del Sidebar */
@@ -282,16 +303,16 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 flex min-h-screen antialiased selection:bg-sena-green selection:text-white relative m-0 p-0">
+<body class="bg-[#F4F5F7] text-[#343A40] flex min-h-screen antialiased selection:bg-[#33FF57] selection:text-[#1A2B4C] relative m-0 p-0 font-sans">
 
     <!-- Backdrop oscuro para móvil -->
-    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 hidden md:hidden transition-opacity duration-300"></div>
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-[#1A2B4C]/80 backdrop-blur-xs z-40 hidden md:hidden transition-opacity duration-300"></div>
 
     <!-- 1. Sidebar Lateral Completo (Desde arriba h-screen) -->
     @include('sisig::components.layouts.sidebar')
 
     <!-- 2. Columna Derecha: Header + Contenido Principal + Footer -->
-    <div class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] min-h-screen transition-all duration-300">
+    <div class="flex-1 flex flex-col min-w-0 bg-[#F4F5F7] min-h-screen transition-all duration-300">
         
         <!-- Header Superior -->
         @include('sisig::components.layouts.header')

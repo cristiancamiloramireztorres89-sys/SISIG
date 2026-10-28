@@ -27,51 +27,542 @@
             background-color: rgba(0, 0, 0, 0.88) !important;
         }
 
+        /* =========================================================
+           BARRA DE HERRAMIENTAS QUILL (Fondo Azul Institucional Sidebar)
+           ========================================================= */
         .ql-toolbar.ql-snow {
-            border: 1px solid #e2e8f0;
-            border-top-left-radius: 0.75rem;
-            border-top-right-radius: 0.75rem;
-            background-color: #f8fafc;
-            padding: 0.75rem 1rem;
+            border: 1px solid #1A2B4C !important;
+            border-bottom: none !important;
+            border-top-left-radius: 1rem !important;
+            border-top-right-radius: 1rem !important;
+            background-color: #1A2B4C !important;
+            background: linear-gradient(135deg, #1A2B4C 0%, #20335A 100%) !important;
+            padding: 0.75rem 1rem !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 4px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+            position: relative !important;
+            z-index: 20 !important;
         }
-        
-        /* Botón de Fondo en la barra de herramientas: perfectamente integrado como los demás iconos */
+
+        .ql-snow .ql-formats {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 2px !important;
+            margin-right: 8px !important;
+            padding-right: 8px !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+            position: relative !important;
+        }
+        .ql-snow .ql-formats:last-child {
+            border-right: none !important;
+            padding-right: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        /* Botones de acción estándar (B, I, U, S, listas, etc.) */
+        .ql-snow.ql-toolbar button,
+        .ql-snow .ql-toolbar button {
+            width: 32px !important;
+            height: 32px !important;
+            padding: 6px !important;
+            border: 1px solid transparent !important;
+            border-radius: 8px !important;
+            background: transparent !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .ql-snow.ql-toolbar button svg,
+        .ql-snow .ql-toolbar button svg {
+            width: 18px !important;
+            height: 18px !important;
+        }
+
+        /* Íconos en blanco puro (#FFFFFF) sobre la barra oscura del sidebar */
+        .ql-toolbar.ql-snow button .ql-stroke,
+        .ql-toolbar.ql-snow .ql-picker-label .ql-stroke {
+            stroke: #FFFFFF !important;
+            stroke-width: 2 !important;
+            transition: stroke 0.15s ease, stroke-width 0.15s ease !important;
+        }
+        .ql-toolbar.ql-snow button .ql-fill,
+        .ql-toolbar.ql-snow .ql-picker-label .ql-fill {
+            fill: #FFFFFF !important;
+            transition: fill 0.15s ease !important;
+        }
+
+        /* Íconos dentro de los MENÚS DESPLEGABLES FLOTANTES (Fondo Blanco -> Trazos Azul Oscuro #1A2B4C) */
+        .ql-snow .ql-picker-options .ql-stroke {
+            stroke: #1A2B4C !important;
+            stroke-width: 2 !important;
+            transition: stroke 0.15s ease !important;
+        }
+        .ql-snow .ql-picker-options .ql-fill {
+            fill: #1A2B4C !important;
+            transition: fill 0.15s ease !important;
+        }
+
+        /* Hover de botones: Fondo translúcido blanco + Ícono Verde Neón (#33FF57) */
+        .ql-snow.ql-toolbar button:hover,
+        .ql-snow .ql-toolbar button:hover {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+        }
+        .ql-snow.ql-toolbar button:hover .ql-stroke,
+        .ql-snow .ql-toolbar button:hover .ql-stroke {
+            stroke: #33FF57 !important;
+        }
+        .ql-snow.ql-toolbar button:hover .ql-fill,
+        .ql-snow .ql-toolbar button:hover .ql-fill {
+            fill: #33FF57 !important;
+        }
+
+        /* Estado Activo (.ql-active): Estilo Pill Verde Neón institucional del Sidebar */
+        .ql-snow.ql-toolbar button.ql-active,
+        .ql-snow .ql-toolbar button.ql-active {
+            background-color: #33FF57 !important;
+            border-color: #33FF57 !important;
+            box-shadow: 0 2px 8px rgba(51, 255, 87, 0.35) !important;
+        }
+        .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+        .ql-snow .ql-toolbar button.ql-active .ql-stroke {
+            stroke: #1A2B4C !important;
+            stroke-width: 2.3 !important;
+        }
+        .ql-snow.ql-toolbar button.ql-active .ql-fill,
+        .ql-snow .ql-toolbar button.ql-active .ql-fill {
+            fill: #1A2B4C !important;
+        }
+
+        /* Botón personalizado de Fondo del Contenido */
         .ql-snow .ql-toolbar button.ql-fondo_contenido {
-            width: 28px !important;
-            height: 24px !important;
-            padding: 3px 5px !important;
-            border: none !important;
+            width: 32px !important;
+            height: 32px !important;
+            padding: 6px !important;
+            border: 1px solid transparent !important;
             background: transparent !important;
             cursor: pointer !important;
-            border-radius: 4px !important;
+            border-radius: 8px !important;
             transition: all 0.15s ease !important;
         }
         .ql-snow .ql-toolbar button.ql-fondo_contenido:hover {
-            background-color: #ecfdf5 !important;
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
         }
         .ql-snow .ql-toolbar button.ql-fondo_contenido:hover .ql-stroke {
-            stroke: #059669 !important;
+            stroke: #33FF57 !important;
         }
         .ql-snow .ql-toolbar button.ql-fondo_contenido:hover .ql-fill {
-            fill: #059669 !important;
+            fill: #33FF57 !important;
         }
 
-        .ql-container.ql-snow {
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            min-height: 440px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            color: #334155;
+        /* =========================================================
+           1. SELECTORES DE TEXTO (TIPOGRAFÍA Y ENCABEZADOS)
+           ========================================================= */
+        .ql-snow .ql-picker:not(.ql-icon-picker) {
+            height: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
             position: relative !important;
-            background-color: transparent !important;
         }
+
+        /* Botón / Selector cerrado de texto */
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label {
+            border: 1px solid rgba(255, 255, 255, 0.22) !important;
+            border-radius: 8px !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            padding: 0 26px 0 10px !important;
+            height: 32px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #FFFFFF !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label:hover,
+        .ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-label {
+            border-color: #33FF57 !important;
+            background-color: rgba(255, 255, 255, 0.18) !important;
+            color: #33FF57 !important;
+        }
+
+        /* Flecha indicadora SOLO para text pickers */
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label svg {
+            position: absolute !important;
+            right: 8px !important;
+            top: 50% !important;
+            margin-top: -6px !important;
+            width: 12px !important;
+            height: 12px !important;
+            stroke: #FFFFFF !important;
+            transition: stroke 0.15s ease !important;
+        }
+
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label:hover svg,
+        .ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-label svg {
+            stroke: #33FF57 !important;
+        }
+
+        /* Contenedor flotante de opciones de texto */
+        .ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-options {
+            background-color: #FFFFFF !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            padding: 6px !important;
+            margin-top: 6px !important;
+            z-index: 100 !important;
+            display: block !important;
+            top: 100% !important;
+            position: absolute !important;
+        }
+
+        /* Opciones dentro del menú desplegable de texto */
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item {
+            padding: 8px 12px !important;
+            margin: 2px 0 !important;
+            border-radius: 8px !important;
+            line-height: 1.35 !important;
+            height: auto !important;
+            min-height: 32px !important;
+            display: flex !important;
+            align-items: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item:hover,
+        .ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item.ql-selected {
+            background-color: rgba(26, 43, 76, 0.08) !important;
+            color: #2E6F40 !important;
+        }
+
+        /* =========================================================
+           2. SELECTOR DE ICONOS (ALINEACIÓN: QL-ALIGN)
+           ========================================================= */
+        .ql-snow .ql-picker.ql-icon-picker {
+            width: 32px !important;
+            height: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: relative !important;
+        }
+
+        /* Botón cerrado de alineación */
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-label {
+            width: 32px !important;
+            height: 32px !important;
+            padding: 6px !important;
+            border-radius: 8px !important;
+            border: 1px solid transparent !important;
+            background-color: transparent !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-label:hover,
+        .ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-label {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+        }
+
+        /* Icono SVG dentro del botón de alineación */
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-label svg {
+            position: static !important;
+            margin: 0 !important;
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+        }
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-label svg .ql-stroke {
+            stroke: #FFFFFF !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-label:hover svg .ql-stroke,
+        .ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-label svg .ql-stroke {
+            stroke: #33FF57 !important;
+        }
+
+        /* Desplegable flotante de alineación (Fondo Blanco) */
+        .ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-options {
+            background-color: #FFFFFF !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            padding: 5px !important;
+            margin-top: 6px !important;
+            min-width: 44px !important;
+            width: 44px !important;
+            z-index: 100 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 4px !important;
+            top: 100% !important;
+            position: absolute !important;
+        }
+
+        /* Opciones individuales de alineación dentro del menú */
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item {
+            width: 32px !important;
+            height: 32px !important;
+            min-height: 32px !important;
+            padding: 6px !important;
+            margin: 0 !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item svg {
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item svg .ql-stroke {
+            stroke: #1A2B4C !important;
+            stroke-width: 2 !important;
+            transition: stroke 0.15s ease !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item:hover,
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item.ql-selected {
+            background-color: rgba(26, 43, 76, 0.08) !important;
+        }
+
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item:hover svg .ql-stroke,
+        .ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item.ql-selected svg .ql-stroke {
+            stroke: #2E6F40 !important;
+        }
+
+        /* ---------------------------------------------------------
+           1. SELECTOR DE ENCABEZADOS (Normal, Heading 1, 2, 3)
+           --------------------------------------------------------- */
+        .ql-snow .ql-picker.ql-header {
+            width: 135px !important;
+        }
+
+        .ql-snow .ql-picker.ql-header .ql-picker-options {
+            min-width: 155px !important;
+        }
+
+        /* Etiquetas para Encabezados */
+        .ql-snow .ql-picker.ql-header .ql-picker-label::before {
+            content: 'Normal' !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            line-height: 1.35 !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-header .ql-picker-label:hover::before,
+        .ql-snow .ql-picker.ql-header.ql-expanded .ql-picker-label::before {
+            color: #33FF57 !important;
+        }
+
+        .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before {
+            content: 'Heading 1' !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before {
+            content: 'Heading 2' !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before {
+            content: 'Heading 3' !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Opciones dentro del dropdown flotante */
+        .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+            content: 'Normal' !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            line-height: 1.35 !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+            content: 'Heading 1' !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            line-height: 1.35 !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+            content: 'Heading 2' !important;
+            font-size: 14.5px !important;
+            font-weight: 700 !important;
+            line-height: 1.35 !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+            content: 'Heading 3' !important;
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            line-height: 1.35 !important;
+            color: #1A2B4C !important;
+        }
+
+        /* Hover de Encabezados dentro del menú */
+        .ql-snow .ql-picker.ql-header .ql-picker-item:hover::before,
+        .ql-snow .ql-picker.ql-header .ql-picker-item.ql-selected::before {
+            color: #2E6F40 !important;
+        }
+
+        /* ---------------------------------------------------------
+           2. SELECTOR DE TIPOGRAFÍA (Arial, Calibri, Times New Roman)
+           --------------------------------------------------------- */
+        .ql-snow .ql-picker.ql-font {
+            width: 145px !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-options {
+            min-width: 170px !important;
+        }
+
+        /* Etiqueta cerrada del selector de fuente */
+        .ql-snow .ql-picker.ql-font .ql-picker-label::before {
+            content: 'Tipografía' !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-label:hover::before,
+        .ql-snow .ql-picker.ql-font.ql-expanded .ql-picker-label::before {
+            color: #33FF57 !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Arial"]::before {
+            content: 'Arial' !important;
+            font-family: Arial, sans-serif !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Calibri"]::before {
+            content: 'Calibri' !important;
+            font-family: Calibri, 'Segoe UI', sans-serif !important;
+            color: #FFFFFF !important;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Times New Roman"]::before {
+            content: 'Times New Roman' !important;
+            font-family: 'Times New Roman', Times, serif !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Elementos dentro del desplegable de fuentes */
+        .ql-snow .ql-picker.ql-font .ql-picker-item::before {
+            content: 'Predeterminada' !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            font-family: inherit !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Arial"]::before {
+            content: 'Arial' !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 13.5px !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Calibri"]::before {
+            content: 'Calibri' !important;
+            font-family: Calibri, 'Segoe UI', sans-serif !important;
+            font-size: 13.5px !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Times New Roman"]::before {
+            content: 'Times New Roman' !important;
+            font-family: 'Times New Roman', Times, serif !important;
+            font-size: 14px !important;
+            color: #1A2B4C !important;
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-item:hover::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item.ql-selected::before {
+            color: #2E6F40 !important;
+            font-weight: 700 !important;
+        }
+
+        /* =========================================================
+           ÁREA DE TEXTO / CONTENEDOR PRINCIPAL DEL EDITOR
+           ========================================================= */
+        .ql-container.ql-snow {
+            border: 1px solid #e2e8f0 !important;
+            border-top: none !important;
+            border-bottom-left-radius: 1rem !important;
+            border-bottom-right-radius: 1rem !important;
+            min-height: 480px !important;
+            font-size: 1rem !important;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+            color: #1e293b !important;
+            position: relative !important;
+            background-color: #ffffff !important;
+        }
+
         .ql-editor {
-            padding: 1.5rem;
+            padding: 1.75rem 2rem !important;
+            min-height: 480px !important;
+            line-height: 1.7 !important;
             position: relative !important;
             z-index: 1 !important;
             background-color: transparent !important;
+        }
+
+        .ql-editor.ql-blank::before {
+            left: 2rem !important;
+            color: #94a3b8 !important;
+            font-style: normal !important;
+        }
+
+        /* Estilos de encabezados dentro del editor */
+        .ql-editor h1 {
+            font-size: 1.875rem !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            margin-top: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+            line-height: 1.25 !important;
+        }
+        .ql-editor h2 {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin-top: 1.25rem !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.3 !important;
+        }
+        .ql-editor h3 {
+            font-size: 1.25rem !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.35 !important;
+        }
+        .ql-editor p {
+            margin-bottom: 0.85rem !important;
         }
     </style>
 
@@ -90,17 +581,17 @@
             <div class="flex items-start sm:items-center gap-3.5">
                 <a href="{{ route($backRouteName) }}" 
                    title="Volver a Contenidos" 
-                   class="w-10 h-10 rounded-2xl bg-white border border-slate-200 text-slate-500 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center shadow-xs cursor-pointer flex-shrink-0 mt-1 sm:mt-0">
+                   class="w-10 h-10 rounded-2xl bg-white border border-slate-200 text-slate-500 hover:text-[#2E6F40] hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center shadow-xs cursor-pointer flex-shrink-0 mt-1 sm:mt-0">
                     <i class="fas fa-arrow-left text-sm"></i>
                 </a>
                 <div>
-                    <div class="flex items-center gap-2 text-xs font-bold text-sena-green uppercase tracking-wider mb-1">
+                    <div class="flex items-center gap-2 text-xs font-bold text-[#2E6F40] uppercase tracking-wider mb-1">
                         <i class="fas fa-file-alt"></i>
                         <span>{{ $isEditor ? 'Panel Editorial SISIG' : 'Administración SIG' }}</span>
                     </div>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-2">
+                    <h1 class="text-2xl sm:text-3xl font-black text-[#343A40] tracking-tight flex flex-wrap items-center gap-2">
                         <span>Edición de Contenido:</span>
-                        <span class="text-sena-green">{{ $moduloSeleccionado->titulo }}</span>
+                        <span class="text-[#2E6F40]">{{ $moduloSeleccionado->titulo }}</span>
                     </h1>
                     <p class="text-xs text-slate-500 mt-1 font-medium">
                         Redacta y formatea el material didáctico, guías y contenido interactivo de esta sección usando el editor enriquecido.
@@ -111,7 +602,7 @@
 
         <!-- 2. Alerta de Permisos -->
         <div class="bg-emerald-50 border border-emerald-200 px-5 py-3.5 rounded-2xl text-xs sm:text-sm flex items-center gap-3 shadow-sm text-emerald-800">
-            <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+            <div class="w-6 h-6 rounded-full bg-[#2E6F40] flex items-center justify-center text-white flex-shrink-0">
                 <i class="fas fa-info text-xs"></i>
             </div>
             <p>
@@ -128,11 +619,11 @@
         <div class="flex flex-wrap gap-2.5 pb-2">
             @foreach($modulos as $mod)
                 <a href="{{ route($tabRouteName, $mod->id) }}" 
-                   class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all 
-                   {{ $moduloSeleccionado->id == $mod->id ? 'bg-emerald-50 text-sena-green border-emerald-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+                   class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition-all 
+                   {{ $moduloSeleccionado->id == $mod->id ? 'bg-[#1A2B4C] text-white border-[#1A2B4C] shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
                    
                    @if($mod->estado == 'publicado')
-                        <i class="fas fa-check-circle {{ $moduloSeleccionado->id == $mod->id ? 'text-sena-green' : 'text-emerald-500' }}"></i>
+                        <i class="fas fa-check-circle {{ $moduloSeleccionado->id == $mod->id ? 'text-[#33FF57]' : 'text-emerald-500' }}"></i>
                    @elseif($mod->estado == 'inactivo')
                         <i class="fas fa-lock text-slate-400"></i>
                    @else
@@ -153,20 +644,20 @@
                 
                 <div class="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
                     <div class="flex items-center gap-3">
-                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-edit text-sena-green"></i>
-                            <span>Redacción de Contenido: <strong class="text-slate-900">{{ $moduloSeleccionado->titulo }}</strong></span>
+                        <h2 class="text-base font-bold text-[#343A40] flex items-center gap-2">
+                            <i class="fas fa-edit text-[#2E6F40]"></i>
+                            <span>Redacción de Contenido: <strong class="text-[#1A2B4C]">{{ $moduloSeleccionado->titulo }}</strong></span>
                         </h2>
                     </div>
                     
                     <div class="flex items-center gap-2.5">
                         <!-- Botón de Fondo adicional en la cabecera para máxima comodidad -->
-                        <button type="button" onclick="abrirModalConfigFondo()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/50 shadow-xs transition-all cursor-pointer">
+                        <button type="button" onclick="abrirModalConfigFondo()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/50 shadow-xs transition-all cursor-pointer">
                             <i class="fas fa-image text-emerald-600"></i>
                             <span>Fondo del Contenido</span>
                         </button>
 
-                        <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
                             <i class="fas fa-save text-xs"></i> <span>Guardar Cambios</span>
                         </button>
                     </div>
@@ -352,7 +843,17 @@
     <script src="{{ asset('modules/sisig/vendor/quill/quill.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Registrar icono nativo de Quill para el botón de Fondo antes de inicializar
+            // 1. Configurar Attributor de Estilo en línea para Tipografía (font-family)
+            // Esto asegura que al aplicar una fuente se genere style="font-family: ..." directamente en el HTML guardado en la base de datos
+            var FontStyle = Quill.import('attributors/style/font');
+            FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
+            Quill.register(FontStyle, true);
+
+            // 2. Configurar Attributor de Estilo en línea para Alineación de texto (text-align)
+            var AlignStyle = Quill.import('attributors/style/align');
+            Quill.register(AlignStyle, true);
+
+            // 3. Registrar icono nativo de Quill para el botón de Fondo antes de inicializar
             var icons = Quill.import('ui/icons');
             icons['fondo_contenido'] = `
                 <svg viewBox="0 0 18 18">
@@ -364,6 +865,7 @@
             `;
 
             var toolbarOptions = [
+                [{ 'font': [false, 'Arial', 'Calibri', 'Times New Roman'] }],
                 [{ 'header': [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],

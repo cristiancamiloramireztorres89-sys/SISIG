@@ -91,63 +91,83 @@
             </div>
         @endif
 
-        <!-- 2. Tarjetas de Métricas Detalladas -->
+        <!-- 2. Tarjetas de Métricas Detalladas (Estilo Unificado SISIG) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             
             <!-- Intento -->
-            <div class="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl flex-shrink-0">
-                    <i class="fas fa-redo-alt"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Intento Realizado</span>
+                    <div class="w-8 h-8 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-redo-alt"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Intento Realizado</span>
-                    <span class="text-lg font-black text-slate-800">
-                        #{{ $resultado->intento }} de {{ $quiz->numero_intentos ?? 3 }}
-                    </span>
+                <div class="mt-3">
+                    <h3 class="text-2xl font-extrabold text-[#343A40] tracking-tight">
+                        #{{ $resultado->intento }}
+                    </h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        De {{ $quiz->numero_intentos ?? 3 }} permitidos
+                    </div>
                 </div>
             </div>
 
             <!-- Tiempo Empleado -->
-            <div class="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl flex-shrink-0">
-                    <i class="fas fa-stopwatch"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Tiempo Empleado</span>
+                    <div class="w-8 h-8 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tiempo Empleado</span>
-                    <span class="text-lg font-black text-slate-800">
-                        @php
-                            $segundos = $resultado->tiempo_segundos_empleado ?? 0;
-                            $min = floor($segundos / 60);
-                            $sec = $segundos % 60;
-                        @endphp
+                <div class="mt-3">
+                    @php
+                        $segundos = $resultado->tiempo_segundos_empleado ?? 0;
+                        $min = floor($segundos / 60);
+                        $sec = $segundos % 60;
+                    @endphp
+                    <h3 class="text-2xl font-extrabold text-[#343A40] tracking-tight">
                         {{ $min }}m {{ $sec }}s
-                    </span>
+                    </h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        Duración de la prueba
+                    </div>
                 </div>
             </div>
 
             <!-- Infracciones de Seguridad -->
-            <div class="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl {{ $infracciones->count() > 0 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} flex items-center justify-center text-xl flex-shrink-0">
-                    <i class="fas fa-shield-alt"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Incidentes Detectados</span>
+                    <div class="w-8 h-8 rounded-full {{ $infracciones->count() > 0 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Incidentes Detectados</span>
-                    <span class="text-lg font-black {{ $infracciones->count() > 0 ? 'text-rose-600' : 'text-emerald-600' }}">
+                <div class="mt-3">
+                    <h3 class="text-2xl font-extrabold {{ $infracciones->count() > 0 ? 'text-rose-600' : 'text-[#2E6F40]' }} tracking-tight">
                         {{ $infracciones->count() }} {{ $infracciones->count() === 1 ? 'falta' : 'faltas' }}
-                    </span>
+                    </h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        Alertas anti-trampa
+                    </div>
                 </div>
             </div>
 
             <!-- Fecha y Hora -->
-            <div class="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0">
-                    <i class="far fa-calendar-alt"></i>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-500">Fecha Presentación</span>
+                    <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Fecha Presentación</span>
-                    <span class="text-sm font-black text-slate-800 truncate block">
+                <div class="mt-3">
+                    <h3 class="text-lg font-extrabold text-[#343A40] tracking-tight truncate">
                         {{ $resultado->fecha_presentacion ? $resultado->fecha_presentacion->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}
-                    </span>
+                    </h3>
+                    <div class="mt-1 text-xs text-slate-400 font-medium">
+                        Registro temporal
+                    </div>
                 </div>
             </div>
 
