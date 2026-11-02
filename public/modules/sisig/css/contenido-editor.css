@@ -1,0 +1,722 @@
+/* ==========================================================================
+   SISIG - EDITOR DE CONTENIDOS (Estilos de Quill.js, Cropper y Resizer)
+   Separación limpia de estilos para administración de contenidos
+   ========================================================================== */
+
+/* 1. Personalización de Cropper.js */
+.cropper-view-box {
+    outline: 2px solid #ffffff !important;
+    outline-color: #ffffff !important;
+}
+.cropper-line {
+    background-color: transparent !important;
+}
+.cropper-point {
+    background-color: #ffffff !important;
+}
+.cropper-point.point-se,
+.cropper-point.point-sw,
+.cropper-point.point-nw,
+.cropper-point.point-ne {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: #10b981 !important;
+    border-radius: 2px;
+}
+.cropper-dashed {
+    border-color: rgba(255, 255, 255, 0.45) !important;
+}
+.cropper-modal {
+    background-color: rgba(0, 0, 0, 0.88) !important;
+}
+
+/* ==========================================================================
+   2. BARRA DE HERRAMIENTAS QUILL (Fondo Azul Institucional Sidebar)
+   ========================================================================== */
+.ql-toolbar.ql-snow {
+    border: 1px solid #1A2B4C !important;
+    border-bottom: none !important;
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+    background-color: #1A2B4C !important;
+    background: linear-gradient(135deg, #1A2B4C 0%, #20335A 100%) !important;
+    padding: 0.75rem 1rem !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 4px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+.ql-snow .ql-formats {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+    margin-right: 8px !important;
+    padding-right: 8px !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+    position: relative !important;
+}
+.ql-snow .ql-formats:last-child {
+    border-right: none !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Botones de acción estándar (B, I, U, S, listas, etc.) */
+.ql-snow.ql-toolbar button,
+.ql-snow .ql-toolbar button {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 6px !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.ql-snow.ql-toolbar button svg,
+.ql-snow .ql-toolbar button svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* Íconos en blanco puro (#FFFFFF) sobre la barra oscura del sidebar */
+.ql-toolbar.ql-snow button .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-label .ql-stroke {
+    stroke: #FFFFFF !important;
+    stroke-width: 2 !important;
+    transition: stroke 0.15s ease, stroke-width 0.15s ease !important;
+}
+.ql-toolbar.ql-snow button .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-label .ql-fill {
+    fill: #FFFFFF !important;
+    transition: fill 0.15s ease !important;
+}
+
+/* Íconos dentro de los MENÚS DESPLEGABLES FLOTANTES */
+.ql-snow .ql-picker-options .ql-stroke {
+    stroke: #1A2B4C !important;
+    stroke-width: 2 !important;
+    transition: stroke 0.15s ease !important;
+}
+.ql-snow .ql-picker-options .ql-fill {
+    fill: #1A2B4C !important;
+    transition: fill 0.15s ease !important;
+}
+
+/* Hover de botones: Fondo translúcido blanco + Ícono Verde Neón (#33FF57) */
+.ql-snow.ql-toolbar button:hover,
+.ql-snow .ql-toolbar button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow .ql-toolbar button:hover .ql-stroke {
+    stroke: #33FF57 !important;
+}
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow .ql-toolbar button:hover .ql-fill {
+    fill: #33FF57 !important;
+}
+
+/* Estado Activo (.ql-active): Estilo Pill Verde Neón institucional */
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow .ql-toolbar button.ql-active {
+    background-color: #33FF57 !important;
+    border-color: #33FF57 !important;
+    box-shadow: 0 2px 8px rgba(51, 255, 87, 0.35) !important;
+}
+.ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke {
+    stroke: #1A2B4C !important;
+    stroke-width: 2.3 !important;
+}
+.ql-snow.ql-toolbar button.ql-active .ql-fill,
+.ql-snow .ql-toolbar button.ql-active .ql-fill {
+    fill: #1A2B4C !important;
+}
+
+/* Botón personalizado de Fondo del Contenido */
+.ql-snow .ql-toolbar button.ql-fondo_contenido {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 6px !important;
+    border: 1px solid transparent !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    border-radius: 8px !important;
+    transition: all 0.15s ease !important;
+}
+.ql-snow .ql-toolbar button.ql-fondo_contenido:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.ql-snow .ql-toolbar button.ql-fondo_contenido:hover .ql-stroke {
+    stroke: #33FF57 !important;
+}
+.ql-snow .ql-toolbar button.ql-fondo_contenido:hover .ql-fill {
+    fill: #33FF57 !important;
+}
+
+/* ==========================================================================
+   3. SELECTORES DE TEXTO (TIPOGRAFÍA Y ENCABEZADOS)
+   ========================================================================== */
+.ql-snow .ql-picker:not(.ql-icon-picker) {
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    position: relative !important;
+}
+
+/* Botón / Selector cerrado de texto */
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label {
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 8px !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    padding: 0 26px 0 10px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label:hover,
+.ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-label {
+    border-color: #33FF57 !important;
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    color: #33FF57 !important;
+}
+
+/* Flecha indicadora SOLO para text pickers */
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label svg {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    margin-top: -6px !important;
+    width: 12px !important;
+    height: 12px !important;
+    stroke: #FFFFFF !important;
+    transition: stroke 0.15s ease !important;
+}
+
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-label:hover svg,
+.ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-label svg {
+    stroke: #33FF57 !important;
+}
+
+/* Contenedor flotante de opciones de texto */
+.ql-snow .ql-picker:not(.ql-icon-picker).ql-expanded .ql-picker-options {
+    background-color: #FFFFFF !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    padding: 6px !important;
+    margin-top: 6px !important;
+    z-index: 100 !important;
+    display: block !important;
+    top: 100% !important;
+    position: absolute !important;
+}
+
+/* Opciones dentro del menú desplegable de texto */
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item {
+    padding: 8px 12px !important;
+    margin: 2px 0 !important;
+    border-radius: 8px !important;
+    line-height: 1.35 !important;
+    height: auto !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    color: #1A2B4C !important;
+}
+
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item:hover,
+.ql-snow .ql-picker:not(.ql-icon-picker) .ql-picker-options .ql-picker-item.ql-selected {
+    background-color: rgba(26, 43, 76, 0.08) !important;
+    color: #2E6F40 !important;
+}
+
+/* ==========================================================================
+   4. SELECTOR DE ICONOS (ALINEACIÓN: QL-ALIGN)
+   ========================================================================== */
+.ql-snow .ql-picker.ql-icon-picker {
+    width: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
+/* Botón cerrado de alineación */
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-label {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 6px !important;
+    border-radius: 8px !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-label:hover,
+.ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-label {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-label svg {
+    position: static !important;
+    margin: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+    display: block !important;
+}
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-label svg .ql-stroke {
+    stroke: #FFFFFF !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-label:hover svg .ql-stroke,
+.ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-label svg .ql-stroke {
+    stroke: #33FF57 !important;
+}
+
+/* Desplegable flotante de alineación */
+.ql-snow .ql-picker.ql-icon-picker.ql-expanded .ql-picker-options {
+    background-color: #FFFFFF !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    padding: 5px !important;
+    margin-top: 6px !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    top: 100% !important;
+    position: absolute !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item {
+    width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 6px !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item svg {
+    width: 18px !important;
+    height: 18px !important;
+    display: block !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item svg .ql-stroke {
+    stroke: #1A2B4C !important;
+    stroke-width: 2 !important;
+    transition: stroke 0.15s ease !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item:hover,
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item.ql-selected {
+    background-color: rgba(26, 43, 76, 0.08) !important;
+}
+
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item:hover svg .ql-stroke,
+.ql-snow .ql-picker.ql-icon-picker .ql-picker-options .ql-picker-item.ql-selected svg .ql-stroke {
+    stroke: #2E6F40 !important;
+}
+
+/* Encabezados (Normal, Heading 1, 2, 3) */
+.ql-snow .ql-picker.ql-header {
+    width: 135px !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-options {
+    min-width: 155px !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label::before {
+    content: 'Normal' !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label:hover::before,
+.ql-snow .ql-picker.ql-header.ql-expanded .ql-picker-label::before {
+    color: #33FF57 !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before {
+    content: 'Heading 1' !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before {
+    content: 'Heading 2' !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before {
+    content: 'Heading 3' !important;
+    color: #FFFFFF !important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+    content: 'Normal' !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+    content: 'Heading 1' !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+    content: 'Heading 2' !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+    content: 'Heading 3' !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-item:hover::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item.ql-selected::before {
+    color: #2E6F40 !important;
+}
+
+/* Tipografía (Arial, Calibri, Times New Roman) */
+.ql-snow .ql-picker.ql-font {
+    width: 145px !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-options {
+    min-width: 170px !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label::before {
+    content: 'Tipografía' !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label:hover::before,
+.ql-snow .ql-picker.ql-font.ql-expanded .ql-picker-label::before {
+    color: #33FF57 !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Arial"]::before {
+    content: 'Arial' !important;
+    font-family: Arial, sans-serif !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Calibri"]::before {
+    content: 'Calibri' !important;
+    font-family: Calibri, 'Segoe UI', sans-serif !important;
+    color: #FFFFFF !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Times New Roman"]::before {
+    content: 'Times New Roman' !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    color: #FFFFFF !important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+    content: 'Predeterminada' !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    font-family: inherit !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Arial"]::before {
+    content: 'Arial' !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 13.5px !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Calibri"]::before {
+    content: 'Calibri' !important;
+    font-family: Calibri, 'Segoe UI', sans-serif !important;
+    font-size: 13.5px !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Times New Roman"]::before {
+    content: 'Times New Roman' !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size: 14px !important;
+    color: #1A2B4C !important;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-item:hover::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item.ql-selected::before {
+    color: #2E6F40 !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   5. ÁREA DE TEXTO / CONTENEDOR PRINCIPAL DEL EDITOR
+   ========================================================================== */
+.ql-container.ql-snow {
+    border: 1px solid #e2e8f0 !important;
+    border-top: none !important;
+    border-bottom-left-radius: 1rem !important;
+    border-bottom-right-radius: 1rem !important;
+    min-height: 480px !important;
+    font-size: 1rem !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    color: #1e293b !important;
+    position: relative !important;
+    background-color: #ffffff !important;
+}
+
+.ql-editor {
+    padding: 1.75rem 2rem !important;
+    min-height: 480px !important;
+    line-height: 1.7 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    background-color: transparent !important;
+}
+
+.ql-editor.ql-blank::before {
+    left: 2rem !important;
+    color: #94a3b8 !important;
+    font-style: normal !important;
+}
+
+.ql-editor h1 {
+    font-size: 1.875rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    line-height: 1.25 !important;
+}
+.ql-editor h2 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.3 !important;
+}
+.ql-editor h3 {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    margin-top: 1rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.35 !important;
+}
+.ql-editor p {
+    margin-bottom: 0.85rem !important;
+}
+
+/* ==========================================================================
+   6. IMAGE RESIZER & MOVER INTERACTIVO (Mover libremente y redimensionar)
+   ========================================================================== */
+.ql-editor img {
+    cursor: grab;
+    transition: outline 0.15s ease, opacity 0.15s ease;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    user-select: none;
+    -webkit-user-drag: element;
+    display: inline-block;
+}
+.ql-editor img:hover {
+    outline: 2px dashed #10b981;
+    outline-offset: 3px;
+}
+.ql-editor img:active {
+    cursor: grabbing;
+}
+.ql-editor img.sisig-img-dragging {
+    opacity: 0.35 !important;
+    outline: 2px dashed #10b981 !important;
+}
+
+/* Overlay flotante del redimensionador y mover */
+#sisig-img-resizer-overlay {
+    position: absolute;
+    display: none;
+    border: 2px solid #10b981;
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 100;
+    box-sizing: border-box;
+    border-radius: 6px;
+}
+
+/* Manijas interactivas de redimensionamiento */
+.sisig-resize-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #ffffff;
+    border: 2px solid #10b981;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    z-index: 102;
+    transition: transform 0.1s ease, background-color 0.1s ease;
+}
+.sisig-resize-handle:hover {
+    background-color: #10b981;
+    transform: scale(1.25);
+}
+.sisig-handle-nw { top: -6px; left: -6px; cursor: nwse-resize; }
+.sisig-handle-ne { top: -6px; right: -6px; cursor: nesw-resize; }
+.sisig-handle-sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+.sisig-handle-se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+.sisig-handle-n  { top: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.sisig-handle-s  { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.sisig-handle-w  { left: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+.sisig-handle-e  { right: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+
+/* Manija central para arrastrar libremente la imagen */
+.sisig-move-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(26, 43, 76, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: grab;
+    pointer-events: auto;
+    z-index: 103;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.sisig-move-crosshair:hover {
+    background: #10b981;
+    color: #ffffff;
+    transform: translate(-50%, -50%) scale(1.05);
+}
+.sisig-move-crosshair:active {
+    cursor: grabbing;
+}
+
+/* Línea indicadora visual de soltado (Drop Indicator) */
+#sisig-drop-indicator {
+    position: absolute;
+    display: none;
+    background: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.9);
+    z-index: 99;
+    pointer-events: none;
+    border-radius: 3px;
+    transition: all 0.05s ease;
+}
+
+/* Barra de herramientas flotante de la imagen */
+#sisig-img-toolbar {
+    position: absolute;
+    top: -46px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #1A2B4C;
+    padding: 4px 8px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.4);
+    pointer-events: auto;
+    z-index: 105;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+#sisig-img-toolbar button {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+#sisig-img-toolbar button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #33FF57;
+    transform: translateY(-1px);
+}
+#sisig-img-toolbar .toolbar-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 3px;
+}
+#sisig-img-toolbar .sisig-drag-btn {
+    background: rgba(16, 185, 129, 0.25);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: #34d399;
+    width: auto;
+    height: 26px;
+    padding: 0 8px;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: grab;
+}
+#sisig-img-toolbar .sisig-drag-btn:hover {
+    background: #10b981;
+    color: #ffffff;
+}
+#sisig-img-toolbar .sisig-drag-btn:active {
+    cursor: grabbing;
+}
+#sisig-img-size-badge {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 4px;
+    font-family: monospace;
+    user-select: none;
+}

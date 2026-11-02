@@ -295,123 +295,64 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <!-- Area 1: Seguridad y Salud en el Trabajo (SST) -->
-                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
-                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
-                        <div class="flex items-center justify-between gap-2 mb-3">
-                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
-                                ISO 45001
-                            </span>
-                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
-                                <i class="fas fa-hard-hat"></i>
-                            </span>
-                        </div>
-                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
-                            Seguridad y Salud (SST)
-                        </h3>
-                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
-                            Prevención de riesgos
-                        </p>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                            Identificación de peligros, valoración de riesgos laborales, prevención de accidentes y uso correcto de Elementos de Protección Personal (EPP).
-                        </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-semibold">Norma</span>
-                            <span class="font-bold text-[#2E6F40]">Autocuidado</span>
-                        </div>
-                    </div>
-                </div>
+                @forelse($modulos as $mod)
+                    <!-- Tarjeta Dinámica de Módulo SIG con Portada Banner -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+                        
+                        <!-- 1. Cabecera Visual con Degradado y Contenedor de Logo/Imagen -->
+                        <div class="h-36 w-full bg-gradient-to-br from-[#1A2B4C] to-[#243B66] flex items-center justify-center relative overflow-hidden flex-shrink-0">
+                            <!-- Badge flotante de Norma / Eje Temático -->
+                            <div class="absolute top-3 left-3 z-10">
+                                <span class="bg-[#1A2B4C]/85 backdrop-blur-md text-white border border-white/20 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
+                                    {{ !empty($mod->norma) ? $mod->norma : 'Eje Temático' }}
+                                </span>
+                            </div>
 
-                <!-- Area 2: Gestión de la Calidad -->
-                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
-                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
-                        <div class="flex items-center justify-between gap-2 mb-3">
-                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
-                                ISO 9001
-                            </span>
-                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
-                                <i class="fas fa-award"></i>
-                            </span>
-                        </div>
-                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
-                            Gestión de la Calidad
-                        </h3>
-                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
-                            Estándares y procesos
-                        </p>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                            Estandarización de procesos, Buenas Prácticas (BPM/BPA), aseguramiento del servicio, control de calidad y enfoque en mejora continua.
-                        </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-semibold">Norma</span>
-                            <span class="font-bold text-[#00BCD4]">Mejora Continua</span>
-                        </div>
-                    </div>
-                </div>
+                            <!-- Contenedor central: Imagen del módulo o ícono por defecto -->
+                            <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white overflow-hidden shadow-md group-hover:scale-110 transition-transform duration-300">
+                                @if(!empty($mod->imagen))
+                                    <img src="{{ asset($mod->imagen) }}" 
+                                         alt="{{ $mod->titulo }}" 
+                                         class="w-full h-full object-cover">
+                                @else
+                                    <i class="{{ !empty($mod->icon_class) ? $mod->icon_class : 'fas fa-layer-group' }} text-2xl"></i>
+                                @endif
+                            </div>
 
-                <!-- Area 3: Gestión Ambiental -->
-                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
-                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
-                        <div class="flex items-center justify-between gap-2 mb-3">
-                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
-                                ISO 14001
-                            </span>
-                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
-                                <i class="fas fa-leaf"></i>
-                            </span>
+                            <div class="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-500/10 pointer-events-none"></div>
                         </div>
-                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
-                            Gestión Ambiental
-                        </h3>
-                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
-                            Sostenibilidad ecológica
-                        </p>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                            Separación de residuos en la fuente por código de colores, manejo de sustancias especiales, uso eficiente de agua y energía, y conservación del entorno.
-                        </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-semibold">Norma</span>
-                            <span class="font-bold text-[#2E6F40]">Reciclaje</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Area 4: Prevención y Respuesta a Emergencias -->
-                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
-                    <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative">
-                        <div class="flex items-center justify-between gap-2 mb-3">
-                            <span class="bg-white/10 text-white/90 border border-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
-                                Contingencias
-                            </span>
-                            <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </div>
-                        <h3 class="font-extrabold text-white text-base tracking-tight leading-snug line-clamp-1" style="color: #ffffff !important;">
-                            Emergencias y Contingencias
-                        </h3>
-                        <p class="text-xs text-slate-200 mt-1 font-medium" style="color: #e2e8f0 !important;">
-                            Atención y evacuación
-                        </p>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                            Rutas de evacuación, puntos de encuentro institucionales, plan de contingencias, reporte de incidentes y protocolos de atención inmediata.
-                        </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-semibold">Protocolo</span>
-                            <span class="font-bold text-rose-600">Seguridad</span>
-                        </div>
-                    </div>
-                </div>
+                        <!-- 2. Información del Módulo -->
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="font-black text-slate-800 text-base tracking-tight leading-snug line-clamp-1 group-hover:text-[#2E6F40] transition-colors">
+                                    {{ $mod->titulo }}
+                                </h3>
+                                <p class="text-[11px] text-[#2E6F40] font-bold uppercase tracking-wider mt-0.5">
+                                    {{ !empty($mod->norma) ? 'Norma y lineamientos SIG' : 'Módulo Formativo' }}
+                                </p>
+                                <p class="text-xs text-slate-600 leading-relaxed font-normal mt-2.5 line-clamp-3">
+                                    {{ !empty($mod->descripcion) ? $mod->descripcion : 'Contenido formativo e instructivo del Sistema Integrado de Gestión para los aprendices en etapa productiva.' }}
+                                </p>
+                            </div>
 
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <span class="text-slate-400 font-semibold">Estado</span>
+                                <span class="inline-flex items-center gap-1.5 font-bold {{ $mod->estado === 'publicado' ? 'text-[#2E6F40]' : 'text-amber-600' }} capitalize">
+                                    <span class="w-2 h-2 rounded-full {{ $mod->estado === 'publicado' ? 'bg-[#33FF57]' : 'bg-amber-500' }}"></span>
+                                    <span>{{ $mod->estado ?? 'Activo' }}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <!-- Estado vacío si aún no hay módulos -->
+                    <div class="col-span-full bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-8 text-center text-slate-500">
+                        <i class="fas fa-layer-group text-3xl text-slate-400 mb-2"></i>
+                        <p class="text-sm font-semibold">Aún no hay módulos temáticos publicados en el sistema.</p>
+                        <p class="text-xs text-slate-400 mt-1">Los módulos creados y publicados por los administradores aparecerán aquí automáticamente.</p>
+                    </div>
+                @endforelse
             </div>
         </section>
 

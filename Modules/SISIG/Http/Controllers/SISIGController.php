@@ -12,7 +12,9 @@ class SISIGController extends Controller
      */
     public function index()
     {
-        return view('sisig::index');
+        $modulos = \Modules\SISIG\Entities\Modulo::where('estado', '!=', 'inactivo')->orderBy('id', 'asc')->get();
+
+        return view('sisig::index', compact('modulos'));
     }
 
     /**
