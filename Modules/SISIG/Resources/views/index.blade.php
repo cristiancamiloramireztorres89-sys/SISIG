@@ -361,7 +361,7 @@
             <div class="max-w-3xl">
                 <span class="text-xs font-bold text-sena-green uppercase tracking-wider">Innovación y Seguridad</span>
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">¿Por qué usar el sistema SISIG?</h2>
-                <p class="text-sm text-slate-500 mt-2">Tecnología diseñada para evaluar y certificar las competencias previas de los aprendices antes de iniciar en SENA Empresa.</p>
+                <p class="text-sm text-slate-500 mt-2">Tecnología diseñada para evaluar y validar los conocimientos previos de los aprendices antes de iniciar en SENA Empresa.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -485,7 +485,7 @@
                     <div class="w-10 h-10 rounded-xl bg-sena-green/20 text-sena-green flex items-center justify-center font-black text-lg border border-sena-green/30">
                         4
                     </div>
-                    <h4 class="font-bold text-white text-base">Certificación & Habilitación</h4>
+                    <h4 class="font-bold text-white text-base">Aprobación & Habilitación</h4>
                     <p class="text-xs text-slate-300 leading-relaxed">
                         Demuestra los saberes requeridos para ingresar y desempeñarse con éxito en SENA Empresa.
                     </p>
@@ -512,7 +512,7 @@
                         ¿Quiénes deben presentar la inducción y evaluación de SISIG?
                     </h4>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Todos los aprendices de tecnólogo que se encuentran en sus últimos trimestres y van a entrar a la etapa de SENA Empresa, con el fin de evaluar y certificar sus conocimientos en SST, Calidad y Gestión Ambiental.
+                        Todos los aprendices de tecnólogo que se encuentran en sus últimos trimestres y van a entrar a la etapa de SENA Empresa, con el fin de evaluar y validar sus conocimientos en SST, Calidad y Gestión Ambiental.
                     </p>
                 </div>
 
@@ -562,7 +562,7 @@
                 </div>
                 <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">¿Listo para evaluar tus conocimientos?</h3>
                 <p class="text-slate-300 text-sm max-w-xl leading-relaxed">
-                    Ingresa con tu cuenta institucional para explorar los módulos interactivos y certificar tus saberes en SST, Calidad y Gestión Ambiental.
+                    Ingresa con tu cuenta institucional para explorar los módulos interactivos y validar tus conocimientos en SST, Calidad y Gestión Ambiental.
                 </p>
             </div>
             

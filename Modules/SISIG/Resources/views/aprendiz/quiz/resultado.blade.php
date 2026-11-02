@@ -77,7 +77,7 @@
                                 {{ $quiz->titulo }}
                             </h1>
                             <p class="text-xs sm:text-sm text-slate-300 mt-1">
-                                Obtuviste un puntaje menor al {{ number_format($quiz->puntaje_minimo, 0) }}% requerido para certificar este módulo.
+                                Obtuviste un puntaje menor al {{ number_format($quiz->puntaje_minimo, 0) }}% requerido para aprobar este módulo.
                             </p>
                         </div>
                     </div>
