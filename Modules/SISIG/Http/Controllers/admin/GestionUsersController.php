@@ -19,19 +19,9 @@ class GestionUsersController extends Controller
      */
     public function index(Request $request)
     {
-        // Por defecto: Solo usuarios activos (excluye registros eliminados / desactivados con SoftDeletes)
+        // Cargamos los usuarios con withTrashed() para permitir un filtrado en vivo por estado (Activos / Inactivos / Todos) instantáneo sin recargar la página
         $status = $request->input('status', 'activos');
-
-        if ($status === 'inactivos' || $status === 'inactivo') {
-            $query = User::onlyTrashed()->with(['person', 'roles']);
-            $status = 'inactivos';
-        } elseif ($status === 'todos') {
-            $query = User::withTrashed()->with(['person', 'roles']);
-            $status = 'todos';
-        } else {
-            $query = User::with(['person', 'roles']);
-            $status = 'activos';
-        }
+        $query = User::withTrashed()->with(['person', 'roles']);
 
         // Filtro de búsqueda
         if ($request->filled('search')) {
@@ -187,41 +177,6 @@ class GestionUsersController extends Controller
 
         DB::beginTransaction();
         try {
-            $person = $user->person;
-            $personData = [
-                'document_type'    => $request->document_type,
-                'document_number'  => trim($request->document_number),
-                'first_name'       => mb_strtoupper(trim($request->first_name)),
-                'first_last_name'  => mb_strtoupper(trim($request->first_last_name)),
-                'second_last_name' => $request->filled('second_last_name') ? mb_strtoupper(trim($request->second_last_name)) : null,
-                'personal_email'   => trim($request->email),
-                'sena_email'       => trim($request->email),
-            ];
-
-            $personChanged = false;
-            if ($person) {
-                $person->fill($personData);
-                $personChanged = $person->isDirty();
-                $person->save();
-            } else {
-                $person = Person::updateOrCreate(['document_number' => $personData['document_number']], $personData);
-                $personChanged = true;
-            }
-
-            if (!$user->person_id) {
-                $user->person_id = $person->id;
-            }
-
-            $user->fill([
-                'name'  => trim($request->first_name . ' ' . $request->first_last_name . ' ' . ($request->second_last_name ?? '')),
-                'email' => trim($request->email),
-            ]);
-            if ($request->filled('nickname')) $user->nickname = trim($request->nickname);
-            if ($request->filled('password')) $user->password = Hash::make($request->password);
-
-            $userChanged = $user->isDirty();
-            $user->save();
-
             // Verificar cambio de rol
             $currentRole = $this->resolveSisigRole($user);
             $roleChanged = ($currentRole['slug'] ?? 'ninguno') !== ($request->role_slug ?? 'ninguno');
@@ -237,7 +192,7 @@ class GestionUsersController extends Controller
             $permissionsChanged = false;
             if ($request->role_slug === 'editor_sisig') {
                 $currentModulos = $user->modulosEditables()->pluck('sisig_modulos.id')->toArray();
-                $newModulos = array_map('intval', $request->input('modulos_editables', []));
+                $newModulos = array_map('intval', $request->input('modulos', []));
                 sort($currentModulos);
                 sort($newModulos);
                 if ($currentModulos !== $newModulos) {
@@ -246,25 +201,27 @@ class GestionUsersController extends Controller
             }
 
             $rolNombre = $this->syncRole($user, $request->role_slug);
-            $this->syncApprenticeFicha($person->id, $request->ficha, $request->role_slug);
+            if ($user->person_id) {
+                $this->syncApprenticeFicha($user->person_id, $request->ficha, $request->role_slug);
+            }
             $this->syncEditorPermissions($user, $request, $request->role_slug);
 
-            $hasAnyChange = $personChanged || $userChanged || $roleChanged || $fichaChanged || $permissionsChanged;
+            $hasAnyChange = $roleChanged || $fichaChanged || $permissionsChanged;
 
             if (!$hasAnyChange) {
                 DB::commit();
                 return redirect()->route('sisig.admin.users.index')
-                    ->with('info', "No se detectaron modificaciones en los datos del usuario \"{$user->name}\".");
+                    ->with('info', "No se detectaron modificaciones en el rol del usuario \"{$user->name}\".");
             }
 
-            $this->logActivity('usuario_actualizado', "Se actualizaron los datos y rol de {$user->name}");
+            $this->logActivity('rol_actualizado', "Se actualizó el rol de {$user->name} a: {$rolNombre}");
 
             DB::commit();
             return redirect()->route('sisig.admin.users.index')
-                ->with('success', "¡Datos del usuario \"{$user->name}\" actualizados correctamente!");
+                ->with('success', "¡Rol del usuario \"{$user->name}\" actualizado correctamente a: {$rolNombre}!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', 'Error al actualizar el usuario: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Error al actualizar el rol: ' . $e->getMessage());
         }
     }
 
@@ -276,6 +233,9 @@ class GestionUsersController extends Controller
         $user = User::withTrashed()->findOrFail($id);
 
         if (Auth::id() === $user->id) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Operación denegada: No puedes desactivar tu propia cuenta.'], 403);
+            }
             return redirect()->back()->with('error', 'Operación denegada: No puedes desactivar tu propia cuenta.');
         }
 
@@ -287,6 +247,16 @@ class GestionUsersController extends Controller
         $msg = $user->trashed()
             ? "La cuenta de {$user->name} ha sido desactivada."
             : "¡La cuenta de {$user->name} ha sido activada exitosamente!";
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => !$user->trashed(),
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'message' => $msg
+            ]);
+        }
 
         return redirect()->route('sisig.admin.users.index')->with('success', $msg);
     }
@@ -313,12 +283,19 @@ class GestionUsersController extends Controller
 
         // 1. Evitar auto-eliminación
         if (Auth::id() === $user->id) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Operación denegada: No puedes eliminar tu propia cuenta de usuario.'], 403);
+            }
             return redirect()->back()->with('error', 'Operación denegada: No puedes eliminar tu propia cuenta de usuario.');
         }
 
         // 2. Verificar si tiene actividad registrada
         if ($this->hasUserActivity($user->id)) {
-            return redirect()->back()->with('error', "Operación denegada: El usuario \"{$user->name}\" no puede ser eliminado porque cuenta con actividad o historial registrado en la plataforma. Para bloquear su acceso preservando la trazabilidad, puedes desactivar su cuenta.");
+            $msgAct = "Operación denegada: El usuario \"{$user->name}\" no puede ser eliminado porque cuenta con actividad o historial registrado en la plataforma. Para bloquear su acceso preservando la trazabilidad, puedes desactivar su cuenta.";
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msgAct], 422);
+            }
+            return redirect()->back()->with('error', $msgAct);
         }
 
         DB::beginTransaction();
@@ -339,10 +316,22 @@ class GestionUsersController extends Controller
             $this->logActivity('usuario_eliminado', "Se eliminó permanentemente al usuario {$userName} (sin actividad registrada)");
 
             DB::commit();
+
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'user_id' => $id,
+                    'message' => "¡El usuario \"{$userName}\" fue eliminado exitosamente del sistema!"
+                ]);
+            }
+
             return redirect()->route('sisig.admin.users.index')
                 ->with('success', "¡El usuario \"{$userName}\" fue eliminado exitosamente del sistema!");
         } catch (\Exception $e) {
             DB::rollBack();
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Error al eliminar el usuario: ' . $e->getMessage()], 500);
+            }
             return redirect()->back()->with('error', 'Error al eliminar el usuario: ' . $e->getMessage());
         }
     }
@@ -395,15 +384,32 @@ class GestionUsersController extends Controller
 
     private function userRules(?int $userId = null): array
     {
+        if ($userId) {
+            return [
+                'role_slug'        => 'required|string|in:admin_sisig,editor_sisig,aprendiz_sisig,ninguno',
+                'ficha'            => 'nullable|string|max:30',
+                'modulos'          => 'nullable|array',
+                'quices'           => 'nullable|array',
+                'document_type'    => 'nullable|string|max:50',
+                'document_number'  => 'nullable|string|max:30',
+                'first_name'       => 'nullable|string|max:60',
+                'first_last_name'  => 'nullable|string|max:60',
+                'second_last_name' => 'nullable|string|max:60',
+                'email'            => 'nullable|email|max:100',
+                'nickname'         => 'nullable|string|max:50',
+                'password'         => 'nullable|string|min:6',
+            ];
+        }
+
         return [
             'document_type'    => 'required|string|max:50',
             'document_number'  => 'required|string|max:30',
             'first_name'       => 'required|string|max:60',
             'first_last_name'  => 'required|string|max:60',
             'second_last_name' => 'nullable|string|max:60',
-            'email'            => ['required', 'email', 'max:100', Rule::unique('users', 'email')->ignore($userId)],
-            'nickname'         => ['nullable', 'string', 'max:50', Rule::unique('users', 'nickname')->ignore($userId)],
-            'password'         => $userId ? 'nullable|string|min:6' : 'required|string|min:6',
+            'email'            => ['required', 'email', 'max:100', Rule::unique('users', 'email')],
+            'nickname'         => ['nullable', 'string', 'max:50', Rule::unique('users', 'nickname')],
+            'password'         => 'required|string|min:6',
             'role_slug'        => 'nullable|string|in:admin_sisig,editor_sisig,aprendiz_sisig,ninguno',
             'ficha'            => 'nullable|string|max:30',
         ];

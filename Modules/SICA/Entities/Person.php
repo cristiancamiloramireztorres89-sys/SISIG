@@ -51,6 +51,7 @@ class Person extends Model implements Auditable
         'telephone2',
         'telephone3',
         'personal_email',
+        'phone',
         'misena_email',
         'sena_email',
         'avatar',

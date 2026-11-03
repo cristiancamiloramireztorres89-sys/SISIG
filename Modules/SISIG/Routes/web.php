@@ -51,6 +51,10 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
 
         // Módulo de Reportes y Métricas
         Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Admin\ReportesController::class, 'index'])->name('reportes.index');
+
+        // Módulo de Configuración de la Plataforma
+        Route::get('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionPlataformaController::class, 'index'])->name('configuracion.index');
+        Route::put('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionPlataformaController::class, 'update'])->name('configuracion.update');
     });
 
 

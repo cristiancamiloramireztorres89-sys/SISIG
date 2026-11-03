@@ -145,6 +145,15 @@ class GestionExamenesController extends Controller
         $quiz->activo = !$quiz->activo;
         $quiz->save();
 
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'id_quiz' => $quiz->id_quiz,
+                'activo' => (bool)$quiz->activo,
+                'message' => $quiz->activo ? 'El examen ha sido activado exitosamente.' : 'El examen ha sido desactivado exitosamente.'
+            ]);
+        }
+
         return redirect()->route($this->routePrefix . '.examenes.index')->with('success', 'Estado del examen actualizado.');
     }
 }

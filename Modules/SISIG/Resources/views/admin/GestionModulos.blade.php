@@ -674,6 +674,49 @@
             if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
+        async function ejecutarEliminarModuloAjax(form) {
+            const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const card = form.closest('.modulo-card');
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            if (typeof filtrarModulos === 'function') filtrarModulos();
+                        }, 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al eliminar el módulo.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al eliminar el módulo.', 'danger');
+                }
+            } finally {
+                if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
+            }
+        }
+
         function confirmarEliminarModulo(formId, tituloModulo) {
             const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
             if (!form) return;
@@ -687,7 +730,7 @@
                 advertencia: 'Se eliminarán también las evaluaciones asociadas a este módulo.',
                 btnTexto: 'Sí, eliminar',
                 btnIcon: 'fa-trash-alt',
-                onConfirm: form
+                onConfirm: () => ejecutarEliminarModuloAjax(form)
             });
         }
 

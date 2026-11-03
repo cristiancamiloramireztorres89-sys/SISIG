@@ -85,7 +85,7 @@
                         ->orderBy('id', 'asc')
                         ->get();
                 @endphp
-                <select name="seccion" id="infracciones-seccion-select" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[180px]" onchange="this.form.submit()">
+                <select name="seccion" id="infracciones-seccion-select" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[180px]" onchange="applySearch()">
                     <option value="todas" {{ $seccion === 'todas' ? 'selected' : '' }}>Todos los módulos</option>
                     @foreach($modulosInfracciones as $modInf)
                         @php
@@ -146,7 +146,9 @@
                                 data-email="{{ strtolower($item->correo) }}"
                                 data-document="{{ strtolower(str_replace('.', '', $item->documento)) }}"
                                 data-ficha="{{ strtolower($item->ficha) }}"
-                                data-quiz="{{ strtolower($item->quiz) }}">
+                                data-quiz="{{ strtolower($item->quiz) }}"
+                                data-modulo="{{ strtolower($item->modulo ?? '') }}"
+                                data-norma="{{ strtolower($item->norma ?? '') }}">
                                 
                                 <!-- # Contador -->
                                 <td class="py-3.5 px-4 text-center font-bold text-slate-400">
@@ -323,12 +325,14 @@
     <!-- SCRIPTS DE INTERACCIÓN REACTIVA Y EXPORTACIÓN CSV -->
     <script>
         const searchInput = document.getElementById('infracciones-search-input');
+        const seccionSelect = document.getElementById('infracciones-seccion-select');
         const rowsInfracciones = document.querySelectorAll('.infraccion-row');
         const counterInfracciones = document.getElementById('counter-infracciones');
         const noResultsInfracciones = document.getElementById('no-results-infracciones');
 
         function applySearch() {
             const query = (searchInput?.value || '').toLowerCase().trim();
+            const seccionVal = (seccionSelect?.value || 'todas').toLowerCase().trim();
             let count = 0;
 
             rowsInfracciones.forEach(row => {
@@ -337,8 +341,25 @@
                 const doc = row.dataset.document || '';
                 const ficha = row.dataset.ficha || '';
                 const quiz = row.dataset.quiz || '';
+                const modulo = row.dataset.modulo || '';
+                const norma = row.dataset.norma || '';
 
-                const matches = !query || name.includes(query) || email.includes(query) || doc.includes(query) || ficha.includes(query) || quiz.includes(query);
+                const matchesQuery = !query || name.includes(query) || email.includes(query) || doc.includes(query) || ficha.includes(query) || quiz.includes(query);
+                
+                let matchesSeccion = (seccionVal === 'todas');
+                if (!matchesSeccion) {
+                    if (seccionVal === 'calidad') {
+                        matchesSeccion = modulo.includes('calidad') || norma.includes('9001');
+                    } else if (seccionVal === 'sst') {
+                        matchesSeccion = modulo.includes('sst') || modulo.includes('seguridad') || modulo.includes('salud') || norma.includes('45001');
+                    } else if (seccionVal === 'ambiental') {
+                        matchesSeccion = modulo.includes('ambiental') || modulo.includes('ambiente') || norma.includes('14001');
+                    } else {
+                        matchesSeccion = modulo.includes(seccionVal) || norma.includes(seccionVal);
+                    }
+                }
+
+                const matches = matchesQuery && matchesSeccion;
                 row.style.display = matches ? '' : 'none';
                 if (matches) count++;
             });
@@ -352,6 +373,12 @@
         }
 
         searchInput?.addEventListener('input', applySearch);
+
+        // Prevenir que presionar ENTER o enviar el formulario recargue la página completa
+        document.getElementById('infracciones-search-input')?.closest('form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            applySearch();
+        });
 
         // Control del Modal de Auditoría
         function abrirModalInfraccion(item) {

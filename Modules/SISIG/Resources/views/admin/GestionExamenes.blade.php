@@ -103,21 +103,21 @@
             </div>
         </div>
 
-        <!-- Barra de Filtros y Acciones -->
+        <!-- Barra de Filtros y Acciones (Filtrado en vivo sin recargas) -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-20">
-            <form action="{{ route($routePrefix . '.examenes.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 w-full">
+            <form id="form-filtro-examenes" onsubmit="event.preventDefault(); filtrarExamenesEnVivo();" class="flex flex-col sm:flex-row gap-3 w-full">
                 <div class="relative flex-1 max-w-md">
                     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar examen..." 
+                    <input type="text" id="filtro-buscar-examen" oninput="filtrarExamenesEnVivo()" value="{{ request('buscar') }}" placeholder="Buscar examen en tiempo real..." 
                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                 </div>
-                <select name="modulo_id" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[160px]" onchange="this.form.submit()">
+                <select id="filtro-modulo-select" onchange="filtrarExamenesEnVivo()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[160px]">
                     <option value="all">Todos los módulos</option>
                     @foreach($modulos as $modulo)
                         <option value="{{ $modulo->id }}" {{ request('modulo_id') == $modulo->id ? 'selected' : '' }}>{{ $modulo->titulo }}</option>
                     @endforeach
                 </select>
-                <select name="estado" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[140px]" onchange="this.form.submit()">
+                <select id="filtro-estado-select" onchange="filtrarExamenesEnVivo()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-600 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all cursor-pointer font-medium min-w-[140px]">
                     <option value="all">Todos los estados</option>
                     <option value="activo" {{ request('estado') === 'activo' ? 'selected' : '' }}>Activos</option>
                     <option value="inactivo" {{ request('estado') === 'inactivo' ? 'selected' : '' }}>Inactivos</option>
@@ -131,9 +131,12 @@
                 <i class="fas fa-clipboard-check text-[#2E6F40]"></i> Exámenes del SIG
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="contenedor-grid-examenes">
                 @forelse($quices as $quiz)
-                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden">
+                    <div class="tarjeta-examen-item bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col overflow-hidden"
+                         data-modulo-id="{{ $quiz->modulo_id }}"
+                         data-estado="{{ $quiz->activo ? 'activo' : 'inactivo' }}"
+                         data-titulo="{{ mb_strtolower($quiz->titulo) }} {{ mb_strtolower($quiz->modulo->titulo ?? '') }}">
                         <!-- Cabecera de la Tarjeta (Dark Navy Gradient) -->
                         <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
                             <div class="flex items-center justify-between gap-3 mb-3">
@@ -151,7 +154,7 @@
                                 </div>
 
                                 <!-- Estado Activo / Inactivo -->
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs {{ $quiz->activo ? 'bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30' : 'bg-slate-500/20 text-slate-300 border border-slate-400/30' }}">
+                                <span class="badge-estado-quiz inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs {{ $quiz->activo ? 'bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30' : 'bg-slate-500/20 text-slate-300 border border-slate-400/30' }}">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $quiz->activo ? 'bg-[#33FF57]' : 'bg-slate-400' }}"></span>
                                     {{ $quiz->activo ? 'Activo' : 'Inactivo' }}
                                 </span>
@@ -451,6 +454,67 @@
             }
         });
 
+        // Alternar estado activo/inactivo del examen asíncronamente con AJAX (0 recargas de página)
+        async function ejecutarToggleQuizAjax(form, tituloQuiz) {
+            if (!form) return;
+            const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'PATCH' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const card = form.closest('.tarjeta-examen-item');
+                    if (card) {
+                        card.dataset.estado = data.activo ? 'activo' : 'inactivo';
+                        
+                        // Actualizar badge visual en la cabecera de la tarjeta
+                        const badgeWrap = card.querySelector('.badge-estado-quiz');
+                        if (badgeWrap) {
+                            badgeWrap.className = `badge-estado-quiz inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs ${data.activo ? 'bg-[#33FF57]/20 text-[#33FF57] border border-[#33FF57]/30' : 'bg-slate-500/20 text-slate-300 border border-slate-400/30'}`;
+                            badgeWrap.innerHTML = `
+                                <span class="w-1.5 h-1.5 rounded-full ${data.activo ? 'bg-[#33FF57]' : 'bg-slate-400'}"></span>
+                                <span>${data.activo ? 'Activo' : 'Inactivo'}</span>
+                            `;
+                        }
+
+                        // Actualizar botón de acción
+                        const btnToggle = form.querySelector('button');
+                        if (btnToggle) {
+                            btnToggle.title = data.activo ? 'Desactivar examen' : 'Activar examen';
+                            btnToggle.setAttribute('aria-label', data.activo ? 'Desactivar' : 'Activar');
+                            btnToggle.setAttribute('onclick', `confirmarToggleQuiz(document.getElementById('${form.id}'), '${tituloQuiz.replace(/'/g, "\\'")}', ${data.activo ? 'true' : 'false'})`);
+                            btnToggle.innerHTML = `<i class="fas ${data.activo ? 'fa-ban' : 'fa-check'} text-xs"></i>`;
+                            btnToggle.className = `w-9 h-9 rounded-full bg-slate-50 ${data.activo ? 'hover:bg-rose-500 hover:border-rose-500' : 'hover:bg-emerald-600 hover:border-emerald-600'} border border-slate-200 text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs`;
+                        }
+                    }
+
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                    filtrarExamenesEnVivo();
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al actualizar el estado del examen.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al actualizar el examen.', 'danger');
+                }
+            } finally {
+                window.cerrarModalConfirmacion();
+            }
+        }
+
         function confirmarToggleQuiz(form, tituloQuiz, activo) {
             if (!form) return;
             window.abrirModalConfirmacion({
@@ -461,7 +525,33 @@
                 itemTag: 'Examen seleccionado',
                 btnTexto: activo ? 'Sí, desactivar' : 'Sí, activar',
                 btnIcon: activo ? 'fa-pause-circle' : 'fa-check',
-                onConfirm: form
+                onConfirm: () => ejecutarToggleQuizAjax(form, tituloQuiz)
+            });
+        }
+
+        // Filtrado en vivo e instantáneo de exámenes en el cliente (Cero recargas de página)
+        function filtrarExamenesEnVivo() {
+            const texto = (document.getElementById('filtro-buscar-examen')?.value || '').toLowerCase().trim();
+            const moduloId = document.getElementById('filtro-modulo-select')?.value || 'all';
+            const estado = document.getElementById('filtro-estado-select')?.value || 'all';
+
+            const tarjetas = document.querySelectorAll('.tarjeta-examen-item');
+            let visibles = 0;
+            tarjetas.forEach(t => {
+                const tModulo = t.dataset.moduloId;
+                const tEstado = t.dataset.estado;
+                const tTitulo = t.dataset.titulo || '';
+
+                const coincideTexto = !texto || tTitulo.includes(texto);
+                const coincideModulo = moduloId === 'all' || tModulo === moduloId;
+                const coincideEstado = estado === 'all' || tEstado === estado;
+
+                if (coincideTexto && coincideModulo && coincideEstado) {
+                    t.style.display = '';
+                    visibles++;
+                } else {
+                    t.style.display = 'none';
+                }
             });
         }
     </script>

@@ -226,9 +226,23 @@ class SeguridadController extends Controller
                 }
             }
 
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'session_id' => $sessionId,
+                    'message' => 'La sesión seleccionada ha sido cerrada exitosamente en tiempo real.'
+                ]);
+            }
+
             return redirect()->route('sisig.admin.seguridad.index')
                 ->with('success', 'La sesión seleccionada ha sido cerrada exitosamente en tiempo real.');
         } catch (\Exception $e) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al cerrar la sesión: ' . $e->getMessage()
+                ], 500);
+            }
             return redirect()->route('sisig.admin.seguridad.index')
                 ->with('error', 'Error al cerrar la sesión: ' . $e->getMessage());
         }

@@ -127,7 +127,7 @@
                         <label for="seccion_sig" class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
                             Sección SIG
                         </label>
-                        <select name="seccion_sig" id="seccion_sig" onchange="this.form.submit()"
+                        <select name="seccion_sig" id="seccion_sig"
                                 class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none text-xs font-bold text-slate-700 transition-all">
                             <option value="todas" {{ $filtroSeccion === 'todas' ? 'selected' : '' }}>Todas las Secciones</option>
                             @foreach($modulosDisponibles as $mod)
@@ -143,7 +143,7 @@
                         <label for="estado" class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
                             Estado
                         </label>
-                        <select name="estado" id="estado" onchange="this.form.submit()"
+                        <select name="estado" id="estado"
                                 class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none text-xs font-bold text-slate-700 transition-all">
                             <option value="todos" {{ $filtroEstado === 'todos' ? 'selected' : '' }}>Todos los Estados</option>
                             <option value="completado" {{ $filtroEstado === 'completado' ? 'selected' : '' }}>Completado</option>

@@ -109,7 +109,7 @@
             
             <div class="space-y-4">
                 @forelse($quiz->preguntas as $index => $pregunta)
-                    <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white transition-colors group flex gap-4">
+                    <div class="tarjeta-pregunta-item p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white transition-colors group flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-sena-green/10 text-sena-green flex items-center justify-center shrink-0 font-black text-sm">
                             {{ $index + 1 }}
                         </div>
@@ -461,6 +461,52 @@
             if(selected) selected.value = "1";
         }
 
+        async function ejecutarEliminarPreguntaAjax(form) {
+            const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const card = form.closest('.tarjeta-pregunta-item') || form.closest('.p-5');
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            document.querySelectorAll('.tarjeta-pregunta-item').forEach((item, idx) => {
+                                const badgeIndex = item.querySelector('.shrink-0');
+                                if (badgeIndex) badgeIndex.textContent = idx + 1;
+                            });
+                        }, 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al eliminar la pregunta.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al eliminar la pregunta.', 'danger');
+                }
+            } finally {
+                window.cerrarModalConfirmacion();
+            }
+        }
+
         // Modal universal reutilizable para confirmación de eliminación
         function confirmarEliminarPregunta(event, form, tituloPregunta) {
             if (event) event.preventDefault();
@@ -473,7 +519,7 @@
                 advertencia: 'Se borrarán también sus opciones de respuesta.',
                 btnTexto: 'Sí, eliminar',
                 btnIcon: 'fa-trash-alt',
-                onConfirm: form
+                onConfirm: () => ejecutarEliminarPreguntaAjax(form)
             });
             return false;
         }

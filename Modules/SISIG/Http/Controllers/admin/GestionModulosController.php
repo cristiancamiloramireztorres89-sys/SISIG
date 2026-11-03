@@ -170,6 +170,14 @@ class GestionModulosController extends Controller
         // Eliminar registro del módulo en base de datos
         $modulo->delete();
 
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'id_modulo' => $id,
+                'message' => 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente'
+            ]);
+        }
+
         return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente');
     }
 

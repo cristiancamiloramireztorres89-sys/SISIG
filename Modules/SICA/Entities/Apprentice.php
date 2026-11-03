@@ -26,6 +26,7 @@ class Apprentice extends Model implements Auditable
     protected $fillable = [ // Atributos modificables (asignación masiva)
         'person_id',
         'course_id',
+        'program',
         'apprentice_status',
         'guardian',
         'guardian_telephone'

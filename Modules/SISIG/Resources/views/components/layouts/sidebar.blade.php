@@ -74,6 +74,13 @@
                         <i class="fas fa-shield-alt text-sm w-5 text-center flex-shrink-0 {{ request()->routeIs('sisig.admin.seguridad.*') ? 'text-[#1A2B4C]' : 'text-slate-200' }}"></i>
                         <span class="sidebar-text truncate">Seguridad y Accesos</span>
                     </a>
+
+                    <a href="{{ route('sisig.admin.configuracion.index') }}" 
+                       title="Configuración de la Plataforma"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group {{ request()->routeIs('sisig.admin.configuracion.*') ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20' : 'hover:bg-white/10 hover:text-white text-slate-200' }}">
+                        <i class="fas fa-sliders-h text-sm w-5 text-center flex-shrink-0 {{ request()->routeIs('sisig.admin.configuracion.*') ? 'text-[#1A2B4C]' : 'text-slate-200' }}"></i>
+                        <span class="sidebar-text truncate">Configuración</span>
+                    </a>
                 </div>
             </div>
 

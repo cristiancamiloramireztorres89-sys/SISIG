@@ -138,6 +138,15 @@ class GestionPreguntasController extends Controller
         $quiz->numero_preguntas = $quiz->preguntas()->count();
         $quiz->save();
 
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'id_pregunta' => $pregunta_id,
+                'total_preguntas' => $quiz->numero_preguntas,
+                'message' => 'Pregunta eliminada exitosamente del examen.'
+            ]);
+        }
+
         return redirect()->route($this->routePrefix . '.examenes.preguntas.index', $quiz_id)->with('success', 'Pregunta eliminada.');
     }
 }

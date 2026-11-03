@@ -8,15 +8,7 @@
                     <i class="fas fa-users-cog text-sena-green"></i>
                     <span>Gestión de Usuarios SISIG</span>
                 </h1>
-
-            </div>
-
-            <div class="self-start lg:self-auto">
-                <button type="button" onclick="openCreateModal()"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                    <i class="fas fa-user-plus text-xs"></i>
-                    <span>Nuevo Usuario</span>
-                </button>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Administración centralizada de roles, permisos y estados de cuentas en SISIG</p>
             </div>
         </div>
 
@@ -117,18 +109,18 @@
 
                     <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
                         <span class="text-slate-400 font-bold px-2 hidden sm:inline">Estado:</span>
-                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'activos'])) }}" 
-                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? 'activos') === 'activos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                        <button type="button" onclick="filterByStatus('activos')" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all bg-slate-900 text-white shadow-sm" data-status="activos">
                             Activos
-                        </a>
-                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'inactivos'])) }}" 
-                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? '') === 'inactivos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
-                            Inactivos @if(isset($totalInactivos) && $totalInactivos > 0) <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] {{ ($status ?? '') === 'inactivos' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $totalInactivos }}</span> @endif
-                        </a>
-                        <a href="{{ route('sisig.admin.users.index', array_merge(request()->except('page'), ['status' => 'todos'])) }}" 
-                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all {{ ($status ?? '') === 'todos' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200' }}">
+                        </button>
+                        <button type="button" onclick="filterByStatus('inactivos')" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all text-slate-600 hover:bg-slate-200" data-status="inactivos">
+                            Inactivos @if(isset($totalInactivos) && $totalInactivos > 0) <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-200 text-slate-700">{{ $totalInactivos }}</span> @endif
+                        </button>
+                        <button type="button" onclick="filterByStatus('todos')" 
+                           class="status-filter-btn px-3 py-1 rounded-xl font-bold transition-all text-slate-600 hover:bg-slate-200" data-status="todos">
                             Todos
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -253,14 +245,6 @@
                                                     title="{{ $u->is_active ? 'Desactivar Cuenta' : 'Reactivar Cuenta' }}">
                                                 <i class="fas {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }} text-xs"></i>
                                             </button>
-
-                                            <!-- Botón de Eliminar Usuario (Validación de Actividad) -->
-                                            <button type="button" 
-                                                    onclick="confirmDeleteUser({{ $u->id }}, '{{ addslashes($u->full_name ?: $u->name) }}', {{ $u->has_activity ? 'true' : 'false' }})"
-                                                    class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 {{ $u->has_activity ? 'opacity-40 cursor-not-allowed hover:bg-slate-50' : 'hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 cursor-pointer' }} transition-all flex items-center justify-center shadow-xs"
-                                                    title="{{ $u->has_activity ? 'Tiene actividad registrada (no eliminable)' : 'Eliminar usuario permanentemente' }}">
-                                                <i class="fas fa-trash-alt text-xs"></i>
-                                            </button>
                                         @endif
                                     </div>
                                 </td>
@@ -286,143 +270,219 @@
 
     </div>
 
-    <!-- MODAL POLIMÓRFICO: CREAR Y EDITAR USUARIO (UNIFICADO) -->
+    <!-- MODAL POLIMÓRFICO: CREAR Y ASIGNAR ROL A USUARIO (CON ESTILO INSTITUCIONAL SISIG) -->
     <div id="user-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in max-h-[90vh] overflow-y-auto relative">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div id="user-modal-icon-wrapper" class="flex items-center justify-center flex-shrink-0">
-                        <img id="user-modal-avatar-img" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200 hidden">
-                        <i id="user-modal-icon" class="fas fa-user-plus text-2xl text-sena-green"></i>
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200/90 animate-scale-in max-h-[92vh] overflow-hidden flex flex-col relative">
+            
+            <!-- 1. Cabecera del Modal con Estilo Glassmorphism Dark Mode del Sistema -->
+            <div class="relative p-6 sm:p-7 text-white flex items-center justify-between overflow-hidden flex-shrink-0" 
+                 style="background: linear-gradient(135deg, rgba(26, 43, 76, 0.98) 0%, rgba(20, 34, 60, 0.96) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 2px solid #33FF57;">
+                
+                <!-- Glows decorativos de fondo -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[#33FF57]/15 blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-[#2E6F40]/25 blur-2xl pointer-events-none"></div>
+
+                <div class="flex items-center gap-3.5 z-10">
+                    <div id="user-modal-icon-wrapper" class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 shadow-inner overflow-hidden">
+                        <img id="user-modal-avatar-img" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                        <i id="user-modal-icon" class="fas fa-user-shield text-2xl text-[#33FF57]"></i>
                     </div>
                     <div>
-                        <h3 id="user-modal-title" class="text-base font-bold text-slate-800">Registrar Nuevo Usuario</h3>
-                        <p id="user-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Creación de cuenta y vinculación a persona en el ERP</p>
+                        <h3 id="user-modal-title" class="text-base sm:text-lg font-black text-white tracking-tight flex items-center gap-2">
+                            <span>Asignación de Rol de Usuario</span>
+                        </h3>
+                        <p id="user-modal-subtitle" class="text-xs text-slate-300 mt-0.5">
+                            Gestión de roles y permisos institucionales en SISIG
+                        </p>
                     </div>
                 </div>
-                <button type="button" onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                    <i class="fas fa-times text-sm"></i>
+
+                <button type="button" onclick="closeUserModal()" class="text-slate-300 hover:text-white p-2.5 rounded-xl hover:bg-white/10 transition-colors z-10 cursor-pointer" title="Cerrar">
+                    <i class="fas fa-times text-base"></i>
                 </button>
             </div>
 
-            <form id="user-form" action="{{ route('sisig.admin.users.store') }}" method="POST" class="mt-5 space-y-4">
+            <!-- 2. Formulario del Modal con scroll suave y contenido organizado -->
+            <form id="user-form" action="{{ route('sisig.admin.users.store') }}" method="POST" class="p-6 sm:p-7 overflow-y-auto space-y-5 custom-scrollbar">
                 @csrf
                 <div id="user-form-method"></div>
 
-                <!-- Documento -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Tipo de Documento *</label>
-                        <select name="document_type" id="user-doctype" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                            <option value="Cédula de ciudadanía">Cédula de ciudadanía</option>
-                            <option value="Tarjeta de identidad">Tarjeta de identidad</option>
-                            <option value="Cédula de extranjería">Cédula de extranjería</option>
-                            <option value="PEP">Permiso Especial de Permanencia (PEP)</option>
-                            <option value="Pasaporte">Pasaporte</option>
-                        </select>
+                <!-- SECCIÓN 1: DATOS INSTITUCIONALES DEL USUARIO (Bloqueados en modo edición) -->
+                <div id="user-personal-fields-section" class="space-y-3.5">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                        <span class="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                            <i class="fas fa-id-card text-slate-400"></i> Información de Identidad
+                        </span>
+                        <span id="user-fields-status-badge" class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
+                            <i class="fas fa-lock text-[9px] text-slate-400"></i> Solo lectura
+                        </span>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Número de Documento *</label>
-                        <input type="text" name="document_number" id="user-docnumber" required placeholder="Ej. 1000123456" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+
+                    <!-- Fila 1: Documento -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Tipo de Documento *</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <div class="relative">
+                                <select name="document_type" id="user-doctype" required class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all">
+                                    <option value="Cédula de ciudadanía">Cédula de ciudadanía</option>
+                                    <option value="Tarjeta de identidad">Tarjeta de identidad</option>
+                                    <option value="Cédula de extranjería">Cédula de extranjería</option>
+                                    <option value="PEP">Permiso Especial de Permanencia (PEP)</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Número de Documento *</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" name="document_number" id="user-docnumber" required placeholder="Ej. 1000123456" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all font-mono">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2: Nombres y Apellidos -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Nombres *</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <input type="text" name="first_name" id="user-firstname" required placeholder="Ej. Carlos Andrés" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Primer Apellido *</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <input type="text" name="first_last_name" id="user-firstlastname" required placeholder="Ej. Pérez" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Segundo Apellido</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <input type="text" name="second_last_name" id="user-secondlastname" placeholder="Ej. Gómez (Opcional)" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Fila 3: Correo y Alias -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Correo Electrónico *</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <input type="email" name="email" id="user-email" required placeholder="usuario@sena.edu.co" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all font-mono">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                                <span>Nombre de Usuario / Alias</span>
+                                <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i></span>
+                            </label>
+                            <input type="text" name="nickname" id="user-nickname" placeholder="Ej. cperez (Opcional)" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all font-mono">
+                        </div>
+                    </div>
+
+                    <!-- Fila 4: Contraseña (Solo en creación o bloqueada con aviso en edición) -->
+                    <div id="user-password-container">
+                        <label id="user-password-label" class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                            <span>Contraseña de Acceso *</span>
+                            <span class="lock-indicator text-[10px] text-slate-400 hidden"><i class="fas fa-lock text-[9px]"></i> Inmutable</span>
+                        </label>
+                        <input type="password" name="password" id="user-password" minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3.5 py-2.5 rounded-xl text-xs outline-none transition-all">
                     </div>
                 </div>
 
-                <!-- Nombres y Apellidos -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Nombres *</label>
-                        <input type="text" name="first_name" id="user-firstname" required placeholder="Ej. Carlos Andrés" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                <!-- SECCIÓN 2: ASIGNACIÓN DE ROL EN SISIG (Única sección editable y destacada con colores del sistema) -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/50 border-2 border-[#2E6F40]/30 space-y-4">
+                    <div class="pb-2 border-b border-emerald-200/60">
+                        <span class="text-xs font-black uppercase tracking-wider text-[#2E6F40] flex items-center gap-1.5">
+                            <i class="fas fa-user-tag text-sena-green"></i> Asignación de Rol en SISIG
+                        </span>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Primer Apellido *</label>
-                        <input type="text" name="first_last_name" id="user-firstlastname" required placeholder="Ej. Pérez" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Segundo Apellido</label>
-                        <input type="text" name="second_last_name" id="user-secondlastname" placeholder="Ej. Gómez (Opcional)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                    </div>
-                </div>
 
-                <!-- Correo y Alias -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Correo Electrónico *</label>
-                        <input type="email" name="email" id="user-email" required placeholder="usuario@sena.edu.co" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Nombre de Usuario / Alias</label>
-                        <input type="text" name="nickname" id="user-nickname" placeholder="Ej. cperez (Opcional)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                    </div>
-                </div>
-
-                <!-- Contraseña y Rol -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                        <label id="user-password-label" class="text-xs font-bold text-slate-700 block mb-1">Contraseña de Acceso *</label>
-                        <input type="password" name="password" id="user-password" minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 block mb-1">Rol en SISIG *</label>
-                        <select name="role_slug" id="user-roleselect" onchange="toggleFichaField(this.value); toggleEditorPermissions(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                            <option value="aprendiz_sisig" selected>Aprendiz SISIG (Inducción y Evaluaciones)</option>
+                        <label class="text-xs font-bold text-slate-800 block mb-1.5 flex items-center justify-between">
+                            <span>Rol Autorizado *</span>
+                            <span class="text-[11px] text-slate-500 font-normal">Selecciona el rol que tendrá el usuario</span>
+                        </label>
+                        <select name="role_slug" id="user-roleselect" onchange="toggleFichaField(this.value); toggleEditorPermissions(this.value)" 
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-[#2E6F40]/40 focus:border-[#2E6F40] focus:ring-2 focus:ring-[#2E6F40]/20 outline-none text-xs font-bold text-slate-800 transition-all shadow-xs cursor-pointer">
+                            <option value="aprendiz_sisig">Aprendiz SISIG (Inducción y Evaluaciones)</option>
                             <option value="editor_sisig">Editor SISIG (Gestión de Módulos y Quices)</option>
                             <option value="admin_sisig">Administrador SISIG (Control total)</option>
                             <option value="ninguno">Sin Rol en SISIG</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- Permisos de Edición (Solo para Editor SISIG) -->
-                <div id="user-editor-permissions-container" class="hidden p-4 bg-sky-50/50 rounded-2xl border border-sky-200/60 mt-4 space-y-4">
-                    <h4 class="text-xs font-bold text-sky-800 border-b border-sky-100 pb-2 mb-3">
-                        <i class="fas fa-user-shield mr-1"></i> Asignación de Permisos de Edición
-                    </h4>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Módulos -->
-                        <div>
-                            <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Módulos Asignados</span>
-                            <div class="space-y-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
-                                @forelse($modulosActivos as $modulo)
-                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-white p-1 rounded-lg transition-colors">
-                                        <input type="checkbox" name="modulos[]" value="{{ $modulo->id }}" class="editor-modulo-cb text-sky-500 rounded border-slate-300 focus:ring-sky-500">
-                                        <span class="font-medium">{{ $modulo->titulo }}</span>
-                                    </label>
-                                @empty
-                                    <p class="text-xs text-slate-400 italic">No hay módulos disponibles.</p>
-                                @endforelse
+                    <!-- Permisos de Edición de Módulos (Solo si es Editor SISIG) -->
+                    <div id="user-editor-permissions-container" class="hidden p-4 bg-white rounded-xl border border-emerald-200/80 space-y-3">
+                        <h4 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fas fa-cubes text-[#2E6F40]"></i> Módulos y Quices Asignados
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-normal">Marca los contenidos a los que tendrá acceso</span>
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Módulos -->
+                            <div>
+                                <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Módulos Asignados</span>
+                                <div class="space-y-2 max-h-36 overflow-y-auto pr-2 custom-scrollbar">
+                                    @forelse($modulosActivos as $modulo)
+                                        <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                                            <input type="checkbox" name="modulos[]" value="{{ $modulo->id }}" class="editor-modulo-cb text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                            <span class="font-medium">{{ $modulo->titulo }}</span>
+                                        </label>
+                                    @empty
+                                        <p class="text-xs text-slate-400 italic">No hay módulos disponibles.</p>
+                                    @endforelse
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Quices -->
-                        <div>
-                            <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Quices Asignados</span>
-                            <div class="space-y-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
-                                @forelse($quicesActivos as $quiz)
-                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-white p-1 rounded-lg transition-colors">
-                                        <input type="checkbox" name="quices[]" value="{{ $quiz->id_quiz }}" class="editor-quiz-cb text-sky-500 rounded border-slate-300 focus:ring-sky-500">
-                                        <span class="font-medium">{{ $quiz->titulo }}</span>
-                                    </label>
-                                @empty
-                                    <p class="text-xs text-slate-400 italic">No hay quices disponibles.</p>
-                                @endforelse
+                            <!-- Quices -->
+                            <div>
+                                <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Quices Asignados</span>
+                                <div class="space-y-2 max-h-36 overflow-y-auto pr-2 custom-scrollbar">
+                                    @forelse($quicesActivos as $quiz)
+                                        <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                                            <input type="checkbox" name="quices[]" value="{{ $quiz->id_quiz }}" class="editor-quiz-cb text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                            <span class="font-medium">{{ $quiz->titulo }}</span>
+                                        </label>
+                                    @empty
+                                        <p class="text-xs text-slate-400 italic">No hay quices disponibles.</p>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Campo Ficha si es Aprendiz -->
+                    <div id="user-ficha-container" class="p-3.5 bg-white rounded-xl border border-emerald-200/80">
+                        <label class="text-xs font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                            <span>Número de Ficha de Formación</span>
+                            <span id="user-ficha-badge" class="text-[10px] text-slate-400 flex items-center gap-1">
+                                <i class="fas fa-lock text-[9px]"></i> Institucional
+                            </span>
+                        </label>
+                        <input type="text" name="ficha" id="user-ficha" placeholder="Ej. 3288036" class="w-full px-3.5 py-2 rounded-xl border text-xs outline-none transition-all font-mono">
+                    </div>
                 </div>
 
-                <!-- Campo Ficha si es Aprendiz -->
-                <div id="user-ficha-container" class="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/60">
-                    <label class="text-xs font-bold text-slate-700 block mb-1">Número de Ficha de Formación (Aprendices)</label>
-                    <input type="text" name="ficha" id="user-ficha" placeholder="Ej. 2800001" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
-                </div>
-
-                <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
-                    <button type="button" onclick="closeUserModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                <!-- Footer del Modal -->
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3 flex-shrink-0">
+                    <button type="button" onclick="closeUserModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
                         Cancelar
                     </button>
-                    <button type="submit" id="user-submit-btn" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all">
-                        Crear Usuario
+                    <button type="submit" id="user-submit-btn" class="px-6 py-2.5 rounded-2xl text-xs font-black text-white bg-[#2E6F40] hover:bg-[#235833] shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fas fa-save"></i>
+                        <span>Guardar Cambios</span>
                     </button>
                 </div>
             </form>
@@ -535,9 +595,13 @@
         }
 
         function filterByStatus(status) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('status', status);
-            window.location.href = url.toString();
+            currentStatusFilter = status;
+            document.querySelectorAll('.status-filter-btn').forEach(btn => {
+                btn.className = btn.dataset.status === status
+                    ? 'status-filter-btn px-3 py-1 rounded-xl font-bold transition-all bg-slate-900 text-white shadow-sm'
+                    : 'status-filter-btn px-3 py-1 rounded-xl font-bold transition-all text-slate-600 hover:bg-slate-200';
+            });
+            applyFilters();
         }
 
         // 2. Control del Modal Polimórfico (Crear y Editar)
@@ -555,6 +619,85 @@
 
         let userOriginalSnapshot = null;
 
+        function setFieldsEditability(isEdit) {
+            const personalInputs = [
+                document.getElementById('user-doctype'),
+                document.getElementById('user-docnumber'),
+                document.getElementById('user-firstname'),
+                document.getElementById('user-firstlastname'),
+                document.getElementById('user-secondlastname'),
+                document.getElementById('user-email'),
+                document.getElementById('user-nickname'),
+                document.getElementById('user-ficha')
+            ];
+
+            const pwd = document.getElementById('user-password');
+            const pwdContainer = document.getElementById('user-password-container');
+            const statusBadge = document.getElementById('user-fields-status-badge');
+            const lockIndicators = document.querySelectorAll('.lock-indicator');
+
+            if (isEdit) {
+                // Modo Edición: Bloquear datos personales e institucionales (Solo Lectura)
+                personalInputs.forEach(input => {
+                    if (input) {
+                        input.readOnly = true;
+                        input.className = 'w-full px-3.5 py-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-slate-500 font-semibold text-xs cursor-not-allowed select-none transition-all';
+                    }
+                });
+
+                const docType = document.getElementById('user-doctype');
+                if (docType) {
+                    docType.style.pointerEvents = 'none';
+                    docType.tabIndex = -1;
+                }
+
+                // Ocultar campo de contraseña en edición (contraseña institucional inmutable)
+                if (pwdContainer) pwdContainer.classList.add('hidden');
+                if (pwd) {
+                    pwd.required = false;
+                    pwd.value = '';
+                }
+
+                if (statusBadge) {
+                    statusBadge.innerHTML = '<i class="fas fa-lock text-[9px] text-slate-400"></i> Solo lectura';
+                    statusBadge.className = 'inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full';
+                }
+
+                lockIndicators.forEach(el => el.classList.remove('hidden'));
+
+            } else {
+                // Modo Creación: Desbloquear todos los campos
+                personalInputs.forEach(input => {
+                    if (input) {
+                        input.readOnly = false;
+                        input.className = 'w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 text-slate-800 text-xs outline-none transition-all';
+                    }
+                });
+
+                const docType = document.getElementById('user-doctype');
+                if (docType) {
+                    docType.style.pointerEvents = 'auto';
+                    docType.tabIndex = 0;
+                }
+
+                if (pwdContainer) pwdContainer.classList.remove('hidden');
+                if (pwd) {
+                    pwd.required = true;
+                    pwd.readOnly = false;
+                    pwd.value = '';
+                    pwd.placeholder = 'Mínimo 6 caracteres';
+                    pwd.className = 'w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 text-slate-800 text-xs outline-none transition-all';
+                }
+
+                if (statusBadge) {
+                    statusBadge.innerHTML = '<i class="fas fa-pencil-alt text-[9px] text-[#2E6F40]"></i> Nuevo';
+                    statusBadge.className = 'inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full';
+                }
+
+                lockIndicators.forEach(el => el.classList.add('hidden'));
+            }
+        }
+
         function getUserFormData() {
             const modulos = [];
             document.querySelectorAll('.editor-modulo-cb:checked').forEach(cb => modulos.push(cb.value));
@@ -562,14 +705,6 @@
             document.querySelectorAll('.editor-quiz-cb:checked').forEach(cb => quices.push(cb.value));
 
             return {
-                document_type: document.getElementById('user-doctype').value,
-                document_number: document.getElementById('user-docnumber').value.trim(),
-                first_name: document.getElementById('user-firstname').value.trim(),
-                first_last_name: document.getElementById('user-firstlastname').value.trim(),
-                second_last_name: document.getElementById('user-secondlastname').value.trim(),
-                email: document.getElementById('user-email').value.trim(),
-                nickname: document.getElementById('user-nickname').value.trim(),
-                password: document.getElementById('user-password').value,
                 role_slug: document.getElementById('user-roleselect').value,
                 ficha: document.getElementById('user-ficha').value.trim(),
                 modulos: modulos.sort(),
@@ -583,17 +718,16 @@
             methodContainer.innerHTML = '';
             userOriginalSnapshot = null;
 
-            document.getElementById('user-modal-title').textContent = 'Registrar Nuevo Usuario';
-            document.getElementById('user-modal-subtitle').textContent = 'Creación de cuenta y vinculación a persona en el ERP';
+            setFieldsEditability(false);
+
+            document.getElementById('user-modal-title').innerHTML = '<i class="fas fa-user-plus text-[#33FF57] text-lg"></i> <span>Registrar Nuevo Usuario</span>';
+            document.getElementById('user-modal-subtitle').textContent = 'Creación de cuenta y asignación de rol inicial en SISIG';
             document.getElementById('user-modal-avatar-img').classList.add('hidden');
             const createIcon = document.getElementById('user-modal-icon');
-            createIcon.className = 'fas fa-user-plus text-2xl text-sena-green';
+            createIcon.className = 'fas fa-user-plus text-2xl text-[#33FF57]';
             createIcon.classList.remove('hidden');
 
-            const pwd = document.getElementById('user-password');
-            pwd.required = true;
-            pwd.placeholder = 'Mínimo 6 caracteres';
-            document.getElementById('user-password-label').innerHTML = 'Contraseña de Acceso *';
+            document.getElementById('user-password-label').innerHTML = '<span>Contraseña de Acceso *</span>';
 
             document.getElementById('user-roleselect').value = 'aprendiz_sisig';
             toggleFichaField('aprendiz_sisig');
@@ -602,7 +736,7 @@
             // Desmarcar todos los checkboxes
             document.querySelectorAll('.editor-modulo-cb, .editor-quiz-cb').forEach(cb => cb.checked = false);
 
-            document.getElementById('user-submit-btn').textContent = 'Crear Usuario';
+            document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-user-plus"></i> <span>Crear Usuario</span>';
 
             modal.classList.remove('hidden');
             if (window.lockBodyScroll) window.lockBodyScroll(true);
@@ -616,8 +750,10 @@
                     form.action = `{{ url('sisig/admin/usuarios') }}/${userId}`;
                     methodContainer.innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
-                    document.getElementById('user-modal-title').textContent = 'Editar Datos y Rol del Usuario';
-                    document.getElementById('user-modal-subtitle').textContent = `Editando a: ${data.name} (${data.email})`;
+                    setFieldsEditability(true);
+
+                    document.getElementById('user-modal-title').innerHTML = '<i class="fas fa-user-tag text-[#33FF57] text-lg"></i> <span>Asignación de Rol de Usuario</span>';
+                    document.getElementById('user-modal-subtitle').textContent = `Editando rol de: ${data.name} (${data.email})`;
                     
                     const avatarImg = document.getElementById('user-modal-avatar-img');
                     const modalIcon = document.getElementById('user-modal-icon');
@@ -627,7 +763,7 @@
                         modalIcon.classList.add('hidden');
                     } else {
                         avatarImg.classList.add('hidden');
-                        modalIcon.className = 'fas fa-user-edit text-2xl text-amber-500';
+                        modalIcon.className = 'fas fa-user-tag text-2xl text-[#33FF57]';
                         modalIcon.classList.remove('hidden');
                     }
 
@@ -638,12 +774,6 @@
                     document.getElementById('user-secondlastname').value = data.second_last_name || '';
                     document.getElementById('user-email').value = data.email || '';
                     document.getElementById('user-nickname').value = data.nickname || '';
-
-                    const pwd = document.getElementById('user-password');
-                    pwd.required = false;
-                    pwd.value = '';
-                    pwd.placeholder = 'Dejar en blanco para no modificar';
-                    document.getElementById('user-password-label').innerHTML = 'Nueva Contraseña <span class="text-slate-400 font-normal">(Opcional)</span>';
 
                     const role = data.rol_slug || 'ninguno';
                     document.getElementById('user-roleselect').value = role;
@@ -659,7 +789,7 @@
                         cb.checked = data.quices_editables && data.quices_editables.includes(parseInt(cb.value));
                     });
 
-                    document.getElementById('user-submit-btn').textContent = 'Guardar Cambios';
+                    document.getElementById('user-submit-btn').innerHTML = '<i class="fas fa-save"></i> <span>Guardar Rol Asignado</span>';
                     userOriginalSnapshot = JSON.stringify(getUserFormData());
                     modal.classList.remove('hidden');
                     if (window.lockBodyScroll) window.lockBodyScroll(true);
@@ -691,11 +821,69 @@
             if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
-        // 3. Confirmación para Desactivar / Activar Usuario
-        function confirmToggleStatus(userId, userName, isActive) {
-            const formStatus = document.getElementById('toggle-status-form');
-            const targetUrl = `{{ url('sisig/admin/usuarios') }}/${userId}/estado`;
+        // 3. Confirmación para Desactivar / Activar Usuario (Asíncrono AJAX en tiempo real)
+        async function ejecutarToggleStatusAjax(userId, userName) {
+            const token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(`{{ url('sisig/admin/usuarios') }}/${userId}/estado`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const row = document.querySelector(`button[onclick*="confirmToggleStatus(${userId},"]`)?.closest('tr');
+                    if (row) {
+                        row.dataset.status = data.is_active ? 'activo' : 'inactivo';
+                        // Actualizar columna de estado
+                        const statusCell = row.children[4];
+                        if (statusCell) {
+                            statusCell.innerHTML = `
+                                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-black">
+                                    <span class="w-1.5 h-1.5 rounded-full ${data.is_active ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                                    <span>${data.is_active ? 'Activo' : 'Inactivo'}</span>
+                                </span>
+                            `;
+                        }
+                        // Actualizar botón de toggle
+                        const btnToggle = row.querySelector(`button[onclick*="confirmToggleStatus(${userId},"]`);
+                        if (btnToggle) {
+                            btnToggle.setAttribute('onclick', `confirmToggleStatus(${userId}, '${userName.replace(/'/g, "\\'")}', ${data.is_active ? 'true' : 'false'})`);
+                            btnToggle.title = data.is_active ? 'Desactivar Cuenta' : 'Reactivar Cuenta';
+                            btnToggle.innerHTML = `<i class="fas ${data.is_active ? 'fa-user-slash' : 'fa-user-check'} text-xs"></i>`;
+                            if (data.is_active) {
+                                btnToggle.className = 'w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-amber-500 hover:border-amber-200 hover:bg-amber-50 transition-all flex items-center justify-center cursor-pointer shadow-xs';
+                                row.classList.remove('opacity-65', 'bg-slate-50/40');
+                            } else {
+                                btnToggle.className = 'w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs';
+                                row.classList.add('opacity-65', 'bg-slate-50/40');
+                            }
+                        }
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                    applyFilters();
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al actualizar el estado del usuario.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al actualizar el usuario.', 'danger');
+                }
+            } finally {
+                window.cerrarModalConfirmacion();
+            }
+        }
 
+        function confirmToggleStatus(userId, userName, isActive) {
             if (isActive) {
                 window.abrirModalConfirmacion({
                     tipo: 'warning',
@@ -705,10 +893,7 @@
                     itemTag: 'Usuario',
                     btnTexto: 'Sí, desactivar',
                     btnIcon: 'fa-user-slash',
-                    onConfirm: () => {
-                        formStatus.action = targetUrl;
-                        formStatus.submit();
-                    }
+                    onConfirm: () => ejecutarToggleStatusAjax(userId, userName)
                 });
             } else {
                 window.abrirModalConfirmacion({
@@ -719,15 +904,54 @@
                     itemTag: 'Usuario',
                     btnTexto: 'Sí, reactivar',
                     btnIcon: 'fa-user-check',
-                    onConfirm: () => {
-                        formStatus.action = targetUrl;
-                        formStatus.submit();
-                    }
+                    onConfirm: () => ejecutarToggleStatusAjax(userId, userName)
                 });
             }
         }
 
-        // 4. Confirmación para Eliminar Usuario Definitivamente (con validación de actividad)
+        // 4. Confirmación para Eliminar Usuario Definitivamente (Asíncrono AJAX en tiempo real)
+        async function ejecutarDeleteUserAjax(userId, userName) {
+            const token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(`{{ url('sisig/admin/usuarios') }}/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const row = document.querySelector(`button[onclick*="confirmDeleteUser(${userId},"]`)?.closest('tr');
+                    if (row) {
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            row.remove();
+                            applyFilters();
+                        }, 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'No fue posible eliminar el usuario.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al eliminar el usuario.', 'danger');
+                }
+            } finally {
+                window.cerrarModalConfirmacion();
+            }
+        }
+
         function confirmDeleteUser(userId, userName, hasActivity) {
             if (hasActivity) {
                 document.getElementById('no-eliminable-usuario-nombre').textContent = userName;
@@ -736,7 +960,6 @@
                 return;
             }
 
-            const deleteForm = document.getElementById('delete-user-form');
             window.abrirModalConfirmacion({
                 tipo: 'danger',
                 titulo: '¿Eliminar usuario permanentemente?',
@@ -746,10 +969,7 @@
                 advertencia: 'Este usuario no tiene actividad registrada y será borrado del sistema.',
                 btnTexto: 'Sí, eliminar',
                 btnIcon: 'fa-trash-alt',
-                onConfirm: () => {
-                    deleteForm.action = `{{ url('sisig/admin/usuarios') }}/${userId}`;
-                    deleteForm.submit();
-                }
+                onConfirm: () => ejecutarDeleteUserAjax(userId, userName)
             });
         }
 
