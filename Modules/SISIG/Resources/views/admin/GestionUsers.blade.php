@@ -13,28 +13,14 @@
 
             <div class="self-start lg:self-auto">
                 <button type="button" onclick="openCreateModal()"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                    <i class="fas fa-user-plus text-xs"></i>
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                    <i class="fas fa-plus text-xs"></i>
                     <span>Nuevo Usuario</span>
                 </button>
             </div>
         </div>
 
 
-
-        @if(isset($errors) && $errors->any())
-            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1 text-xs">
-                <div class="font-bold flex items-center gap-2">
-                    <i class="fas fa-exclamation-circle text-rose-600"></i>
-                    <span>Por favor corrige los siguientes errores:</span>
-                </div>
-                <ul class="list-disc list-inside space-y-0.5 pl-2 text-rose-700 font-medium">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <!-- 2. Tarjetas de Métricas de Usuarios (KPIs con bucle optimizado) -->
         @php
@@ -309,6 +295,20 @@
                 @csrf
                 <div id="user-form-method"></div>
 
+                @if(isset($errors) && $errors->any())
+                    <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1 text-xs">
+                        <div class="font-bold flex items-center gap-2 text-rose-700">
+                            <i class="fas fa-exclamation-circle text-rose-600"></i>
+                            <span>Por favor corrige los siguientes errores:</span>
+                        </div>
+                        <ul class="list-disc list-inside space-y-0.5 pl-2 text-rose-700 font-medium text-[11px]">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Documento -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
@@ -359,7 +359,38 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                         <label id="user-password-label" class="text-xs font-bold text-slate-700 block mb-1">Contraseña de Acceso *</label>
-                        <input type="password" name="password" id="user-password" minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                        <div class="relative">
+                            <input type="password" 
+                                   name="password" 
+                                   id="user-password" 
+                                   placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9)" 
+                                   class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all pr-10">
+                            <button type="button" 
+                                    id="btn-toggle-user-password"
+                                    onclick="toggleUserPasswordVisibility()" 
+                                    class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors" 
+                                    title="Mostrar u ocultar contraseña">
+                                <i id="user-password-eye" class="fas fa-eye text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Alerta interactiva en tiempo real al rellenar el modal (según especificación) -->
+                        <div id="user-password-error-card" class="hidden mt-2 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1 text-xs transition-all">
+                            <div class="font-bold flex items-center gap-2 text-rose-700">
+                                <i class="fas fa-exclamation-circle text-rose-600"></i>
+                                <span>Por favor corrige los siguientes errores:</span>
+                            </div>
+                            <ul class="list-disc list-inside space-y-0.5 pl-2 text-rose-700 font-medium text-[11px]">
+                                <li id="rule-length-err">La contraseña debe tener al menos 8 caracteres.</li>
+                                <li id="rule-chars-err">La contraseña debe incluir al menos una letra mayúscula, una minúscula y un número.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Confirmación de contraseña segura y válida -->
+                        <div id="user-password-success-card" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 font-semibold transition-all">
+                            <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+                            <span>¡Contraseña segura! Cumple con todos los requisitos.</span>
+                        </div>
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-700 block mb-1">Rol en SISIG *</label>
@@ -545,6 +576,110 @@
         const form = document.getElementById('user-form');
         const methodContainer = document.getElementById('user-form-method');
 
+        function toggleUserPasswordVisibility() {
+            const pwd = document.getElementById('user-password');
+            const eye = document.getElementById('user-password-eye');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                eye.className = 'fas fa-eye-slash text-xs text-sena-green';
+            } else {
+                pwd.type = 'password';
+                eye.className = 'fas fa-eye text-xs text-slate-400';
+            }
+        }
+
+        function validatePasswordLive(val, isRequired) {
+            const pwdInput = document.getElementById('user-password');
+            const errCard = document.getElementById('user-password-error-card');
+            const errLength = document.getElementById('rule-length-err');
+            const errChars = document.getElementById('rule-chars-err');
+            const successCard = document.getElementById('user-password-success-card');
+
+            if (!pwdInput) return true;
+
+            const trimmedVal = val || '';
+
+            // Si el campo está vacío
+            if (trimmedVal.length === 0) {
+                if (!isRequired) {
+                    if (errCard) errCard.classList.add('hidden');
+                    if (successCard) successCard.classList.add('hidden');
+                    pwdInput.classList.remove('border-rose-400', 'bg-rose-50/20', 'border-emerald-500');
+                    return true;
+                }
+                if (errCard) {
+                    errCard.classList.remove('hidden');
+                    if (errLength) errLength.classList.remove('hidden');
+                    if (errChars) errChars.classList.remove('hidden');
+                }
+                if (successCard) successCard.classList.add('hidden');
+                pwdInput.classList.remove('border-emerald-500');
+                pwdInput.classList.add('border-rose-400', 'bg-rose-50/20');
+                return false;
+            }
+
+            const hasLength = trimmedVal.length >= 8;
+            const hasUpper = /[A-Z]/.test(trimmedVal);
+            const hasLower = /[a-z]/.test(trimmedVal);
+            const hasNumber = /[0-9]/.test(trimmedVal);
+            const hasAllChars = hasUpper && hasLower && hasNumber;
+
+            let hasErrors = false;
+
+            if (!hasLength) {
+                if (errLength) errLength.classList.remove('hidden');
+                hasErrors = true;
+            } else {
+                if (errLength) errLength.classList.add('hidden');
+            }
+
+            if (!hasAllChars) {
+                if (errChars) errChars.classList.remove('hidden');
+                hasErrors = true;
+            } else {
+                if (errChars) errChars.classList.add('hidden');
+            }
+
+            if (hasErrors) {
+                if (errCard) errCard.classList.remove('hidden');
+                if (successCard) successCard.classList.add('hidden');
+                pwdInput.classList.remove('border-emerald-500');
+                pwdInput.classList.add('border-rose-400', 'bg-rose-50/20');
+                return false;
+            } else {
+                if (errCard) errCard.classList.add('hidden');
+                if (successCard) successCard.classList.remove('hidden');
+                pwdInput.classList.remove('border-rose-400', 'bg-rose-50/20');
+                pwdInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function resetPasswordRulesUI(isOptional = false) {
+            const pwdInput = document.getElementById('user-password');
+            const errCard = document.getElementById('user-password-error-card');
+            const successCard = document.getElementById('user-password-success-card');
+
+            if (pwdInput) {
+                pwdInput.classList.remove('border-rose-400', 'bg-rose-50/20', 'border-emerald-500');
+            }
+            if (errCard) errCard.classList.add('hidden');
+            if (successCard) successCard.classList.add('hidden');
+        }
+
+        // Eventos en vivo mientras escribe en el campo de contraseña
+        const pwdInputGlobal = document.getElementById('user-password');
+        if (pwdInputGlobal) {
+            pwdInputGlobal.addEventListener('input', function() {
+                validatePasswordLive(this.value, this.required);
+            });
+            pwdInputGlobal.addEventListener('focus', function() {
+                if (this.value.length > 0 || this.required) {
+                    validatePasswordLive(this.value, this.required);
+                }
+            });
+        }
+
         function toggleFichaField(role) {
             document.getElementById('user-ficha-container').classList.toggle('hidden', role !== 'aprendiz_sisig');
         }
@@ -592,8 +727,10 @@
 
             const pwd = document.getElementById('user-password');
             pwd.required = true;
-            pwd.placeholder = 'Mínimo 6 caracteres';
+            pwd.value = '';
+            pwd.placeholder = 'Mínimo 8 caracteres (A-Z, a-z, 0-9)';
             document.getElementById('user-password-label').innerHTML = 'Contraseña de Acceso *';
+            resetPasswordRulesUI(false);
 
             document.getElementById('user-roleselect').value = 'aprendiz_sisig';
             toggleFichaField('aprendiz_sisig');
@@ -644,6 +781,7 @@
                     pwd.value = '';
                     pwd.placeholder = 'Dejar en blanco para no modificar';
                     document.getElementById('user-password-label').innerHTML = 'Nueva Contraseña <span class="text-slate-400 font-normal">(Opcional)</span>';
+                    resetPasswordRulesUI(true);
 
                     const role = data.rol_slug || 'ninguno';
                     document.getElementById('user-roleselect').value = role;
@@ -673,6 +811,25 @@
         }
 
         form.addEventListener('submit', function(e) {
+            // Validación estricta en el modal antes de registrar
+            const pwdInput = document.getElementById('user-password');
+            const pwdVal = pwdInput.value;
+            const isRequired = pwdInput.required;
+
+            if (isRequired || pwdVal.length > 0) {
+                const isValid = validatePasswordLive(pwdVal, isRequired);
+                if (!isValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    pwdInput.focus();
+                    const errCard = document.getElementById('user-password-error-card');
+                    if (errCard) {
+                        errCard.classList.remove('hidden');
+                    }
+                    return false;
+                }
+            }
+
             if (userOriginalSnapshot) {
                 const currentData = JSON.stringify(getUserFormData());
                 if (currentData === userOriginalSnapshot) {
@@ -783,5 +940,11 @@
                 cerrarModalNoEliminable();
             }
         });
+
+        @if(isset($errors) && $errors->any())
+            document.addEventListener('DOMContentLoaded', () => {
+                openCreateModal();
+            });
+        @endif
     </script>
 </x-sisig::layouts.admin>

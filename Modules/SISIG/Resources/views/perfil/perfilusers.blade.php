@@ -268,10 +268,30 @@
                             <div>
                                 <label for="password" class="block text-xs font-bold text-slate-700 mb-1.5">Nueva Contraseña <span class="text-rose-500">*</span></label>
                                 <div class="relative">
-                                    <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white border border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all font-medium text-slate-800 pr-10">
+                                    <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9)" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white border border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all font-medium text-slate-800 pr-10">
                                     <button type="button" onclick="togglePasswordVisibility('password', 'eye_new')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
                                         <i id="eye_new" class="fas fa-eye text-xs"></i>
                                     </button>
+                                </div>
+
+                                <!-- Panel Interactivo de Requisitos en Vivo -->
+                                <div id="perfil-password-rules-box" class="mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-bold text-slate-600 flex items-center gap-1">
+                                            <i class="fas fa-shield-alt text-slate-400"></i> Requisitos de seguridad:
+                                        </span>
+                                        <span id="perfil-pwd-badge" class="font-semibold text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Pendiente</span>
+                                    </div>
+                                    <ul class="space-y-1 text-[11px] text-slate-500 pt-0.5">
+                                        <li id="perfil-rule-len" class="flex items-center gap-1.5">
+                                            <i class="fas fa-circle text-[7px] text-slate-300 rule-icon"></i>
+                                            <span>Mínimo 8 caracteres</span>
+                                        </li>
+                                        <li id="perfil-rule-chars" class="flex items-center gap-1.5">
+                                            <i class="fas fa-circle text-[7px] text-slate-300 rule-icon"></i>
+                                            <span>Al menos una mayúscula, una minúscula y un número</span>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -309,6 +329,46 @@
             input.type = isPassword ? 'text' : 'password';
             icon.classList.toggle('fa-eye', !isPassword);
             icon.classList.toggle('fa-eye-slash', isPassword);
+        }
+
+        // Validación en tiempo real de la nueva contraseña
+        const perfilPwd = document.getElementById('password');
+        if (perfilPwd) {
+            perfilPwd.addEventListener('input', function() {
+                const val = this.value;
+                const rLen = document.getElementById('perfil-rule-len');
+                const rChars = document.getElementById('perfil-rule-chars');
+                const badge = document.getElementById('perfil-pwd-badge');
+                
+                const hasLen = val.length >= 8;
+                const hasChars = /[A-Z]/.test(val) && /[a-z]/.test(val) && /[0-9]/.test(val);
+
+                updatePerfilRule(rLen, hasLen);
+                updatePerfilRule(rChars, hasChars);
+
+                if (hasLen && hasChars) {
+                    badge.className = 'font-semibold text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+                    badge.textContent = 'Válida ✓';
+                    perfilPwd.classList.remove('border-slate-300');
+                    perfilPwd.classList.add('border-emerald-400');
+                } else {
+                    badge.className = 'font-semibold text-[10px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-700';
+                    badge.textContent = 'Incompleta';
+                    perfilPwd.classList.remove('border-emerald-400');
+                }
+            });
+        }
+
+        function updatePerfilRule(el, ok) {
+            if (!el) return;
+            const icon = el.querySelector('.rule-icon');
+            if (ok) {
+                el.className = 'flex items-center gap-1.5 text-emerald-600 font-medium text-[11px]';
+                if (icon) icon.className = 'fas fa-check-circle text-emerald-500 text-xs rule-icon';
+            } else {
+                el.className = 'flex items-center gap-1.5 text-slate-500 text-[11px]';
+                if (icon) icon.className = 'fas fa-circle text-[7px] text-slate-300 rule-icon';
+            }
         }
 
         // Previsualización de la foto seleccionada

@@ -229,8 +229,10 @@ class EvaluacionesAprendizController extends Controller
             ]);
         }
 
-        $tipoEvento = $request->input('tipo_evento', 'evento_desconocido');
-        $detalle = $request->input('detalle', 'Incidente detectado por el monitor de integridad.');
+        // Sanitizar y acotar entradas para prevenir cargas maliciosas o desbordamiento de búfer
+        $rawTipo = (string)$request->input('tipo_evento', 'evento_desconocido');
+        $tipoEvento = substr(preg_replace('/[^a-zA-Z0-9_\-]/', '', $rawTipo), 0, 50);
+        $detalle = substr(strip_tags(trim((string)$request->input('detalle', 'Incidente detectado por el monitor de integridad.'))), 0, 500);
         $userAgent = substr($request->userAgent() ?? 'N/A', 0, 255);
         $ip = $request->ip();
 

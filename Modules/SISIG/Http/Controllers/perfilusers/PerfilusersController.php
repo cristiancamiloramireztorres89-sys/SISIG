@@ -124,12 +124,13 @@ class PerfilusersController extends Controller
     {
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
         ], [
             'current_password.required' => 'Debes ingresar tu contraseña actual.',
             'password.required' => 'Debes ingresar una nueva contraseña.',
             'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
+            'password.regex' => 'La nueva contraseña debe incluir al menos una letra mayúscula, una minúscula y un número.',
         ]);
 
         /** @var \App\Models\User $user */
@@ -148,6 +149,19 @@ class PerfilusersController extends Controller
         // Actualizar contraseña encriptada
         $user->password = Hash::make($request->password);
         $user->save();
+
+        // Registrar trazabilidad de cambio de contraseña en la bitácora de auditoría
+        try {
+            if (Schema::hasTable('actividadreciente')) {
+                DB::table('actividadreciente')->insert([
+                    'user_id'     => $user->id,
+                    'tipo_evento' => 'restablecimiento',
+                    'mensaje'     => "El usuario {$user->name} actualizó satisfactoriamente su contraseña de acceso.",
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
+        } catch (\Exception $e) {}
 
         return back()->with('success', '¡Tu contraseña ha sido cambiada exitosamente!');
     }

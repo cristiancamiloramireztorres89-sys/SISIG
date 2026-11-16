@@ -10,9 +10,28 @@ class GestionExamenesController extends AdminGestionExamenesController
 {
     protected string $routePrefix = 'sisig.editor';
 
+    /**
+     * Verifica la autorización específica para el rol de Editor SISIG o Administrador.
+     */
+    protected function checkAuthorization(): void
+    {
+        if (!auth()->check()) {
+            abort(403, 'Acceso denegado: Usuario no autenticado.');
+        }
+
+        $user = auth()->user();
+        if (!$user->hasRole('editor_sisig') && !$user->hasRole('admin_sisig') && !$user->hasRole('sisig.admin') && !$user->hasRole('superadmin')) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
+        }
+    }
+
     protected function getModulosPermitidos()
     {
-        return auth()->user()->modulosEditables;
+        $user = auth()->user();
+        if ($user->hasRole('admin_sisig') || $user->hasRole('sisig.admin') || $user->hasRole('superadmin')) {
+            return \Modules\SISIG\Entities\Modulo::all();
+        }
+        return $user->modulosEditables;
     }
 
     /**

@@ -19,7 +19,7 @@
                 <button type="button" onclick="openExamenModal()"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
                     <i class="fas fa-plus text-xs"></i>
-                    <span>+ Crear Examen</span>
+                    <span>Crear Examen</span>
                 </button>
             </div>
         </div>
@@ -248,8 +248,9 @@
                         <i class="fas fa-paste text-4xl text-slate-300 mb-3 block"></i>
                         <h3 class="text-lg font-bold text-slate-700 mb-1">No hay exámenes registrados</h3>
                         <p class="text-sm text-slate-500 mb-4">Aún no has creado ningún quiz para los módulos.</p>
-                        <button onclick="openExamenModal()" class="px-5 py-2.5 rounded-full bg-[#2E6F40] hover:bg-[#235833] text-white font-bold text-sm shadow-sm transition-all cursor-pointer">
-                            <i class="fas fa-plus mr-1"></i> Crear mi primer examen
+                        <button onclick="openExamenModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all cursor-pointer">
+                            <i class="fas fa-plus text-xs"></i>
+                            <span>Crear mi primer examen</span>
                         </button>
                     </div>
                 @endforelse

@@ -7,15 +7,17 @@ use Modules\SISIG\Http\Controllers\Admin\GestionUsersController;
 use Modules\SISIG\Http\Controllers\Aprendiz\DashboardControllerAprendiz;
 use Modules\SISIG\Http\Controllers\Editor\DashboardControllerEditor;
 use Modules\SISIG\Http\Controllers\Perfilusers\PerfilusersController;
-use Modules\SISIG\Http\Controllers\editor\ContenidoController;
+use Modules\SISIG\Http\Controllers\Editor\ContenidoController;
+use Modules\SISIG\Http\Middleware\CheckAdminSisig;
+use Modules\SISIG\Http\Middleware\CheckEditorSisig;
 
 Route::prefix('sisig')->name('sisig.')->group(function () {
     // Portal Informativo Público
     Route::get('/', [SISIGController::class, 'index'])->name('index');
     Route::get('/desarrolladores', [SISIGController::class, 'desarrolladores'])->name('desarrolladores');
 
-    // Módulo de Administración (Exclusivo admin_sisig)
-    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    // Módulo de Administración (Exclusivo admin_sisig) - Protegido por autenticación y RBAC
+    Route::prefix('admin')->name('admin.')->middleware(['auth', CheckAdminSisig::class])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/usuarios', [GestionUsersController::class, 'index'])->name('users.index');
         Route::post('/usuarios', [GestionUsersController::class, 'store'])->name('users.store');
@@ -45,17 +47,18 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::put('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'update'])->name('examenes.preguntas.update');
         Route::delete('/examenes/{quiz_id}/preguntas/{pregunta_id}', [\Modules\SISIG\Http\Controllers\Admin\GestionPreguntasController::class, 'destroy'])->name('examenes.preguntas.destroy');
 
-        // Módulo de Seguridad y Accesos
+        // Módulo de Seguridad y Accesos (con limitación de tasa en cierre forzado)
         Route::get('/seguridad', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'index'])->name('seguridad.index');
-        Route::delete('/seguridad/sesiones/{id}', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'cerrarSesion'])->name('seguridad.sesiones.destroy');
+        Route::delete('/seguridad/sesiones/{id}', [\Modules\SISIG\Http\Controllers\Admin\SeguridadController::class, 'cerrarSesion'])
+            ->middleware('throttle:20,1')
+            ->name('seguridad.sesiones.destroy');
 
         // Módulo de Reportes y Métricas
         Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Admin\ReportesController::class, 'index'])->name('reportes.index');
     });
 
-
-    // Módulo de Edición de Contenidos (Exclusivo editor_sisig)
-    Route::prefix('editor')->name('editor.')->middleware(['auth'])->group(function () {
+    // Módulo de Edición de Contenidos (Exclusivo editor_sisig / admin_sisig) - Protegido por RBAC
+    Route::prefix('editor')->name('editor.')->middleware(['auth', CheckEditorSisig::class])->group(function () {
         Route::get('/dashboard', [DashboardControllerEditor::class, 'index'])->name('dashboard');
 
         // Rutas de Gestión de Contenido para el Editor
@@ -94,11 +97,15 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/induccion', [\Modules\SISIG\Http\Controllers\Aprendiz\InduccionAprendizController::class, 'index'])->name('induccion.index');
         Route::get('/induccion/{id}', [\Modules\SISIG\Http\Controllers\Aprendiz\InduccionAprendizController::class, 'show'])->name('induccion.show');
 
-        // Mis Evaluaciones y Quices Interactivos
+        // Mis Evaluaciones y Quices Interactivos (con rate limiting de seguridad)
         Route::get('/evaluaciones', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'index'])->name('evaluaciones.index');
         Route::get('/evaluaciones/{id_quiz}/iniciar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'iniciar'])->name('evaluaciones.iniciar');
-        Route::post('/evaluaciones/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])->name('evaluaciones.incidente');
-        Route::post('/evaluaciones/{id_quiz}/calificar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'calificar'])->name('evaluaciones.calificar');
+        Route::post('/evaluaciones/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])
+            ->middleware('throttle:30,1')
+            ->name('evaluaciones.incidente');
+        Route::post('/evaluaciones/{id_quiz}/calificar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'calificar'])
+            ->middleware('throttle:15,1')
+            ->name('evaluaciones.calificar');
         Route::get('/evaluaciones/{id_resultado}/resultado', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'verResultado'])->name('evaluaciones.resultado');
 
         // Historial y Calificaciones (Mis Resultados)
@@ -113,7 +120,12 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
             }
             return redirect()->route('sisig.aprendiz.evaluaciones.index');
         })->name('quiz.presentar');
-        Route::post('/quiz/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])->name('quiz.incidente');
+        Route::post('/quiz/{id_resultado}/incidente', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'registrarIncidente'])
+            ->middleware('throttle:30,1')
+            ->name('quiz.incidente');
+        Route::post('/quiz/{id_quiz}/finalizar', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'calificar'])
+            ->middleware('throttle:15,1')
+            ->name('quiz.finalizar');
         Route::get('/quiz/{id_resultado}/resultado', [\Modules\SISIG\Http\Controllers\Aprendiz\EvaluacionesAprendizController::class, 'verResultado'])->name('quiz.resultado');
     });
 
@@ -121,7 +133,8 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/perfil', [PerfilusersController::class, 'index'])->name('perfil.index');
         Route::put('/perfil', [PerfilusersController::class, 'update'])->name('perfil.update');
-        Route::put('/perfil/password', [PerfilusersController::class, 'updatePassword'])->name('perfil.password');
+        Route::put('/perfil/password', [PerfilusersController::class, 'updatePassword'])
+            ->middleware('throttle:5,1')
+            ->name('perfil.password');
     });
 });
-

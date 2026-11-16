@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -17,6 +18,15 @@ class ReportesController extends Controller
      */
     public function index(Request $request)
     {
+        if (!Auth::check()) {
+            abort(403, 'Acceso denegado: Usuario no autenticado.');
+        }
+
+        $user = Auth::user();
+        if (!$user->hasRole('editor_sisig') && !$user->hasRole('admin_sisig') && !$user->hasRole('sisig.admin') && !$user->hasRole('superadmin')) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
+        }
+
         // 1. Obtener todos los módulos formativos de la base de datos de manera dinámica
         $modulos = DB::table('sisig_modulos')
             ->where('estado', '!=', 'inactivo')

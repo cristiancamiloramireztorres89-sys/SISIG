@@ -15,8 +15,16 @@ class DashboardControllerEditor extends Controller
      */
     public function index()
     {
+        if (!Auth::check()) {
+            abort(403, 'Acceso denegado: Usuario no autenticado.');
+        }
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        if (!$user->hasRole('editor_sisig') && !$user->hasRole('admin_sisig') && !$user->hasRole('sisig.admin') && !$user->hasRole('superadmin')) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
+        }
 
         // 1. Métricas generales de contenidos y evaluaciones
         $totalModulos = DB::table('sisig_modulos')->count();

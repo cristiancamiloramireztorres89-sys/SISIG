@@ -48,7 +48,7 @@
                 <button type="button" onclick="abrirModalCrearModuloEditor()"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
                     <i class="fas fa-plus text-xs"></i>
-                    <span>+ Crear Módulo</span>
+                    <span>Crear Módulo</span>
                 </button>
             </div>
         </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Modules\SISIG\Entities\InfraccionQuiz;
@@ -18,12 +19,22 @@ class InfraccionesController extends Controller
      */
     public function index(Request $request)
     {
+        if (!Auth::check()) {
+            abort(403, 'Acceso denegado: Usuario no autenticado.');
+        }
+
+        $user = Auth::user();
+        if (!$user->hasRole('editor_sisig') && !$user->hasRole('admin_sisig') && !$user->hasRole('sisig.admin') && !$user->hasRole('superadmin')) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
+        }
+
         $seccion = strtolower($request->input('seccion', 'todas'));
         if (!in_array($seccion, ['todas', 'calidad', 'sst', 'ambiental'])) {
             $seccion = 'todas';
         }
 
         $buscar = trim($request->input('buscar', ''));
+        $escapedBuscar = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $buscar);
 
         // Consulta de resultados que fueron anulados o que tuvieron infracciones anti-trampa registradas
         $query = Resultado::with([
@@ -73,24 +84,24 @@ class InfraccionesController extends Controller
             });
         }
 
-        // Filtro de búsqueda
+        // Filtro de búsqueda con escape seguro de caracteres especiales LIKE
         if (!empty($buscar)) {
-            $query->where(function ($q) use ($buscar) {
-                $q->whereHas('user', function ($qu) use ($buscar) {
-                    $qu->where('name', 'like', "%{$buscar}%")
-                       ->orWhere('email', 'like', "%{$buscar}%")
-                       ->orWhere('nickname', 'like', "%{$buscar}%");
+            $query->where(function ($q) use ($escapedBuscar) {
+                $q->whereHas('user', function ($qu) use ($escapedBuscar) {
+                    $qu->where('name', 'like', "%{$escapedBuscar}%")
+                       ->orWhere('email', 'like', "%{$escapedBuscar}%")
+                       ->orWhere('nickname', 'like', "%{$escapedBuscar}%");
 
                     if (Schema::hasTable('people')) {
-                        $qu->orWhereHas('person', function ($qp) use ($buscar) {
-                            $qp->where('first_name', 'like', "%{$buscar}%")
-                               ->orWhere('first_last_name', 'like', "%{$buscar}%")
-                               ->orWhere('second_last_name', 'like', "%{$buscar}%")
-                               ->orWhere('document_number', 'like', "%{$buscar}%");
+                        $qu->orWhereHas('person', function ($qp) use ($escapedBuscar) {
+                            $qp->where('first_name', 'like', "%{$escapedBuscar}%")
+                               ->orWhere('first_last_name', 'like', "%{$escapedBuscar}%")
+                               ->orWhere('second_last_name', 'like', "%{$escapedBuscar}%")
+                               ->orWhere('document_number', 'like', "%{$escapedBuscar}%");
                         });
                     }
-                })->orWhereHas('quiz', function ($qq) use ($buscar) {
-                    $qq->where('titulo', 'like', "%{$buscar}%");
+                })->orWhereHas('quiz', function ($qq) use ($escapedBuscar) {
+                    $qq->where('titulo', 'like', "%{$escapedBuscar}%");
                 });
             });
         }

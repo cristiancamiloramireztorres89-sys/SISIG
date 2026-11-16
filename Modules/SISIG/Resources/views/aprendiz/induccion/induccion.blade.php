@@ -216,7 +216,7 @@
                                 <!-- Botón de Ingreso al Estudio en Pill -->
                                 <div class="pt-3 border-t border-slate-100 mt-auto">
                                     <a href="{{ route('sisig.aprendiz.induccion.show', $modulo->id) }}" 
-                                       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover shadow-sena hover:shadow-lg transition-all w-full cursor-pointer">
+                                       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all w-full cursor-pointer group-hover:scale-[1.01]">
                                         <i class="fas fa-book-reader text-xs"></i>
                                         <span>Ingresar a Estudiar</span>
                                         <i class="fas fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>

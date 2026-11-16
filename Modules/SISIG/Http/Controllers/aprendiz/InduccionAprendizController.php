@@ -24,13 +24,14 @@ class InduccionAprendizController extends Controller
             $query->where('estado', '!=', 'inactivo');
         }
 
-        // Búsqueda opcional por término
+        // Búsqueda opcional por término con escape seguro de caracteres especiales
         if ($request->filled('buscar')) {
-            $buscar = $request->buscar;
-            $query->where(function ($q) use ($buscar) {
-                $q->where('titulo', 'LIKE', "%{$buscar}%")
-                  ->orWhere('norma', 'LIKE', "%{$buscar}%")
-                  ->orWhere('descripcion', 'LIKE', "%{$buscar}%");
+            $buscar = trim($request->buscar);
+            $escapedBuscar = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $buscar);
+            $query->where(function ($q) use ($escapedBuscar) {
+                $q->where('titulo', 'LIKE', "%{$escapedBuscar}%")
+                  ->orWhere('norma', 'LIKE', "%{$escapedBuscar}%")
+                  ->orWhere('descripcion', 'LIKE', "%{$escapedBuscar}%");
             });
         }
 

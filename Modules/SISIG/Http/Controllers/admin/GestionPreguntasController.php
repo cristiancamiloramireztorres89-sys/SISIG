@@ -4,6 +4,7 @@ namespace Modules\SISIG\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Modules\SISIG\Entities\Quiz;
 use Modules\SISIG\Entities\Pregunta;
 use Modules\SISIG\Entities\Opcion;
@@ -14,6 +15,16 @@ class GestionPreguntasController extends Controller
      * Prefijo de rutas para redirecciones del panel de administración.
      */
     protected string $routePrefix = 'sisig.admin';
+
+    /**
+     * Verifica la autorización del usuario actual (sobreescribible en controladores derivados).
+     */
+    protected function checkAuthorization(): void
+    {
+        if (!Auth::check() || (!Auth::user()->hasRole('admin_sisig') && !Auth::user()->hasRole('sisig.admin') && !Auth::user()->hasRole('superadmin'))) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Administrador SISIG.');
+        }
+    }
 
     /**
      * Busca y obtiene el examen solicitado con sus relaciones o lanza error 404.
@@ -28,6 +39,8 @@ class GestionPreguntasController extends Controller
      */
     public function index($quiz_id)
     {
+        $this->checkAuthorization();
+
         // Consultar el examen junto con su módulo y preguntas
         $quiz = $this->findQuizOrFail($quiz_id);
         $routePrefix = $this->routePrefix;
@@ -40,33 +53,35 @@ class GestionPreguntasController extends Controller
      */
     public function store(Request $request, $quiz_id)
     {
+        $this->checkAuthorization();
+
         // Obtener el examen contenedor
         $quiz = $this->findQuizOrFail($quiz_id);
 
         // Validación de datos de la pregunta
-        $request->validate([
+        $validated = $request->validate([
             'tipo'               => 'required|string|in:opcion_multiple,seleccion_multiple,verdadero_falso,espacios_blanco,abierta,tabla_relleno',
-            'pregunta'           => 'required|string',
-            'puntaje'            => 'required|numeric|min:0',
-            'retroalimentacion'  => 'nullable|string',
+            'pregunta'           => 'required|string|max:2000',
+            'puntaje'            => 'required|numeric|min:0|max:100',
+            'retroalimentacion'  => 'nullable|string|max:2000',
             'configuracion_json' => 'nullable|array'
         ]);
 
         // Crear la pregunta vinculada al examen
         $pregunta = $quiz->preguntas()->create([
-            'pregunta'           => $request->pregunta,
-            'tipo'               => $request->tipo,
-            'puntaje'            => $request->puntaje,
-            'retroalimentacion'  => $request->retroalimentacion,
-            'configuracion_json' => $request->configuracion_json
+            'pregunta'           => trim($validated['pregunta']),
+            'tipo'               => $validated['tipo'],
+            'puntaje'            => (float)$validated['puntaje'],
+            'retroalimentacion'  => isset($validated['retroalimentacion']) ? trim($validated['retroalimentacion']) : null,
+            'configuracion_json' => $validated['configuracion_json'] ?? null
         ]);
 
         // Registrar opciones de respuesta si fueron suministradas
         if ($request->has('opciones') && is_array($request->opciones)) {
             foreach ($request->opciones as $opcionData) {
-                if (!empty($opcionData['texto'])) {
+                if (is_array($opcionData) && !empty(trim($opcionData['texto'] ?? ''))) {
                     $pregunta->opciones()->create([
-                        'opcion'      => $opcionData['texto'],
+                        'opcion'      => trim($opcionData['texto']),
                         'es_correcta' => isset($opcionData['es_correcta']) && $opcionData['es_correcta'] == 1
                     ]);
                 }
@@ -85,24 +100,26 @@ class GestionPreguntasController extends Controller
      */
     public function update(Request $request, $quiz_id, $pregunta_id)
     {
+        $this->checkAuthorization();
+
         // Verificar existencia del examen y de la pregunta
         $quiz = $this->findQuizOrFail($quiz_id);
         $pregunta = Pregunta::where('id_quiz', $quiz_id)->where('id_pregunta', $pregunta_id)->firstOrFail();
 
         // Validación de campos editables
-        $request->validate([
-            'pregunta'           => 'required|string',
-            'puntaje'            => 'required|numeric|min:0',
-            'retroalimentacion'  => 'nullable|string',
+        $validated = $request->validate([
+            'pregunta'           => 'required|string|max:2000',
+            'puntaje'            => 'required|numeric|min:0|max:100',
+            'retroalimentacion'  => 'nullable|string|max:2000',
             'configuracion_json' => 'nullable|array'
         ]);
 
         // Actualizar datos básicos de la pregunta
         $pregunta->update([
-            'pregunta'           => $request->pregunta,
-            'puntaje'            => $request->puntaje,
-            'retroalimentacion'  => $request->retroalimentacion,
-            'configuracion_json' => $request->configuracion_json
+            'pregunta'           => trim($validated['pregunta']),
+            'puntaje'            => (float)$validated['puntaje'],
+            'retroalimentacion'  => isset($validated['retroalimentacion']) ? trim($validated['retroalimentacion']) : null,
+            'configuracion_json' => $validated['configuracion_json'] ?? null
         ]);
 
         // Sincronizar opciones de respuesta (reemplazo seguro de opciones existentes)
@@ -110,9 +127,9 @@ class GestionPreguntasController extends Controller
             $pregunta->opciones()->delete();
 
             foreach ($request->opciones as $opcionData) {
-                if (!empty($opcionData['texto'])) {
+                if (is_array($opcionData) && !empty(trim($opcionData['texto'] ?? ''))) {
                     $pregunta->opciones()->create([
-                        'opcion'      => $opcionData['texto'],
+                        'opcion'      => trim($opcionData['texto']),
                         'es_correcta' => isset($opcionData['es_correcta']) && $opcionData['es_correcta'] == 1
                     ]);
                 }
@@ -127,6 +144,8 @@ class GestionPreguntasController extends Controller
      */
     public function destroy($quiz_id, $pregunta_id)
     {
+        $this->checkAuthorization();
+
         // Obtener examen y la pregunta correspondiente
         $quiz = $this->findQuizOrFail($quiz_id);
         $pregunta = Pregunta::where('id_quiz', $quiz_id)->where('id_pregunta', $pregunta_id)->firstOrFail();

@@ -2,18 +2,32 @@
 
 namespace Modules\SISIG\Http\Controllers\Admin;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\SISIG\Entities\Modulo;
+use Modules\SISIG\Helpers\HtmlSecuritySanitizer;
 
 class GestionModulosController extends Controller
 {
+    /**
+     * Valida la autorización del usuario actual para operaciones administrativas sobre módulos.
+     */
+    protected function checkAdminAuthorization(): void
+    {
+        if (!Auth::check() || (!Auth::user()->hasRole('admin_sisig') && !Auth::user()->hasRole('sisig.admin') && !Auth::user()->hasRole('superadmin'))) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Administrador SISIG para gestionar módulos.');
+        }
+    }
+
     /**
      * Muestra el catálogo de módulos temáticos y métricas de publicación.
      */
     public function index()
     {
+        $this->checkAdminAuthorization();
+
         // Obtener todos los módulos registrados
         $modulos = Modulo::all();
         
@@ -27,27 +41,31 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Registra un nuevo módulo temático en la plataforma.
+     * Registra un nuevo módulo temático en la plataforma con validación estricta.
      */
     public function store(Request $request)
     {
-        // Validación de datos del módulo
+        $this->checkAdminAuthorization();
+
+        // Validación exhaustiva de datos del módulo incluyendo imágenes
         $request->validate([
-            'titulo'      => 'required|string|max:255',
-            'norma'       => 'nullable|string|max:255',
-            'estado'      => 'required|in:publicado,revision,inactivo',
-            'descripcion' => 'nullable|string'
+            'titulo'           => 'required|string|max:255',
+            'norma'            => 'nullable|string|max:255',
+            'estado'           => 'required|in:publicado,revision,inactivo',
+            'descripcion'      => 'nullable|string|max:2000',
+            'imagen'           => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'imagen_recortada' => 'nullable|string',
         ]);
 
-        // Procesar imagen de portada (soporta archivo físico o Base64 recortado)
+        // Procesar imagen de portada de forma segura
         $imagenPath = $this->procesarImagenModulo($request);
 
         // Guardar nuevo módulo en la base de datos con valores visuales por defecto
         Modulo::create([
-            'titulo'       => $request->titulo,
-            'norma'        => $request->norma,
+            'titulo'       => trim($request->titulo),
+            'norma'        => $request->filled('norma') ? trim($request->norma) : null,
             'estado'       => $request->estado,
-            'descripcion'  => $request->descripcion,
+            'descripcion'  => $request->filled('descripcion') ? trim($request->descripcion) : null,
             'imagen'       => $imagenPath,
             'icon_class'   => 'fas fa-layer-group text-sky-600',
             'icon_bg'      => 'bg-sky-100',
@@ -62,25 +80,31 @@ class GestionModulosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validación de datos del formulario
+        $this->checkAdminAuthorization();
+
+        // Validación de datos del formulario incluyendo archivos
         $request->validate([
-            'titulo'      => 'required|string|max:255',
-            'estado'      => 'required|in:publicado,revision,inactivo',
-            'descripcion' => 'nullable|string'
+            'titulo'           => 'required|string|max:255',
+            'norma'            => 'nullable|string|max:255',
+            'estado'           => 'required|in:publicado,revision,inactivo',
+            'descripcion'      => 'nullable|string|max:2000',
+            'imagen'           => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'imagen_recortada' => 'nullable|string',
         ]);
 
         $modulo = Modulo::findOrFail($id);
         $modulo->fill([
-            'titulo'      => $request->titulo,
+            'titulo'      => trim($request->titulo),
+            'norma'       => $request->filled('norma') ? trim($request->norma) : $modulo->norma,
             'estado'      => $request->estado,
-            'descripcion' => $request->descripcion
+            'descripcion' => $request->filled('descripcion') ? trim($request->descripcion) : null,
         ]);
 
-        // Reemplazo de imagen de portada y eliminación del archivo anterior si existe
+        // Reemplazo seguro de imagen de portada y eliminación controlada del archivo anterior
         if ($request->filled('imagen_recortada') || $request->hasFile('imagen')) {
             $nuevaImagen = $this->procesarImagenModulo($request);
             if ($nuevaImagen) {
-                if ($modulo->imagen && str_contains($modulo->imagen, 'modulos/') && file_exists(public_path($modulo->imagen))) {
+                if ($modulo->imagen && str_contains($modulo->imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->imagen))) {
                     @unlink(public_path($modulo->imagen));
                 }
                 $modulo->imagen = $nuevaImagen;
@@ -102,7 +126,8 @@ class GestionModulosController extends Controller
      */
     public function editContent($id)
     {
-        // Módulos para navegación por pestañas
+        $this->checkAdminAuthorization();
+
         $modulos = Modulo::all();
         $moduloSeleccionado = Modulo::findOrFail($id);
 
@@ -110,29 +135,35 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Actualiza el contenido formativo HTML y fondo personalizado del módulo.
+     * Actualiza el contenido formativo HTML y fondo personalizado del módulo con saneamiento XSS.
      */
     public function updateContent(Request $request, $id)
     {
-        // Validación de contenido y nivel de opacidad
+        $this->checkAdminAuthorization();
+
+        // Validación de parámetros
         $request->validate([
-            'contenido_html' => 'nullable|string',
-            'fondo_opacidad' => 'nullable|integer|min:0|max:100'
+            'contenido_html'         => 'nullable|string',
+            'fondo_opacidad'         => 'nullable|integer|min:0|max:100',
+            'fondo_imagen_recortada' => 'nullable|string',
+            'quitar_fondo'           => 'nullable|in:0,1',
         ]);
 
         $modulo = Modulo::findOrFail($id);
-        $modulo->contenido_html = $request->contenido_html;
+
+        // Saneamiento de seguridad de la entrada HTML enriquecida contra Stored XSS
+        $modulo->contenido_html = HtmlSecuritySanitizer::clean($request->contenido_html);
 
         // Gestión del fondo del módulo: remover o actualizar por nuevo recorte
         if ($request->input('quitar_fondo') === '1') {
-            if ($modulo->fondo_imagen && file_exists(public_path($modulo->fondo_imagen))) {
+            if ($modulo->fondo_imagen && str_contains($modulo->fondo_imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->fondo_imagen))) {
                 @unlink(public_path($modulo->fondo_imagen));
             }
             $modulo->fondo_imagen = null;
         } elseif ($request->filled('fondo_imagen_recortada')) {
             $nuevoFondo = $this->guardarImagenBase64($request->input('fondo_imagen_recortada'), 'fondo');
             if ($nuevoFondo) {
-                if ($modulo->fondo_imagen && file_exists(public_path($modulo->fondo_imagen))) {
+                if ($modulo->fondo_imagen && str_contains($modulo->fondo_imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->fondo_imagen))) {
                     @unlink(public_path($modulo->fondo_imagen));
                 }
                 $modulo->fondo_imagen = $nuevoFondo;
@@ -154,29 +185,36 @@ class GestionModulosController extends Controller
      */
     public function destroy($id)
     {
-        $modulo = Modulo::findOrFail($id);
-        $titulo = $modulo->titulo;
+        $this->checkAdminAuthorization();
 
-        // Limpiar archivo físico de portada
-        if ($modulo->imagen && file_exists(public_path($modulo->imagen))) {
-            @unlink(public_path($modulo->imagen));
+        try {
+            $modulo = Modulo::findOrFail($id);
+            $titulo = $modulo->titulo;
+
+            // Limpiar archivo físico de portada de forma controlada
+            if ($modulo->imagen && str_contains($modulo->imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->imagen))) {
+                @unlink(public_path($modulo->imagen));
+            }
+
+            // Limpiar archivo físico de fondo de forma controlada
+            if ($modulo->fondo_imagen && str_contains($modulo->fondo_imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->fondo_imagen))) {
+                @unlink(public_path($modulo->fondo_imagen));
+            }
+
+            // Eliminar registro del módulo en base de datos
+            $modulo->delete();
+
+            return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente');
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar módulo en SISIG: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('sisig.admin.modulos.index')->with('error', 'Ocurrió un error al intentar eliminar el módulo.');
         }
-
-        // Limpiar archivo físico de fondo
-        if ($modulo->fondo_imagen && file_exists(public_path($modulo->fondo_imagen))) {
-            @unlink(public_path($modulo->fondo_imagen));
-        }
-
-        // Eliminar registro del módulo en base de datos
-        $modulo->delete();
-
-        return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente');
     }
 
     /**
-     * Procesa la imagen del módulo ya sea en Base64 (recortada) o subida como archivo directo.
+     * Procesa la imagen del módulo con validación estricta de extensiones y tipos MIME.
      */
-    private function procesarImagenModulo(Request $request)
+    private function procesarImagenModulo(Request $request): ?string
     {
         // Imagen recortada desde canvas Base64
         if ($request->filled('imagen_recortada')) {
@@ -184,10 +222,23 @@ class GestionModulosController extends Controller
         } 
         
         // Imagen subida como archivo físico directo
-        elseif ($request->hasFile('imagen')) {
+        if ($request->hasFile('imagen')) {
             $file = $request->file('imagen');
-            $extension = $file->getClientOriginalExtension() ?: 'png';
-            $filename = 'modulo_' . time() . '_' . uniqid() . '.' . $extension;
+
+            // Determinar extensión segura basada en MIME real comprobado
+            $mime = $file->getMimeType();
+            $allowedMimes = [
+                'image/jpeg' => 'jpg',
+                'image/png'  => 'png',
+                'image/webp' => 'webp',
+            ];
+
+            if (!isset($allowedMimes[$mime])) {
+                return null;
+            }
+
+            $extension = $allowedMimes[$mime];
+            $filename = 'modulo_' . time() . '_' . bin2hex(random_bytes(8)) . '.' . $extension;
             $destinationDir = public_path('modules/sisig/images/modulos');
             
             if (!file_exists($destinationDir)) {
@@ -202,31 +253,51 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Decodifica y guarda una imagen Base64 DataURL en el directorio de módulos.
+     * Decodifica y guarda una imagen Base64 DataURL validando formato, tamaño y encabezados binarios.
      */
-    private function guardarImagenBase64($dataUrl, $prefijo = 'modulo')
+    private function guardarImagenBase64($dataUrl, $prefijo = 'modulo'): ?string
     {
-        // Validar formato y decodificar flujo Base64
-        if (preg_match('/^data:image\/(\w+);base64,/', $dataUrl, $type)) {
-            $dataUrl = substr($dataUrl, strpos($dataUrl, ',') + 1);
-            $type = strtolower($type[1]);
+        if (!is_string($dataUrl)) {
+            return null;
+        }
+
+        // Validar formato de esquema Data URL
+        if (preg_match('/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+\/=\r\n]+)$/', $dataUrl, $matches)) {
+            $type = strtolower($matches[1]);
+            if ($type === 'jpeg') {
+                $type = 'jpg';
+            }
+
+            $decoded = base64_decode($matches[2], true);
+            if ($decoded === false || strlen($decoded) === 0) {
+                return null;
+            }
+
+            // Límite de tamaño estricto de 2.5 MB para prevenir agotamiento de memoria
+            if (strlen($decoded) > 2621440) {
+                return null;
+            }
+
+            // Comprobar que realmente contiene una cabecera de imagen binaria válida
+            $imageInfo = @getimagesizefromstring($decoded);
+            if ($imageInfo === false) {
+                return null;
+            }
+
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!in_array($imageInfo['mime'], $allowedMimeTypes, true)) {
+                return null;
+            }
+
+            $filename = $prefijo . '_' . time() . '_' . bin2hex(random_bytes(8)) . '.' . $type;
+            $destinationDir = public_path('modules/sisig/images/modulos');
             
-            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png', 'webp'])) {
-                $type = 'png';
+            if (!file_exists($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
             }
             
-            $decoded = base64_decode($dataUrl);
-            if ($decoded !== false) {
-                $filename = $prefijo . '_' . time() . '_' . uniqid() . '.' . $type;
-                $destinationDir = public_path('modules/sisig/images/modulos');
-                
-                if (!file_exists($destinationDir)) {
-                    mkdir($destinationDir, 0755, true);
-                }
-                
-                file_put_contents($destinationDir . DIRECTORY_SEPARATOR . $filename, $decoded);
-                return 'modules/sisig/images/modulos/' . $filename;
-            }
+            file_put_contents($destinationDir . DIRECTORY_SEPARATOR . $filename, $decoded);
+            return 'modules/sisig/images/modulos/' . $filename;
         }
         
         return null;

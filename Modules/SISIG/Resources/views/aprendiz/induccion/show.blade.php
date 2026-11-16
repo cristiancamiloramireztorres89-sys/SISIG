@@ -102,9 +102,9 @@
 
                 <div class="relative z-10">
                     @if(!empty($modulo->contenido_html))
-                        <!-- Contenido Didáctico Formateado en HTML -->
+                        <!-- Contenido Didáctico Formateado en HTML (Saneado contra XSS) -->
                         <div id="pantalla-estudio-contenido" class="contenido-didactico-sig text-slate-800 leading-relaxed space-y-4">
-                            {!! $modulo->contenido_html !!}
+                            {!! \Modules\SISIG\Helpers\HtmlSecuritySanitizer::clean($modulo->contenido_html) !!}
                         </div>
                     @else
                         <!-- Mensaje en caso de que aún no se haya redactado el contenido -->

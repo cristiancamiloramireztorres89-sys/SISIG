@@ -9,16 +9,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class GestionUsersController extends Controller
 {
     /**
+     * Valida la autorización del usuario actual para operaciones administrativas sobre usuarios.
+     */
+    protected function checkAdminAuthorization(): void
+    {
+        if (!Auth::check() || (!Auth::user()->hasRole('admin_sisig') && !Auth::user()->hasRole('sisig.admin') && !Auth::user()->hasRole('superadmin'))) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Administrador SISIG para gestionar usuarios.');
+        }
+    }
+
+    /**
      * Muestra la lista y gestión de usuarios del módulo SISIG.
      */
     public function index(Request $request)
     {
+        $this->checkAdminAuthorization();
+
         // Por defecto: Solo usuarios activos (excluye registros eliminados / desactivados con SoftDeletes)
         $status = $request->input('status', 'activos');
 
@@ -33,17 +46,19 @@ class GestionUsersController extends Controller
             $status = 'activos';
         }
 
-        // Filtro de búsqueda
+        // Filtro de búsqueda con escape de comodines LIKE
         if ($request->filled('search')) {
             $s = trim($request->input('search'));
-            $query->where(function ($q) use ($s) {
-                $q->where('name', 'like', "%{$s}%")
-                  ->orWhere('email', 'like', "%{$s}%")
-                  ->orWhere('nickname', 'like', "%{$s}%")
-                  ->orWhereHas('person', fn($qp) => $qp->where('first_name', 'like', "%{$s}%")
-                      ->orWhere('first_last_name', 'like', "%{$s}%")
-                      ->orWhere('second_last_name', 'like', "%{$s}%")
-                      ->orWhere('document_number', 'like', "%{$s}%"));
+            $escapedS = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $s);
+
+            $query->where(function ($q) use ($escapedS) {
+                $q->where('name', 'like', "%{$escapedS}%")
+                  ->orWhere('email', 'like', "%{$escapedS}%")
+                  ->orWhere('nickname', 'like', "%{$escapedS}%")
+                  ->orWhereHas('person', fn($qp) => $qp->where('first_name', 'like', "%{$escapedS}%")
+                      ->orWhere('first_last_name', 'like', "%{$escapedS}%")
+                      ->orWhere('second_last_name', 'like', "%{$escapedS}%")
+                      ->orWhere('document_number', 'like', "%{$escapedS}%"));
             });
         }
 
@@ -141,6 +156,8 @@ class GestionUsersController extends Controller
      */
     public function store(Request $request)
     {
+        $this->checkAdminAuthorization();
+
         $request->validate($this->userRules(), $this->userMessages());
 
         DB::beginTransaction();
@@ -152,7 +169,7 @@ class GestionUsersController extends Controller
                 : strtolower(explode('@', $request->email)[0]);
 
             if (User::withTrashed()->where('nickname', $nickname)->exists()) {
-                $nickname .= '_' . rand(10, 99);
+                $nickname .= '_' . bin2hex(random_bytes(2));
             }
 
             $user = User::create([
@@ -173,7 +190,8 @@ class GestionUsersController extends Controller
                 ->with('success', "¡Usuario \"{$user->name}\" creado exitosamente con rol: {$rolNombre}!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', 'Error al registrar el usuario: ' . $e->getMessage());
+            Log::error('Error al registrar usuario en SISIG: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Ocurrió un error inesperado al registrar el usuario. Verifique los datos o consulte al soporte.');
         }
     }
 
@@ -182,8 +200,15 @@ class GestionUsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->checkAdminAuthorization();
+
         $user = User::withTrashed()->findOrFail($id);
         $request->validate($this->userRules($user->id), $this->userMessages());
+
+        // Prevenir auto-revocación de privilegios administrativos
+        if (Auth::id() === $user->id && $request->filled('role_slug') && $request->role_slug !== 'admin_sisig') {
+            return redirect()->back()->with('error', 'Operación denegada: No puedes revocar tus propios privilegios de administrador.');
+        }
 
         DB::beginTransaction();
         try {
@@ -237,7 +262,7 @@ class GestionUsersController extends Controller
             $permissionsChanged = false;
             if ($request->role_slug === 'editor_sisig') {
                 $currentModulos = $user->modulosEditables()->pluck('sisig_modulos.id')->toArray();
-                $newModulos = array_map('intval', $request->input('modulos_editables', []));
+                $newModulos = array_map('intval', $request->input('modulos', []));
                 sort($currentModulos);
                 sort($newModulos);
                 if ($currentModulos !== $newModulos) {
@@ -264,7 +289,8 @@ class GestionUsersController extends Controller
                 ->with('success', "¡Datos del usuario \"{$user->name}\" actualizados correctamente!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', 'Error al actualizar el usuario: ' . $e->getMessage());
+            Log::error('Error al actualizar usuario en SISIG: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Ocurrió un error al actualizar los datos del usuario.');
         }
     }
 
@@ -273,6 +299,8 @@ class GestionUsersController extends Controller
      */
     public function toggleStatus($id)
     {
+        $this->checkAdminAuthorization();
+
         $user = User::withTrashed()->findOrFail($id);
 
         if (Auth::id() === $user->id) {
@@ -296,7 +324,15 @@ class GestionUsersController extends Controller
      */
     public function updateRole(Request $request, User $user)
     {
+        $this->checkAdminAuthorization();
+
         $request->validate(['role_slug' => 'nullable|string|in:admin_sisig,editor_sisig,aprendiz_sisig,ninguno']);
+
+        // Evitar auto-revocación
+        if (Auth::id() === $user->id && $request->role_slug !== 'admin_sisig') {
+            return redirect()->back()->with('error', 'Operación denegada: No puedes revocar tus propios privilegios de administrador.');
+        }
+
         $rolNombre = $this->syncRole($user, $request->role_slug);
         $this->logActivity('rol_actualizado', "Se actualizó el rol de {$user->name} a: {$rolNombre}");
 
@@ -309,6 +345,8 @@ class GestionUsersController extends Controller
      */
     public function destroy($id)
     {
+        $this->checkAdminAuthorization();
+
         $user = User::withTrashed()->findOrFail($id);
 
         // 1. Evitar auto-eliminación
@@ -343,7 +381,8 @@ class GestionUsersController extends Controller
                 ->with('success', "¡El usuario \"{$userName}\" fue eliminado exitosamente del sistema!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error al eliminar el usuario: ' . $e->getMessage());
+            Log::error('Error al eliminar usuario en SISIG: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->with('error', 'Error al eliminar el usuario. La operación fue cancelada.');
         }
     }
 
@@ -364,6 +403,8 @@ class GestionUsersController extends Controller
      */
     public function show($id)
     {
+        $this->checkAdminAuthorization();
+
         $user = User::withTrashed()->with(['person', 'roles'])->findOrFail($id);
         $role = $this->resolveSisigRole($user);
         $ficha = ($user->person_id && $role['slug'] === 'aprendiz_sisig') 
@@ -403,7 +444,9 @@ class GestionUsersController extends Controller
             'second_last_name' => 'nullable|string|max:60',
             'email'            => ['required', 'email', 'max:100', Rule::unique('users', 'email')->ignore($userId)],
             'nickname'         => ['nullable', 'string', 'max:50', Rule::unique('users', 'nickname')->ignore($userId)],
-            'password'         => $userId ? 'nullable|string|min:6' : 'required|string|min:6',
+            'password'         => $userId 
+                ? 'nullable|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/' 
+                : 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
             'role_slug'        => 'nullable|string|in:admin_sisig,editor_sisig,aprendiz_sisig,ninguno',
             'ficha'            => 'nullable|string|max:30',
         ];
@@ -414,7 +457,8 @@ class GestionUsersController extends Controller
         return [
             'email.unique'             => 'Este correo electrónico ya se encuentra registrado en el sistema.',
             'nickname.unique'          => 'Este nombre de usuario / alias ya está en uso.',
-            'password.min'             => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.min'             => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.regex'           => 'La contraseña debe incluir al menos una letra mayúscula, una minúscula y un número.',
             'first_name.required'      => 'El nombre es obligatorio.',
             'first_last_name.required' => 'El primer apellido es obligatorio.',
             'document_number.required' => 'El número de documento es obligatorio.',
@@ -499,11 +543,13 @@ class GestionUsersController extends Controller
         try {
             DB::table('actividadreciente')->insert([
                 'user_id'     => Auth::id(),
-                'tipo_evento' => $eventType,
-                'mensaje'     => $message,
+                'tipo_evento' => substr($eventType, 0, 50),
+                'mensaje'     => substr($message, 0, 255),
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            Log::warning('No se pudo registrar actividad en Gestión de Usuarios: ' . $e->getMessage());
+        }
     }
 }

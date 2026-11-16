@@ -306,7 +306,7 @@
     <!-- 2. Contenido Principal del Examen -->
     <main class="max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 flex-1" id="contenedor-examen">
         
-        <form id="form-examen-quiz" action="{{ route('sisig.aprendiz.quiz.finalizar', $resultado->id_resultado) }}" method="POST" class="space-y-6">
+        <form id="form-examen-quiz" action="{{ route('sisig.aprendiz.evaluaciones.calificar', $quiz->id_quiz) }}" method="POST" class="space-y-6">
             @csrf
 
             <!-- Encabezado de Indicaciones para el Aprendiz -->

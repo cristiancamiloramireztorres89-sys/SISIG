@@ -5,6 +5,7 @@ namespace Modules\SISIG\Http\Controllers\Editor;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,7 +17,17 @@ class ParticipantesController extends Controller
      */
     public function index(Request $request)
     {
+        if (!Auth::check()) {
+            abort(403, 'Acceso denegado: Usuario no autenticado.');
+        }
+
+        $user = Auth::user();
+        if (!$user->hasRole('editor_sisig') && !$user->hasRole('admin_sisig') && !$user->hasRole('sisig.admin') && !$user->hasRole('superadmin')) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
+        }
+
         $buscar = trim($request->input('buscar', ''));
+        $escapedBuscar = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $buscar);
         $filtroEstado = $request->input('estado');
         $filtroSeccion = $request->input('seccion');
 
@@ -34,19 +45,19 @@ class ParticipantesController extends Controller
             });
         }
 
-        // Filtro de búsqueda
+        // Filtro de búsqueda con escape seguro
         if (!empty($buscar)) {
-            $query->where(function ($q) use ($buscar) {
-                $q->where('name', 'like', "%{$buscar}%")
-                  ->orWhere('email', 'like', "%{$buscar}%")
-                  ->orWhere('nickname', 'like', "%{$buscar}%");
+            $query->where(function ($q) use ($escapedBuscar) {
+                $q->where('name', 'like', "%{$escapedBuscar}%")
+                  ->orWhere('email', 'like', "%{$escapedBuscar}%")
+                  ->orWhere('nickname', 'like', "%{$escapedBuscar}%");
 
                 if (Schema::hasTable('people')) {
-                    $q->orWhereHas('person', function ($qp) use ($buscar) {
-                        $qp->where('first_name', 'like', "%{$buscar}%")
-                           ->orWhere('first_last_name', 'like', "%{$buscar}%")
-                           ->orWhere('second_last_name', 'like', "%{$buscar}%")
-                           ->orWhere('document_number', 'like', "%{$buscar}%");
+                    $q->orWhereHas('person', function ($qp) use ($escapedBuscar) {
+                        $qp->where('first_name', 'like', "%{$escapedBuscar}%")
+                           ->orWhere('first_last_name', 'like', "%{$escapedBuscar}%")
+                           ->orWhere('second_last_name', 'like', "%{$escapedBuscar}%")
+                           ->orWhere('document_number', 'like', "%{$escapedBuscar}%");
                     });
                 }
             });

@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class SeguridadController extends Controller
@@ -19,6 +19,13 @@ class SeguridadController extends Controller
      */
     public function index(Request $request)
     {
+        // -------------------------------------------------------------
+        // AUTORIZACIÓN ESTRICTA EN SERVIDOR (DEFENSA EN PROFUNDIDAD)
+        // -------------------------------------------------------------
+        if (!Auth::check() || (!Auth::user()->hasRole('admin_sisig') && !Auth::user()->hasRole('sisig.admin') && !Auth::user()->hasRole('superadmin'))) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Administrador SISIG para acceder al panel de seguridad.');
+        }
+
         Carbon::setLocale('es');
 
         // -------------------------------------------------------------
@@ -38,10 +45,12 @@ class SeguridadController extends Controller
             ->where('actividadreciente.created_at', '>=', Carbon::now()->subHours(24));
 
         if (!empty($filtroUsuario)) {
-            $logsQuery->where(function ($q) use ($filtroUsuario) {
-                $q->where('users.name', 'like', "%{$filtroUsuario}%")
-                  ->orWhere('users.email', 'like', "%{$filtroUsuario}%")
-                  ->orWhere('users.nickname', 'like', "%{$filtroUsuario}%");
+            // Escapar comodines para prevenir comportamientos anómalos en LIKE
+            $escapedUsuario = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $filtroUsuario);
+            $logsQuery->where(function ($q) use ($escapedUsuario) {
+                $q->where('users.name', 'like', "%{$escapedUsuario}%")
+                  ->orWhere('users.email', 'like', "%{$escapedUsuario}%")
+                  ->orWhere('users.nickname', 'like', "%{$escapedUsuario}%");
             });
         }
 
@@ -49,10 +58,18 @@ class SeguridadController extends Controller
             $logsQuery->where('actividadreciente.tipo_evento', $filtroAccion);
         }
 
-        $actividades = $logsQuery->orderBy('actividadreciente.created_at', 'desc')->get()->map(function ($item) {
+        $actividadesRaw = $logsQuery->orderBy('actividadreciente.created_at', 'desc')->get();
+
+        // Optimización N+1: Cargar usuarios y roles en un único lote indexado por ID
+        $userIds = $actividadesRaw->pluck('user_id')->filter()->unique()->toArray();
+        $usuariosCargados = !empty($userIds)
+            ? User::withTrashed()->with('roles')->whereIn('id', $userIds)->get()->keyBy('id')
+            : collect();
+
+        $actividades = $actividadesRaw->map(function ($item) use ($usuariosCargados) {
             $fecha = Carbon::parse($item->fecha_hora ?? $item->created_at);
             
-            // Detectar o asignar IP y Módulo desde la información del log o por defecto
+            // Detectar módulo temático a partir del evento
             $modulo = 'Sistema';
             $ip = '127.0.0.1';
 
@@ -96,14 +113,14 @@ class SeguridadController extends Controller
                     $accionColor = 'slate';
             }
 
-            // Consultar rol del usuario
+            // Obtener rol desde el lote precargado en memoria (sin consultas SQL adicionales)
             $rol = 'Usuario';
-            if ($item->user_id) {
-                $rol = $this->obtenerRolNombre($item->user_id);
+            if ($item->user_id && isset($usuariosCargados[$item->user_id])) {
+                $rol = $this->extraerNombreRol($usuariosCargados[$item->user_id]);
             }
 
             return (object) [
-                'id' => $item->id_actividad,
+                'id' => $item->id_actividad ?? ($item->id ?? null),
                 'fecha_hora' => $fecha->format('d M Y - h:i a'),
                 'usuario' => $item->user_name ?? ($item->user_nickname ?? 'Sistema'),
                 'rol' => $rol,
@@ -130,8 +147,13 @@ class SeguridadController extends Controller
                 ->orderBy('last_activity', 'desc')
                 ->get();
 
+            $sessionUserIds = $dbSessions->pluck('user_id')->filter()->unique()->toArray();
+            $sessionUsers = !empty($sessionUserIds)
+                ? User::withTrashed()->with('roles')->whereIn('id', $sessionUserIds)->get()->keyBy('id')
+                : collect();
+
             foreach ($dbSessions as $sess) {
-                $user = User::withTrashed()->find($sess->user_id);
+                $user = $sessionUsers->get($sess->user_id);
                 if (!$user) {
                     continue;
                 }
@@ -144,7 +166,7 @@ class SeguridadController extends Controller
                     'user_id' => $user->id,
                     'nombre' => $user->name,
                     'email' => $user->email,
-                    'rol' => $this->obtenerRolNombre($user->id),
+                    'rol' => $this->extraerNombreRol($user),
                     'ultimo_acceso' => $ultimoAcceso,
                     'ip' => $sess->ip_address ?? '127.0.0.1',
                     'dispositivo_icono' => $dispositivo['icono'],
@@ -165,7 +187,7 @@ class SeguridadController extends Controller
                 'user_id' => $currentUser->id,
                 'nombre' => $currentUser->name,
                 'email' => $currentUser->email,
-                'rol' => $this->obtenerRolNombre($currentUser->id),
+                'rol' => $this->extraerNombreRol($currentUser),
                 'ultimo_acceso' => 'En este momento',
                 'ip' => $request->ip() ?? '127.0.0.1',
                 'dispositivo_icono' => $dispositivo['icono'],
@@ -179,13 +201,13 @@ class SeguridadController extends Controller
         // -------------------------------------------------------------
         $kpiSesionesActivas = $sesionesActivas->count();
 
-        $kpiAccionesHoy = DB::table('actividadreciente')
-            ->whereDate('created_at', Carbon::today())
-            ->count();
+        $kpiAccionesHoy = Schema::hasTable('actividadreciente')
+            ? DB::table('actividadreciente')->whereDate('created_at', Carbon::today())->count()
+            : 0;
 
-        $kpiPasswordsRestablecidas = DB::table('actividadreciente')
-            ->where('tipo_evento', 'restablecimiento')
-            ->count();
+        $kpiPasswordsRestablecidas = Schema::hasTable('actividadreciente')
+            ? DB::table('actividadreciente')->where('tipo_evento', 'restablecimiento')->count()
+            : 0;
 
         $kpiCuentasBloqueadas = User::onlyTrashed()->count();
 
@@ -206,6 +228,23 @@ class SeguridadController extends Controller
      */
     public function cerrarSesion($sessionId)
     {
+        // Autorización estricta
+        if (!Auth::check() || (!Auth::user()->hasRole('admin_sisig') && !Auth::user()->hasRole('sisig.admin') && !Auth::user()->hasRole('superadmin'))) {
+            abort(403, 'Acceso denegado: Se requieren privilegios de Administrador SISIG.');
+        }
+
+        // Validación del identificador de sesión
+        if (!is_string($sessionId) || empty(trim($sessionId)) || strlen($sessionId) > 255) {
+            return redirect()->route('sisig.admin.seguridad.index')
+                ->with('error', 'Identificador de sesión inválido.');
+        }
+
+        // Prevenir auto-cierre accidental de la sesión del administrador en uso
+        if ($sessionId === session()->getId()) {
+            return redirect()->route('sisig.admin.seguridad.index')
+                ->with('info', 'No puedes forzar el cierre de tu propia sesión activa desde esta acción. Utiliza la opción de Salir del menú.');
+        }
+
         try {
             if (Schema::hasTable('sessions')) {
                 $sessionData = DB::table('sessions')->where('id', $sessionId)->first();
@@ -219,7 +258,7 @@ class SeguridadController extends Controller
                         $this->registrarLog(
                             $userId,
                             'cierre_sesion',
-                            'Sesión activa cerrada por el administrador del sistema.',
+                            'Sesión activa cerrada forzosamente por el Administrador SISIG (' . Auth::user()->name . ').',
                             'Seguridad'
                         );
                     }
@@ -229,12 +268,11 @@ class SeguridadController extends Controller
             return redirect()->route('sisig.admin.seguridad.index')
                 ->with('success', 'La sesión seleccionada ha sido cerrada exitosamente en tiempo real.');
         } catch (\Exception $e) {
+            Log::error('Error al cerrar sesión activa en SISIG: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->route('sisig.admin.seguridad.index')
-                ->with('error', 'Error al cerrar la sesión: ' . $e->getMessage());
+                ->with('error', 'Ocurrió un error inesperado al cerrar la sesión. La incidencia fue registrada.');
         }
     }
-
-
 
     /**
      * Registra un evento en la tabla de auditoría en tiempo real.
@@ -245,28 +283,23 @@ class SeguridadController extends Controller
             if (Schema::hasTable('actividadreciente')) {
                 DB::table('actividadreciente')->insert([
                     'user_id' => $userId,
-                    'tipo_evento' => $tipoEvento,
-                    'mensaje' => $mensaje,
+                    'tipo_evento' => substr($tipoEvento, 0, 50),
+                    'mensaje' => substr($mensaje, 0, 255),
                     'fecha_hora' => Carbon::now(),
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
             }
         } catch (\Exception $e) {
-            // Registro silencioso para no romper flujo principal
+            Log::warning('No se pudo registrar log de auditoría en actividadreciente: ' . $e->getMessage());
         }
     }
 
     /**
-     * Obtiene el nombre del rol principal del usuario.
+     * Obtiene el nombre legible del rol principal de un modelo User precargado.
      */
-    private function obtenerRolNombre($userId)
+    private function extraerNombreRol(User $user): string
     {
-        $user = User::withTrashed()->with('roles')->find($userId);
-        if (!$user) {
-            return 'Usuario';
-        }
-
         if ($user->roles && $user->roles->isNotEmpty()) {
             foreach ($user->roles as $role) {
                 $slug = strtolower($role->slug ?? '');
@@ -287,13 +320,13 @@ class SeguridadController extends Controller
             return 'Aprendiz';
         }
 
-        return 'Aprendiz';
+        return 'Usuario';
     }
 
     /**
-     * Parsea la cadena del User-Agent para extraer navegador y sistema operativo.
+     * Parsea la cadena del User-Agent para extraer navegador y sistema operativo de forma segura.
      */
-    private function parseUserAgent($userAgent)
+    private function parseUserAgent(?string $userAgent): array
     {
         $browser = 'Navegador Web';
         $os = 'Dispositivo';

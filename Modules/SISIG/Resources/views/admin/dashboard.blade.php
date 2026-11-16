@@ -147,8 +147,9 @@
                         </div>
                         <p class="text-slate-700 font-bold text-sm">No hay módulos registrados en el sistema</p>
                         <p class="text-xs text-slate-500 max-w-xs mt-1">Registra nuevos módulos en la sección de Gestión de Módulos para visualizar su rendimiento.</p>
-                        <a href="{{ route('sisig.admin.modulos.index') }}" class="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sena-green text-white hover:bg-emerald-700 transition shadow-sm">
-                            <i class="fas fa-plus"></i> Crear Primer Módulo
+                        <a href="{{ route('sisig.admin.modulos.index') }}" class="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                            <i class="fas fa-plus text-xs"></i>
+                            <span>Crear Primer Módulo</span>
                         </a>
                     </div>
                 @else

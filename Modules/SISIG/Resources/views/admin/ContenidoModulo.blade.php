@@ -106,7 +106,7 @@
                 <!-- Contenedor Quill -->
                 <div class="p-6">
                     <!-- Campos ocultos para enviar el contenido y fondo -->
-                    <input type="hidden" name="contenido_html" id="contenido_html" value="{{ $moduloSeleccionado->contenido_html }}">
+                    <input type="hidden" name="contenido_html" id="contenido_html" value="{{ \Modules\SISIG\Helpers\HtmlSecuritySanitizer::clean($moduloSeleccionado->contenido_html) }}">
                     <input type="hidden" name="fondo_imagen_recortada" id="fondo_imagen_recortada">
                     <input type="hidden" name="fondo_opacidad" id="fondo_opacidad" value="{{ $moduloSeleccionado->fondo_opacidad ?? 20 }}">
                     <input type="hidden" name="quitar_fondo" id="quitar_fondo" value="0">
@@ -115,7 +115,7 @@
                     <div id="editor" 
                          data-fondo-opacidad="{{ ($moduloSeleccionado->fondo_opacidad ?? 20) / 100 }}"
                          data-fondo-imagen="{{ $moduloSeleccionado->fondo_imagen ? asset($moduloSeleccionado->fondo_imagen) : '' }}">
-                        {!! $moduloSeleccionado->contenido_html !!}
+                        {!! \Modules\SISIG\Helpers\HtmlSecuritySanitizer::clean($moduloSeleccionado->contenido_html) !!}
                     </div>
                 </div>
 
