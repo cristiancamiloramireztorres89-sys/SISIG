@@ -46,8 +46,8 @@
                         </ul>
                     </div>
                 </div>
-                <button type="button" onclick="closeAlert('error-alert')" class="text-rose-500 hover:text-rose-800 p-1.5 rounded-lg hover:bg-rose-100 transition-colors flex-shrink-0" title="Cerrar">
-                    <i class="fas fa-times text-xs"></i>
+                <button type="button" onclick="closeAlert('error-alert')" class="w-8 h-8 rounded-lg flex items-center justify-center text-rose-500 hover:text-rose-800 hover:bg-rose-100 transition-colors flex-shrink-0 cursor-pointer" title="Cerrar">
+                    <i class="fas fa-times text-xs leading-none"></i>
                 </button>
             </div>
         @endif
@@ -259,7 +259,7 @@
                                 <label for="current_password" class="block text-xs font-bold text-slate-700 mb-1.5">Contraseña Actual <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <input type="password" id="current_password" name="current_password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white border border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all font-medium text-slate-800 pr-10">
-                                    <button type="button" onclick="togglePasswordVisibility('current_password', 'eye_current')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                                    <button type="button" onclick="togglePasswordVisibility('current_password', 'eye_current')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer" title="Mostrar u ocultar contraseña">
                                         <i id="eye_current" class="fas fa-eye text-xs"></i>
                                     </button>
                                 </div>
@@ -269,7 +269,7 @@
                                 <label for="password" class="block text-xs font-bold text-slate-700 mb-1.5">Nueva Contraseña <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9)" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white border border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all font-medium text-slate-800 pr-10">
-                                    <button type="button" onclick="togglePasswordVisibility('password', 'eye_new')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                                    <button type="button" onclick="togglePasswordVisibility('password', 'eye_new')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer" title="Mostrar u ocultar contraseña">
                                         <i id="eye_new" class="fas fa-eye text-xs"></i>
                                     </button>
                                 </div>
@@ -299,7 +299,7 @@
                                 <label for="password_confirmation" class="block text-xs font-bold text-slate-700 mb-1.5">Confirmar Contraseña <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="Repite la contraseña" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white border border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all font-medium text-slate-800 pr-10">
-                                    <button type="button" onclick="togglePasswordVisibility('password_confirmation', 'eye_confirm')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                                    <button type="button" onclick="togglePasswordVisibility('password_confirmation', 'eye_confirm')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer" title="Mostrar u ocultar contraseña">
                                         <i id="eye_confirm" class="fas fa-eye text-xs"></i>
                                     </button>
                                 </div>

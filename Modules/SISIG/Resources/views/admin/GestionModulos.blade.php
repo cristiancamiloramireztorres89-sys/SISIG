@@ -30,11 +30,6 @@
         <!-- 1. Encabezado de la Sección (Estilo Limpio y Unificado) -->
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
             <div>
-                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1">
-                    <span class="text-[#2E6F40]">Inicio</span>
-                    <span>/</span>
-                    <span class="text-slate-600">Módulos</span>
-                </div>
                 <h1 class="text-2xl sm:text-3xl font-black text-[#343A40] tracking-tight flex items-center gap-2.5">
                     <i class="fas fa-layer-group text-[#2E6F40]"></i>
                     <span>{{ auth()->user()->hasRole('admin_sisig') ? 'Gestión de Módulos SIG' : 'Gestión de Contenidos SIG' }}</span>
@@ -306,8 +301,8 @@
                         <p class="text-xs text-slate-500 mt-0.5">Creación de módulo y asignación de estado para el SIG</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalCrearModulo()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-                    <i class="fas fa-times text-sm"></i>
+                <button type="button" onclick="cerrarModalCrearModulo()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" title="Cerrar modal">
+                    <i class="fas fa-times text-sm leading-none"></i>
                 </button>
             </div>
             
@@ -417,8 +412,8 @@
                         <p class="text-xs text-slate-500 mt-0.5">Modifica los detalles y estado del módulo SIG</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalEditarModulo()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-                    <i class="fas fa-times text-sm"></i>
+                <button type="button" onclick="cerrarModalEditarModulo()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" title="Cerrar modal">
+                    <i class="fas fa-times text-sm leading-none"></i>
                 </button>
             </div>
             

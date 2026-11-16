@@ -286,8 +286,8 @@
                         <p id="user-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Creación de cuenta y vinculación a persona en el ERP</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                    <i class="fas fa-times text-sm"></i>
+                <button type="button" onclick="closeUserModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" title="Cerrar modal">
+                    <i class="fas fa-times text-sm leading-none"></i>
                 </button>
             </div>
 
@@ -368,7 +368,7 @@
                             <button type="button" 
                                     id="btn-toggle-user-password"
                                     onclick="toggleUserPasswordVisibility()" 
-                                    class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors" 
+                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer" 
                                     title="Mostrar u ocultar contraseña">
                                 <i id="user-password-eye" class="fas fa-eye text-xs"></i>
                             </button>
@@ -476,8 +476,8 @@
     <div id="modal-usuario-no-eliminable" class="fixed inset-0 z-[150] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in relative text-center">
             
-            <button type="button" onclick="cerrarModalNoEliminable()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                <i class="fas fa-times text-sm"></i>
+            <button type="button" onclick="cerrarModalNoEliminable()" class="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer" title="Cerrar modal">
+                <i class="fas fa-times text-sm leading-none"></i>
             </button>
 
             <!-- Ícono sin recuadro -->

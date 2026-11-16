@@ -421,8 +421,8 @@
                         <p id="modal-info-sub" class="text-xs text-slate-500 mt-0.5">Quiz --</p>
                     </div>
                 </div>
-                <button type="button" onclick="cerrarModalRespuestas()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                    <i class="fas fa-times text-sm"></i>
+                <button type="button" onclick="cerrarModalRespuestas()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" title="Cerrar modal">
+                    <i class="fas fa-times text-sm leading-none"></i>
                 </button>
             </div>
 

@@ -3,8 +3,8 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-scale-in relative text-center">
         
         <!-- Botón cerrar X -->
-        <button type="button" onclick="cerrarModalConfirmacion()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-            <i class="fas fa-times text-sm"></i>
+        <button type="button" onclick="cerrarModalConfirmacion()" class="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer" title="Cerrar modal">
+            <i class="fas fa-times text-sm leading-none"></i>
         </button>
 
         <!-- Ícono dinámico -->

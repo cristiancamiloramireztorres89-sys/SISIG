@@ -207,6 +207,12 @@
 
                 <div class="py-4 h-56 w-full relative flex items-center justify-center">
                     <canvas id="chartDonaResultados"></canvas>
+                    @if(($evaluacionesAprobadas + $evaluacionesReprobadas + $evaluacionesAnuladas) === 0)
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center select-none">
+                            <span class="text-xs font-bold text-slate-400">Sin registros</span>
+                            <span class="text-[10px] text-slate-400">0 evaluaciones</span>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="space-y-2.5 pt-4 border-t border-slate-100 text-xs">
@@ -486,28 +492,34 @@
             // 2. Gráfica de Dona: Estado de Evaluaciones
             const ctxDona = document.getElementById('chartDonaResultados');
             if (ctxDona) {
-                const aprobados = {{ $evaluacionesAprobadas }};
-                const reprobados = {{ $evaluacionesReprobadas }};
-                const anulados = {{ $evaluacionesAnuladas }};
-
-                // Si no hay datos, mostrar valores didácticos iniciales
-                const dataValues = (aprobados + reprobados + anulados) > 0 
-                    ? [aprobados, reprobados, anulados] 
-                    : [1, 0, 0];
+                const aprobados = {{ (int) $evaluacionesAprobadas }};
+                const reprobados = {{ (int) $evaluacionesReprobadas }};
+                const anulados = {{ (int) $evaluacionesAnuladas }};
+                const totalEvaluaciones = aprobados + reprobados + anulados;
+                const tieneDatos = totalEvaluaciones > 0;
 
                 new Chart(ctxDona, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Aprobadas', 'Reprobadas', 'Anuladas'],
+                        labels: tieneDatos 
+                            ? ['Aprobadas', 'Reprobadas', 'Anuladas'] 
+                            : ['Sin registros'],
                         datasets: [{
-                            data: dataValues,
-                            backgroundColor: [
-                                '#39A900', // Verde SENA
-                                '#ef4444', // Rojo Rose
-                                '#f59e0b'  // Ámbar
-                            ],
+                            data: tieneDatos 
+                                ? [aprobados, reprobados, anulados] 
+                                : [1],
+                            backgroundColor: tieneDatos 
+                                ? [
+                                    '#39A900', // Verde SENA
+                                    '#ef4444', // Rojo Rose
+                                    '#f59e0b'  // Ámbar
+                                ] 
+                                : ['#e2e8f0'], // Gris cuando no hay registros
+                            hoverBackgroundColor: tieneDatos
+                                ? ['#2e8600', '#dc2626', '#d97706']
+                                : ['#cbd5e1'],
                             borderWidth: 0,
-                            hoverOffset: 6
+                            hoverOffset: tieneDatos ? 6 : 0
                         }]
                     },
                     options: {
@@ -515,7 +527,22 @@
                         maintainAspectRatio: false,
                         cutout: '72%',
                         plugins: {
-                            legend: { display: false }
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#0f172a',
+                                titleFont: { size: 12, weight: 'bold' },
+                                bodyFont: { size: 11 },
+                                padding: 10,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function(context) {
+                                        if (!tieneDatos) {
+                                            return ' 0 evaluaciones registradas';
+                                        }
+                                        return ` ${context.label}: ${context.raw}`;
+                                    }
+                                }
+                            }
                         }
                     }
                 });

@@ -172,8 +172,8 @@
                 <span class="text-xs font-bold text-slate-700 flex items-center gap-2">
                     <i class="fas fa-image text-sena-green"></i> Esquema Gráfico / Señalización SIG
                 </span>
-                <button type="button" onclick="cerrarZoomImagen()" class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors">
-                    <i class="fas fa-times text-xs"></i>
+                <button type="button" onclick="cerrarZoomImagen()" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors cursor-pointer" title="Cerrar ampliación">
+                    <i class="fas fa-times text-xs leading-none"></i>
                 </button>
             </div>
             <div class="mt-4 overflow-auto max-h-[75vh] w-full flex items-center justify-center">

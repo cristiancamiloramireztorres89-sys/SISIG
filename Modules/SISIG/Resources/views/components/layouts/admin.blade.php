@@ -50,8 +50,8 @@
                     <i class="fas ${iconClass} text-base flex-shrink-0"></i>
                     <p class="text-xs sm:text-sm font-bold">${mensaje}</p>
                 </div>
-                <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="p-1.5 rounded-lg opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
-                    <i class="fas fa-times text-xs"></i>
+                <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="w-7 h-7 rounded-lg flex items-center justify-center opacity-70 hover:opacity-100 hover:bg-black/5 transition-all cursor-pointer flex-shrink-0" title="Cerrar notificación">
+                    <i class="fas fa-times text-xs leading-none"></i>
                 </button>
             `;
 
@@ -330,8 +330,8 @@
                             <i class="fas {{ $tipo === 'success' ? 'fa-check-circle text-emerald-600' : ($tipo === 'error' ? 'fa-exclamation-triangle text-rose-600' : 'fa-exclamation-circle text-amber-600') }} text-base flex-shrink-0"></i>
                             <p class="text-xs sm:text-sm font-bold">{{ $mensaje }}</p>
                         </div>
-                        <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="p-1.5 rounded-lg opacity-70 hover:opacity-100 transition-opacity">
-                            <i class="fas fa-times text-xs"></i>
+                        <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="w-7 h-7 rounded-lg flex items-center justify-center opacity-70 hover:opacity-100 hover:bg-black/5 transition-all cursor-pointer flex-shrink-0" title="Cerrar notificación">
+                            <i class="fas fa-times text-xs leading-none"></i>
                         </button>
                     </div>
                 @endif
