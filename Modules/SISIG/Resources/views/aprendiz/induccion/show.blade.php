@@ -182,12 +182,61 @@
         </div>
     </div>
 
-    <!-- Estilos específicos para el contenido didáctico (HTML, Imágenes y Videos Fluidos) -->
+    <!-- Modal para Reproducción de Videos In-Page (Sin salir de la página) -->
+    <div id="modalVideoAprendiz" class="fixed inset-0 z-[130] hidden flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md" onclick="cerrarVideoAprendiz()">
+        <div class="relative w-full max-w-4xl bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-5 py-3.5 bg-slate-800 border-b border-slate-700">
+                <div class="flex items-center gap-2.5 text-white min-w-0">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#33FF57] animate-pulse flex-shrink-0"></span>
+                    <i class="fab fa-youtube text-red-500 text-base flex-shrink-0"></i>
+                    <h3 id="videoAprendizTitle" class="text-sm font-bold text-white truncate max-w-md">Video del Módulo</h3>
+                </div>
+                <button type="button" onclick="cerrarVideoAprendiz()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Cerrar video">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            </div>
+            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                <iframe id="iframeVideoAprendiz" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="display: none;"></iframe>
+                <video id="html5VideoAprendiz" class="w-full h-full" controls autoplay style="display: none;"></video>
+            </div>
+            <div class="px-5 py-2.5 bg-slate-950 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800">
+                <span class="flex items-center gap-1.5 text-[11px]">
+                    <i class="fas fa-shield-alt text-[#33FF57]"></i> Reproducción integrada en el proceso de inducción SISIG
+                </span>
+                <button type="button" onclick="cerrarVideoAprendiz()" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors cursor-pointer">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estilos específicos para el contenido didáctico (HTML, SVG, Imágenes y Videos Fluidos) -->
     <style>
         .contenido-didactico-sig {
             font-size: 0.95rem;
             line-height: 1.8;
             color: #334155;
+            width: 100%;
+        }
+        .contenido-didactico-sig .sisig-canvas-presentation-wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            margin: 1rem 0 !important;
+            overflow: visible !important;
+        }
+        .contenido-didactico-sig .sisig-canvas-presentation-wrapper > div {
+            aspect-ratio: auto !important;
+        }
+        .contenido-didactico-sig svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            display: block;
+            margin: 1.5rem auto;
+            border-radius: 1.25rem;
         }
         .contenido-didactico-sig h1 {
             font-size: 1.75rem;
@@ -281,7 +330,81 @@
                     }
                 });
             });
+
+            // Interceptar enlaces de video dentro del contenido didáctico para que abran en ventana sin salir de la página
+            const enlacesVideo = document.querySelectorAll('.contenido-didactico-sig a[href*="youtube.com"], .contenido-didactico-sig a[href*="youtu.be"], .contenido-didactico-sig a[href*="vimeo.com"], .contenido-didactico-sig a[href*=".mp4"]');
+            enlacesVideo.forEach(enlace => {
+                enlace.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+                    let embedUrl = url;
+                    let type = 'youtube';
+
+                    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                        const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i);
+                        if (match && match[1]) {
+                            embedUrl = `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1&rel=0`;
+                        }
+                    } else if (url.includes('vimeo.com')) {
+                        type = 'vimeo';
+                        const match = url.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
+                        if (match && match[1]) {
+                            embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+                        }
+                    } else if (url.includes('.mp4')) {
+                        type = 'mp4';
+                    }
+
+                    reproducirVideoAprendiz(embedUrl, this.textContent || 'Video de Aprendizaje', type);
+                });
+            });
         });
+
+        function reproducirVideoAprendiz(embedUrl, title, type = 'youtube') {
+            const modal = document.getElementById('modalVideoAprendiz');
+            const titleEl = document.getElementById('videoAprendizTitle');
+            const iframe = document.getElementById('iframeVideoAprendiz');
+            const videoHtml5 = document.getElementById('html5VideoAprendiz');
+            if (!modal) return;
+
+            titleEl.textContent = title || 'Video del Módulo';
+            if (type === 'mp4') {
+                iframe.style.display = 'none';
+                iframe.src = '';
+                videoHtml5.style.display = 'block';
+                videoHtml5.src = embedUrl;
+                videoHtml5.play();
+            } else {
+                videoHtml5.pause();
+                videoHtml5.src = '';
+                videoHtml5.style.display = 'none';
+                iframe.style.display = 'block';
+                iframe.src = embedUrl;
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function cerrarVideoAprendiz() {
+            const modal = document.getElementById('modalVideoAprendiz');
+            const iframe = document.getElementById('iframeVideoAprendiz');
+            const videoHtml5 = document.getElementById('html5VideoAprendiz');
+            if (iframe) iframe.src = '';
+            if (videoHtml5) {
+                videoHtml5.pause();
+                videoHtml5.src = '';
+            }
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function ampliarImagen(src) {
+            const modal = document.getElementById('modalZoomImagen');
+            const imgZoom = document.getElementById('imagenZoomSrc');
+            if (imgZoom && modal && src) {
+                imgZoom.src = src;
+                modal.classList.remove('hidden');
+            }
+        }
+        window.ampliarImagen = ampliarImagen;
 
         function cerrarZoomImagen() {
             const modal = document.getElementById('modalZoomImagen');
