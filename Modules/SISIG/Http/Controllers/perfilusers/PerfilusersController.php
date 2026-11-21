@@ -39,19 +39,31 @@ class PerfilusersController extends Controller
             $user->save();
         }
 
-        // Consultar datos de formación académica institucional (Ficha y Programa/Tecnólogo)
+        // Consultar datos de formación académica institucional (Ficha y Programa/Tecnólogo según relación estándar SICA: $apprentice->Course->Program)
         $aprendiz = null;
         $ficha = null;
         $programa = null;
 
         if ($person && Schema::hasTable('apprentices')) {
-            $aprendiz = DB::table('apprentices')
-                ->where('person_id', $person->id)
-                ->first();
+            try {
+                $apprenticeRecord = \Modules\SICA\Entities\Apprentice::with(['Course.Program'])
+                    ->where('person_id', $person->id)
+                    ->first();
 
-            if ($aprendiz) {
-                $ficha = $aprendiz->course_id ?? null;
-                $programa = $aprendiz->program ?? ($ficha ? 'ADSO' : null);
+                if ($apprenticeRecord) {
+                    $ficha = $apprenticeRecord->Course->code ?? $apprenticeRecord->course_id ?? null;
+                    $programa = $apprenticeRecord->Course->Program->name ?? ($apprenticeRecord->program ?? ($ficha ? 'ADSO' : null));
+                    $aprendiz = $apprenticeRecord;
+                }
+            } catch (\Throwable $e) {
+                $aprendiz = DB::table('apprentices')
+                    ->where('person_id', $person->id)
+                    ->first();
+
+                if ($aprendiz) {
+                    $ficha = $aprendiz->course_id ?? null;
+                    $programa = $aprendiz->program ?? ($ficha ? 'ADSO' : null);
+                }
             }
         }
 
@@ -67,7 +79,7 @@ class PerfilusersController extends Controller
         }
 
         $personalEmail = $person->personal_email ?? '';
-        $phone = $person->phone ?? '';
+        $phone = $person->telephone1 ?? $person->phone ?? '';
 
         return view('sisig::perfil.perfilusers', compact(
             'user', 
@@ -145,10 +157,13 @@ class PerfilusersController extends Controller
             $cambiosRealizados = true;
         }
 
-        // 3. Procesar Teléfono (Phone)
+        // 3. Procesar Teléfono (usando telephone1 estándar SICA)
         $nuevoTelefono = $request->filled('phone') ? trim($request->phone) : null;
-        if ($person->phone !== $nuevoTelefono) {
-            $person->phone = $nuevoTelefono;
+        if (($person->telephone1 ?? null) !== $nuevoTelefono || ($person->phone ?? null) !== $nuevoTelefono) {
+            $person->telephone1 = $nuevoTelefono;
+            if (Schema::hasColumn('people', 'phone')) {
+                $person->phone = $nuevoTelefono;
+            }
             $cambiosRealizados = true;
         }
 
