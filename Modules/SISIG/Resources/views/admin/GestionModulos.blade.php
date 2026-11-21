@@ -252,12 +252,19 @@
                                     </div>
                                     
                                     <div class="flex items-center gap-2">
+                                        <a href="{{ route('sisig.editor.canvas.editor', $modulo->id) }}" 
+                                           class="px-3.5 py-1.5 rounded-full text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#245833] transition-all shadow-sena flex items-center justify-center gap-1.5 cursor-pointer"
+                                           title="Editar contenido interactivo del módulo">
+                                            <i class="fas fa-pencil-alt text-xs"></i>
+                                            <span>Editar Contenido</span>
+                                        </a>
+
                                         <button type="button" 
                                                 onclick="abrirModalEditarModulo({{ json_encode($modulo) }})" 
-                                                title="Editar módulo" 
-                                                class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
-                                            <i class="fas fa-pencil-alt text-xs text-slate-500"></i>
-                                            <span>Editar</span>
+                                                title="Configuración del módulo" 
+                                                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
+                                            <i class="fas fa-cog text-xs text-slate-500"></i>
+                                            <span>Ajustes</span>
                                         </button>
 
                                         <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST">
@@ -266,7 +273,7 @@
                                             <button type="button" 
                                                     onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" 
                                                     title="Eliminar módulo" 
-                                                    class="px-3.5 py-1.5 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-600 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
+                                                    class="px-3 py-1.5 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-600 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
                                                 <i class="fas fa-trash-alt text-xs"></i>
                                                 <span>Desactivar</span>
                                             </button>

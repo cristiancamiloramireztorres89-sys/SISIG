@@ -249,7 +249,7 @@
                                     </div>
                                     
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('sisig.editor.contenido.edit', $modulo->id) }}" 
+                                        <a href="{{ route('sisig.editor.canvas.editor', $modulo->id) }}" 
                                            class="px-4 py-2 rounded-full text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#245833] transition-all shadow-sena flex items-center justify-center gap-1.5 cursor-pointer">
                                             <i class="fas fa-pencil-alt text-xs"></i>
                                             <span>Editar Contenido</span>

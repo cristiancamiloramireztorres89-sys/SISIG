@@ -98,15 +98,12 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Carga la vista del editor de contenido interactivo del módulo seleccionado.
+     * Carga la vista del editor de contenido interactivo (Redirige al nuevo Editor Visual Canvas tipo Canva).
      */
     public function editContent($id)
     {
-        // Módulos para navegación por pestañas
-        $modulos = Modulo::all();
-        $moduloSeleccionado = Modulo::findOrFail($id);
-
-        return view('sisig::admin.ContenidoModulo', compact('modulos', 'moduloSeleccionado'));
+        // Redirigir siempre de forma directa al nuevo Editor Canvas tipo Canva
+        return redirect()->route('sisig.editor.canvas.editor', $id);
     }
 
     /**
@@ -142,6 +139,18 @@ class GestionModulosController extends Controller
         // Configuración del nivel de opacidad del fondo
         if ($request->has('fondo_opacidad')) {
             $modulo->fondo_opacidad = (int) $request->input('fondo_opacidad');
+        }
+
+        // Persistencia del estado JSON del lienzo/editor
+        if ($request->filled('canvas_state')) {
+            $canvasState = $request->input('canvas_state');
+            if (is_string($canvasState)) {
+                $decoded = json_decode($canvasState, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $canvasState = $decoded;
+                }
+            }
+            $modulo->canvas_state = $canvasState;
         }
 
         $modulo->save();

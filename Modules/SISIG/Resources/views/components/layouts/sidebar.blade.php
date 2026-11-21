@@ -3,7 +3,7 @@
     
     <!-- 1. Encabezado Superior del Sidebar (Logo Circular Blanco + Identidad SISIG) -->
     <div class="h-20 px-4 flex-shrink-0 flex items-center justify-start sidebar-header-container transition-all border-b border-[#243B66]/50">
-        <div class="flex items-center gap-3 overflow-hidden w-full select-none sidebar-header-inner">
+        <button type="button" id="btn-toggle-sidebar-logo" class="flex items-center gap-3 overflow-hidden w-full select-none sidebar-header-inner text-left cursor-pointer focus:outline-none" title="Haz clic para ocultar o expandir el menú lateral">
             <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-sm flex-shrink-0 sidebar-logo-box">
                 <img src="{{ asset('modules/sisig/images/logo.png') }}" alt="SENA Empresa Logo" class="w-full h-full object-contain filter drop-shadow-xs">
             </div>
@@ -11,7 +11,7 @@
                 <span class="text-base font-black tracking-tight text-white block leading-tight">SISIG</span>
                 <span class="text-[10px] font-bold text-[#33FF57] tracking-wider uppercase block leading-none mt-0.5">SENA Empresa</span>
             </div>
-        </div>
+        </button>
     </div>
 
     <!-- 2. Navegación Principal (Scrollable) -->
@@ -110,8 +110,8 @@
                 <div class="mt-1 space-y-1">
                     <a href="{{ route('sisig.editor.contenido.index') }}" 
                        title="Gestión de Contenidos"
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group {{ request()->routeIs('sisig.editor.contenido.*') ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20' : 'hover:bg-white/10 hover:text-white text-slate-200' }}">
-                        <i class="fas fa-layer-group text-sm w-5 text-center flex-shrink-0 {{ request()->routeIs('sisig.editor.contenido.*') ? 'text-[#1A2B4C]' : 'text-slate-200' }}"></i>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group {{ (request()->routeIs('sisig.editor.contenido.*') || request()->routeIs('sisig.editor.canvas.*')) ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20' : 'hover:bg-white/10 hover:text-white text-slate-200' }}">
+                        <i class="fas fa-layer-group text-sm w-5 text-center flex-shrink-0 {{ (request()->routeIs('sisig.editor.contenido.*') || request()->routeIs('sisig.editor.canvas.*')) ? 'text-[#1A2B4C]' : 'text-slate-200' }}"></i>
                         <span class="sidebar-text truncate">Gestión de Contenidos</span>
                     </a>     
 

@@ -351,6 +351,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar-menu');
+            const toggleLogoBtn = document.getElementById('btn-toggle-sidebar-logo');
             const toggleBtn = document.getElementById('sidebar-toggle-btn');
             const backdrop = document.getElementById('sidebar-backdrop');
 
@@ -381,6 +382,7 @@
                 if (backdrop) backdrop.classList.add('hidden');
             }
 
+            if (toggleLogoBtn) toggleLogoBtn.addEventListener('click', toggleSidebar);
             if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
             if (backdrop) backdrop.addEventListener('click', closeSidebarMobile);
         });

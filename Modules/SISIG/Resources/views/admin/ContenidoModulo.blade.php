@@ -564,6 +564,40 @@
         .ql-editor p {
             margin-bottom: 0.85rem !important;
         }
+
+        /* Soporte explícito de formato de texto en .ql-editor */
+        .ql-editor strong, .ql-editor b {
+            font-weight: 700 !important;
+        }
+        .ql-editor em, .ql-editor i {
+            font-style: italic !important;
+        }
+        .ql-editor u {
+            text-decoration: underline !important;
+        }
+        .ql-editor s {
+            text-decoration: line-through !important;
+        }
+        .ql-editor span[style*="Arial"], .ql-editor .ql-font-Arial {
+            font-family: Arial, sans-serif !important;
+        }
+        .ql-editor span[style*="Calibri"], .ql-editor .ql-font-Calibri {
+            font-family: Calibri, 'Segoe UI', sans-serif !important;
+        }
+        .ql-editor span[style*="Times New Roman"], .ql-editor .ql-font-Times-New-Roman {
+            font-family: 'Times New Roman', Times, serif !important;
+        }
+        .ql-editor ol, .ql-editor ul {
+            padding-left: 1.5rem !important;
+        }
+        .ql-editor img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 0.75rem !important;
+            margin: 0.75rem 0 !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            display: inline-block !important;
+        }
     </style>
 
 @php
@@ -657,8 +691,8 @@
                             <span>Fondo del Contenido</span>
                         </button>
 
-                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-                            <i class="fas fa-save text-xs"></i> <span>Guardar Cambios</span>
+                        <button type="submit" id="btn-guardar-cambios-editor" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                            <i class="fas fa-save text-xs" id="btn-guardar-icono"></i> <span id="btn-guardar-texto">Guardar Cambios</span>
                         </button>
                     </div>
                 </div>
@@ -667,9 +701,11 @@
                 <div class="p-6">
                     <!-- Campos ocultos para enviar el contenido y fondo -->
                     <input type="hidden" name="contenido_html" id="contenido_html" value="{{ $moduloSeleccionado->contenido_html }}">
+                    <input type="hidden" name="canvas_state" id="canvas_state" value="{{ json_encode($moduloSeleccionado->canvas_state) }}">
                     <input type="hidden" name="fondo_imagen_recortada" id="fondo_imagen_recortada">
                     <input type="hidden" name="fondo_opacidad" id="fondo_opacidad" value="{{ $moduloSeleccionado->fondo_opacidad ?? 20 }}">
                     <input type="hidden" name="quitar_fondo" id="quitar_fondo" value="0">
+                    <input type="file" id="quill-native-image-input" accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml" class="hidden">
                     
                     <!-- Editor Div (limpio y nativo) -->
                     <div id="editor">
@@ -680,7 +716,7 @@
                 <!-- Footer del Editor -->
                 <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-500 bg-slate-50/50 rounded-b-2xl">
                     <span id="charCount">0 caracteres</span>
-                    <span class="flex items-center gap-1.5 text-emerald-600">
+                    <span class="flex items-center gap-1.5 text-emerald-600" id="ultimo-guardado-texto">
                         <i class="fas fa-check-circle"></i> Último guardado: {{ $moduloSeleccionado->updated_at->diffForHumans() }}
                     </span>
                 </div>
@@ -844,7 +880,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 1. Configurar Attributor de Estilo en línea para Tipografía (font-family)
-            // Esto asegura que al aplicar una fuente se genere style="font-family: ..." directamente en el HTML guardado en la base de datos
             var FontStyle = Quill.import('attributors/style/font');
             FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
             Quill.register(FontStyle, true);
@@ -874,11 +909,101 @@
                 ['clean']                                         // remove formatting button
             ];
 
+            // Función asíncrona común para subir imagen al servidor e insertarla en el editor
+            window.subirArchivoImagenDirecto = async function(file) {
+                if (!file) return;
+
+                if (file.size > 10 * 1024 * 1024) {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('La imagen no puede exceder los 10MB.', 'error');
+                    } else {
+                        alert('La imagen no puede exceder los 10MB.');
+                    }
+                    return;
+                }
+
+                var token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+                var formData = new FormData();
+                formData.append('image', file);
+                formData.append('_token', token);
+
+                var ultGuardado = document.getElementById('ultimo-guardado-texto');
+                var textoPrevio = ultGuardado ? ultGuardado.innerHTML : '';
+                if (ultGuardado) {
+                    ultGuardado.innerHTML = '<i class="fas fa-spinner fa-spin text-emerald-600"></i> Subiendo imagen a canvas_resources...';
+                }
+
+                try {
+                    var res = await fetch("{{ route('sisig.editor.canvas.upload') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+
+                    var data = await res.json();
+                    if (data.success && data.url) {
+                        var range = quill.getSelection(true);
+                        var index = (range && typeof range.index === 'number') ? range.index : quill.getLength();
+                        quill.insertEmbed(index, 'image', data.url);
+                        quill.setSelection(index + 1);
+                        actualizarValoresInputs();
+
+                        if (ultGuardado) {
+                            ultGuardado.innerHTML = '<i class="fas fa-check-circle text-emerald-600"></i> Imagen insertada con éxito';
+                            setTimeout(function() { if (ultGuardado) ultGuardado.innerHTML = textoPrevio; }, 3000);
+                        }
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner('¡Imagen cargada en canvas_resources e insertada en el lienzo!', 'success');
+                        }
+                    } else {
+                        if (ultGuardado) ultGuardado.innerHTML = textoPrevio;
+                        var msg = data.message || 'Error al subir la imagen.';
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner(msg, 'error');
+                        } else {
+                            alert(msg);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error al subir imagen:', err);
+                    if (ultGuardado) ultGuardado.innerHTML = textoPrevio;
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('Fallo de conexión al subir la imagen.', 'error');
+                    }
+                }
+            };
+
+            // Handler del botón de imagen de la barra de herramientas nativa
+            window.imageUploadHandler = function() {
+                var fileInput = document.getElementById('quill-native-image-input');
+                if (!fileInput) {
+                    fileInput = document.createElement('input');
+                    fileInput.id = 'quill-native-image-input';
+                    fileInput.type = 'file';
+                    fileInput.className = 'hidden';
+                    fileInput.accept = 'image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml';
+                    document.body.appendChild(fileInput);
+                }
+                fileInput.value = '';
+                fileInput.onchange = function() {
+                    if (fileInput.files && fileInput.files[0]) {
+                        window.subirArchivoImagenDirecto(fileInput.files[0]);
+                    }
+                };
+                fileInput.click();
+            };
+
             var quill = new Quill('#editor', {
                 modules: {
                     toolbar: {
                         container: toolbarOptions,
                         handlers: {
+                            'image': function() {
+                                window.imageUploadHandler();
+                            },
                             'fondo_contenido': function() {
                                 window.abrirModalConfigFondo();
                             }
@@ -888,6 +1013,9 @@
                 theme: 'snow',
                 placeholder: 'Escribe aquí el contenido del módulo...'
             });
+
+            // Guardar instancia global para acceso seguro
+            window.quillInstance = quill;
 
             // Inyectar capa de fondo detrás del contenido de .ql-editor dentro de .ql-container
             var qlContainer = quill.container;
@@ -932,20 +1060,149 @@
 
             // Actualizar el input oculto y el contador de caracteres cuando el contenido cambia
             var hiddenInput = document.getElementById('contenido_html');
+            var canvasStateInput = document.getElementById('canvas_state');
             var charCount = document.getElementById('charCount');
 
             // Set initial char count
             charCount.textContent = quill.getText().trim().length + ' caracteres';
 
-            quill.on('text-change', function() {
-                hiddenInput.value = quill.root.innerHTML;
-                charCount.textContent = quill.getText().trim().length + ' caracteres';
+            function actualizarValoresInputs() {
+                var html = quill.root.innerHTML;
+                var textLen = quill.getText().trim().length;
+                hiddenInput.value = html;
+                charCount.textContent = textLen + ' caracteres';
+                if (canvasStateInput) {
+                    canvasStateInput.value = JSON.stringify({
+                        ops: quill.getContents().ops,
+                        html: html,
+                        textLength: textLen,
+                        updated_at: new Date().toISOString()
+                    });
+                }
+            }
+
+            quill.on('text-change', actualizarValoresInputs);
+
+            // Guardar Estado Completo de forma Asíncrona (saveState)
+            window.guardarEstadoCompletoAsincrono = async function(mostrarAlerta = true) {
+                actualizarValoresInputs();
+
+                var btnGuardar = document.getElementById('btn-guardar-cambios-editor');
+                var btnTexto = document.getElementById('btn-guardar-texto');
+                var btnIcono = document.getElementById('btn-guardar-icono');
+                var ultGuardado = document.getElementById('ultimo-guardado-texto');
+                var textoPrevio = ultGuardado ? ultGuardado.innerHTML : '';
+
+                if (btnGuardar) btnGuardar.disabled = true;
+                if (btnTexto) btnTexto.textContent = 'Guardando...';
+                if (btnIcono) btnIcono.className = 'fas fa-spinner fa-spin text-xs';
+                if (ultGuardado) {
+                    ultGuardado.innerHTML = '<i class="fas fa-spinner fa-spin text-emerald-600"></i> Guardando cambios...';
+                }
+
+                var token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+                var payload = {
+                    _token: token,
+                    canvas_state: JSON.parse(canvasStateInput.value || '{}'),
+                    contenido_html: quill.root.innerHTML,
+                    fondo_opacidad: document.getElementById('fondo_opacidad')?.value || 20,
+                    fondo_imagen_recortada: document.getElementById('fondo_imagen_recortada')?.value || '',
+                    quitar_fondo: document.getElementById('quitar_fondo')?.value || '0'
+                };
+
+                try {
+                    var res = await fetch("{{ route('sisig.editor.canvas.save', $moduloSeleccionado->id) }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var data = await res.json();
+                    if (data.success) {
+                        if (ultGuardado) {
+                            ultGuardado.innerHTML = '<i class="fas fa-check-circle text-emerald-600"></i> Último guardado: Justo ahora';
+                        }
+                        if (btnTexto) btnTexto.textContent = '¡Guardado!';
+                        if (btnIcono) btnIcono.className = 'fas fa-check text-xs';
+
+                        if (mostrarAlerta && window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner('¡Contenido y estado del lienzo guardados exitosamente!', 'success');
+                        }
+
+                        setTimeout(function() {
+                            if (btnTexto) btnTexto.textContent = 'Guardar Cambios';
+                            if (btnIcono) btnIcono.className = 'fas fa-save text-xs';
+                            if (btnGuardar) btnGuardar.disabled = false;
+                        }, 2000);
+                        return true;
+                    } else {
+                        throw new Error(data.message || 'Error al guardar.');
+                    }
+                } catch (err) {
+                    console.error('Error al guardar estado:', err);
+                    if (ultGuardado) ultGuardado.innerHTML = textoPrevio;
+                    if (btnTexto) btnTexto.textContent = 'Guardar Cambios';
+                    if (btnIcono) btnIcono.className = 'fas fa-save text-xs';
+                    if (btnGuardar) btnGuardar.disabled = false;
+
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner('Error al guardar: ' + (err.message || 'Error de conexión'), 'error');
+                    } else {
+                        alert('Error al guardar: ' + err.message);
+                    }
+                    return false;
+                }
+            };
+
+            // Interceptar submit del formulario para guardar asíncronamente sin recarga de página
+            var form = document.getElementById('editorForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    window.guardarEstadoCompletoAsincrono(true);
+                });
+            }
+
+            // Atajo Ctrl+S o Cmd+S para sincronizar mediante saveState asíncrono sin recarga
+            window.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                    e.preventDefault();
+                    window.guardarEstadoCompletoAsincrono(true);
+                }
             });
 
-            // Antes de enviar el form, asegurar que el HTML esté en el input
-            document.getElementById('editorForm').onsubmit = function() {
-                hiddenInput.value = quill.root.innerHTML;
-            };
+            // Soporte para arrastrar y soltar (Drag & Drop) o pegar imágenes directamente en el editor
+            var editorDom = document.querySelector('.ql-editor');
+            if (editorDom) {
+                editorDom.addEventListener('drop', function(e) {
+                    var dt = e.dataTransfer;
+                    if (dt && dt.files && dt.files.length > 0 && dt.files[0].type.startsWith('image/')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.subirArchivoImagenDirecto(dt.files[0]);
+                    }
+                });
+
+                editorDom.addEventListener('paste', function(e) {
+                    var clipboard = e.clipboardData || window.clipboardData;
+                    if (clipboard && clipboard.items) {
+                        for (var i = 0; i < clipboard.items.length; i++) {
+                            if (clipboard.items[i].type.indexOf('image') !== -1) {
+                                var file = clipboard.items[i].getAsFile();
+                                if (file) {
+                                    e.preventDefault();
+                                    window.subirArchivoImagenDirecto(file);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
 
             // Evento cambio de archivo para el fondo
             var inputArchivoFondo = document.getElementById('input-archivo-fondo');
@@ -994,6 +1251,13 @@
                 e.preventDefault();
                 e.stopPropagation();
                 window.abrirModalConfigFondo();
+            }
+            if (e.target.closest('.ql-image')) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.imageUploadHandler) {
+                    window.imageUploadHandler();
+                }
             }
         });
 
