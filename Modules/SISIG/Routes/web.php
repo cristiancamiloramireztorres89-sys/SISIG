@@ -8,6 +8,7 @@ use Modules\SISIG\Http\Controllers\Aprendiz\DashboardControllerAprendiz;
 use Modules\SISIG\Http\Controllers\Editor\DashboardControllerEditor;
 use Modules\SISIG\Http\Controllers\Perfilusers\PerfilusersController;
 use Modules\SISIG\Http\Controllers\editor\ContenidoController;
+use Modules\SISIG\Http\Controllers\editor\CanvasController;
 
 Route::prefix('sisig')->name('sisig.')->group(function () {
     // Portal Informativo Público
@@ -68,6 +69,15 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/contenido/{id}/editar', [ContenidoController::class, 'edit'])->name('contenido.edit');
         Route::put('/contenido/{id}', [ContenidoController::class, 'update'])->name('contenido.update');
 
+        // Persistencia y Multimedia del Lienzo Canvas (API asíncrona)
+        Route::get('/canvas/{id?}', [CanvasController::class, 'showEditor'])->name('canvas.editor');
+        Route::get('/modules/{id?}/canvas', [CanvasController::class, 'getState'])->name('canvas.get');
+        Route::post('/modules/{id?}/canvas', [CanvasController::class, 'saveState'])->name('canvas.save');
+        Route::post('/modules/upload-media', [CanvasController::class, 'uploadMedia'])->name('canvas.upload');
+        Route::get('/modules/media', [CanvasController::class, 'getMedia'])->name('canvas.media.list');
+        Route::post('/modules/media/video', [CanvasController::class, 'saveVideoLink'])->name('canvas.media.video');
+        Route::delete('/modules/media', [CanvasController::class, 'deleteMedia'])->name('canvas.media.delete');
+
         // Gestión de Exámenes (Quizzes) para el Editor
         Route::get('/examenes', [\Modules\SISIG\Http\Controllers\Editor\GestionExamenesController::class, 'index'])->name('examenes.index');
         Route::post('/examenes', [\Modules\SISIG\Http\Controllers\Editor\GestionExamenesController::class, 'store'])->name('examenes.store');
@@ -126,6 +136,11 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/perfil', [PerfilusersController::class, 'index'])->name('perfil.index');
         Route::put('/perfil', [PerfilusersController::class, 'update'])->name('perfil.update');
         Route::put('/perfil/password', [PerfilusersController::class, 'updatePassword'])->name('perfil.password');
+
+        // Endpoints directos de Canvas Interactivo
+        Route::get('/modules/{id?}/canvas', [CanvasController::class, 'getState'])->name('canvas.direct.get');
+        Route::post('/modules/{id?}/canvas', [CanvasController::class, 'saveState'])->name('canvas.direct.save');
+        Route::post('/modules/upload-media', [CanvasController::class, 'uploadMedia'])->name('canvas.direct.upload');
     });
 });
 

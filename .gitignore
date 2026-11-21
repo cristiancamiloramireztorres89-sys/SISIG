@@ -26,4 +26,5 @@ Thumbs.db
 scratch/
 *.zip
 *.pdf
+/storage/chrome_profile
 

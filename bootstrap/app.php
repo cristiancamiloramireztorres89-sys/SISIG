@@ -11,7 +11,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'modules/*/canvas',
+            'modules/upload-media',
+            'modules/media',
+            'modules/media/*',
+            'sisig/modules/*/canvas',
+            'sisig/modules/upload-media',
+            'sisig/modules/media',
+            'sisig/modules/media/*',
+            'sisig/editor/modules/*/canvas',
+            'sisig/editor/modules/upload-media',
+            'sisig/editor/modules/media',
+            'sisig/editor/modules/media/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
