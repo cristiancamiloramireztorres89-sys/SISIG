@@ -4434,7 +4434,7 @@
                     if (btnLabel) btnLabel.textContent = 'Subiendo...';
 
                     try {
-                        const response = await fetch('/modules/upload-media', {
+                        const response = await fetch('/sisig/editor/modules/upload-media', {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': csrfToken,
@@ -4480,7 +4480,7 @@
             // Cargar automáticamente todos los recursos multimedia guardados en el servidor
             async function cargarGaleriaMultimedia() {
                 try {
-                    const response = await fetch('/modules/media', {
+                    const response = await fetch('/sisig/editor/modules/media', {
                         headers: {
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': csrfToken
@@ -4529,7 +4529,7 @@
                 labelUpload.textContent = 'Subiendo...';
 
                 try {
-                    const response = await fetch('/modules/upload-media', {
+                    const response = await fetch('/sisig/editor/modules/upload-media', {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -4608,7 +4608,7 @@
                             allowOutsideClick: false
                         });
 
-                        const response = await fetch('/modules/media/video', {
+                        const response = await fetch('/sisig/editor/modules/media/video', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -4794,7 +4794,7 @@
 
                 if (confirmed.isConfirmed) {
                     try {
-                        const response = await fetch('/modules/media', {
+                        const response = await fetch('/sisig/editor/modules/media', {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -6118,7 +6118,7 @@
             }
 
             // -------------------------------------------------------------
-            // 15. PERSISTENCIA EN BACKEND (POST /modules/{id}/canvas)
+            // 15. PERSISTENCIA EN BACKEND (POST /sisig/editor/modules/{id}/canvas)
             // -------------------------------------------------------------
             const btnSave = document.getElementById('btn-save-canvas');
             const btnSaveText = document.getElementById('btn-save-text');
@@ -6371,9 +6371,7 @@
                 const targetModuleId = moduleId || '{{ $module->id ?? 1 }}';
                 const token = csrfToken || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "{{ csrf_token() }}";
                 const saveEndpoints = [
-                    `/modules/${targetModuleId}/canvas`,
-                    `/sisig/editor/modules/${targetModuleId}/canvas`,
-                    `/sisig/modules/${targetModuleId}/canvas`
+                    `/sisig/editor/modules/${targetModuleId}/canvas`
                 ];
 
                 let saveSuccess = false;
