@@ -107,6 +107,7 @@
                 <div class="p-6">
                     <!-- Campos ocultos para enviar el contenido y fondo -->
                     <input type="hidden" name="contenido_html" id="contenido_html" value="{{ \Modules\SISIG\Helpers\HtmlSecuritySanitizer::clean($moduloSeleccionado->contenido_html) }}">
+                    <input type="hidden" name="canvas_state" id="canvas_state" value="{{ json_encode($moduloSeleccionado->canvas_state) }}">
                     <input type="hidden" name="fondo_imagen_recortada" id="fondo_imagen_recortada">
                     <input type="hidden" name="fondo_opacidad" id="fondo_opacidad" value="{{ $moduloSeleccionado->fondo_opacidad ?? 20 }}">
                     <input type="hidden" name="quitar_fondo" id="quitar_fondo" value="0">

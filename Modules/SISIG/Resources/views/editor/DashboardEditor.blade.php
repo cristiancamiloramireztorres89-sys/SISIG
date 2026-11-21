@@ -189,7 +189,7 @@
                                         <i class="fas fa-question text-[#00BCD4]"></i>
                                         <strong>{{ $mod->preguntas_count }}</strong> preguntas
                                     </span>
-                                    <a href="{{ route('sisig.editor.contenido.edit', $mod->id) }}" class="inline-flex items-center gap-1 text-[#2E6F40] hover:text-emerald-800 font-bold transition-colors">
+                                    <a href="{{ route('sisig.editor.canvas.editor', $mod->id) }}" class="inline-flex items-center gap-1 text-[#2E6F40] hover:text-emerald-800 font-bold transition-colors">
                                         <span>Editar</span>
                                         <i class="fas fa-arrow-right text-[10px]"></i>
                                     </a>

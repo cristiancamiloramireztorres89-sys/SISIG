@@ -5,9 +5,11 @@
             
             <!-- Left: Toggle Sidebar + Título del Panel de Inicio -->
             <div class="flex items-center gap-3">
+                @if(!isset($hideToggle) || !$hideToggle)
                 <button type="button" id="sidebar-toggle-btn" class="p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 focus:outline-none transition-all duration-200 flex items-center justify-center cursor-pointer border border-transparent hover:border-white/10" title="Mostrar / Ocultar menú lateral (Sidebar)">
                     <i class="fas fa-bars-staggered text-base"></i>
                 </button>
+                @endif
 
                 <div class="flex items-center gap-2">
                     <h2 class="text-sm sm:text-base font-extrabold text-white tracking-wide">

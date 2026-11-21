@@ -319,6 +319,47 @@
 
     <!-- Scripts de Interacción -->
     <script>
+        async function ejecutarCierreSesionAjax(sessionId, nombreUsuario) {
+            const token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(`{{ url('sisig/admin/seguridad/sesiones') }}/${sessionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const btn = document.querySelector(`button[onclick*="'${sessionId}'"]`);
+                    const row = btn?.closest('tr');
+                    if (row) {
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => row.remove(), 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al cerrar la sesión.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al cerrar la sesión.', 'danger');
+                }
+            } finally {
+                if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
+            }
+        }
+
         // Cerrar Sesión en tiempo real
         function confirmarCierreSesion(sessionId, nombreUsuario) {
             if (window.abrirModalConfirmacion) {
@@ -328,16 +369,10 @@
                     descripcion: `Se forzará el cierre de la sesión actual de ${nombreUsuario}. Tendrá que volver a autenticarse.`,
                     btnTexto: 'Sí, cerrar sesión',
                     btnIcon: 'fa-sign-out-alt',
-                    onConfirm: () => {
-                        const form = document.getElementById('formCerrarSesion');
-                        form.action = `{{ url('sisig/admin/seguridad/sesiones') }}/${sessionId}`;
-                        form.submit();
-                    }
+                    onConfirm: () => ejecutarCierreSesionAjax(sessionId, nombreUsuario)
                 });
             } else if (confirm(`¿Estás seguro de cerrar la sesión activa de ${nombreUsuario}?`)) {
-                const form = document.getElementById('formCerrarSesion');
-                form.action = `{{ url('sisig/admin/seguridad/sesiones') }}/${sessionId}`;
-                form.submit();
+                ejecutarCierreSesionAjax(sessionId, nombreUsuario);
             }
         }
     </script>

@@ -49,7 +49,7 @@ class ContenidoController extends Controller
     }
 
     /**
-     * Carga el editor de contenido interactivo verificando los permisos del editor.
+     * Carga el editor de contenido interactivo (Redirige al nuevo Editor Visual Canvas tipo Canva).
      */
     public function edit($id)
     {
@@ -71,7 +71,8 @@ class ContenidoController extends Controller
             }
         }
 
-        return view('sisig::editor.contenido.edit', compact('modulos', 'moduloSeleccionado'));
+        // Redirigir siempre de forma directa al nuevo Editor Canvas tipo Canva
+        return redirect()->route('sisig.editor.canvas.editor', $id);
     }
 
     /**
@@ -167,7 +168,34 @@ class ContenidoController extends Controller
             $modulo->fondo_opacidad = (int) $request->input('fondo_opacidad');
         }
 
+        // Persistencia del estado JSON del lienzo/editor
+        if ($request->filled('canvas_state')) {
+            $canvasState = $request->input('canvas_state');
+            if (is_string($canvasState)) {
+                $decoded = json_decode($canvasState, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $canvasState = $decoded;
+                }
+            }
+            $modulo->canvas_state = $canvasState;
+        }
+
         $modulo->save();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Contenido y estado del lienzo actualizados exitosamente.',
+                'data' => [
+                    'id'             => $modulo->id,
+                    'title'          => $modulo->titulo,
+                    'canvas_state'   => $modulo->canvas_state,
+                    'contenido_html' => $modulo->contenido_html,
+                    'updated_at'     => $modulo->updated_at?->toIso8601String(),
+                    'updated_human'  => $modulo->updated_at?->diffForHumans(),
+                ]
+            ], 200);
+        }
 
         return redirect()->route('sisig.editor.contenido.index')
                          ->with('success', 'Contenido y fondo actualizados exitosamente.');

@@ -248,12 +248,19 @@
                                     </div>
                                     
                                     <div class="flex items-center gap-2">
+                                        <a href="{{ route('sisig.editor.canvas.editor', $modulo->id) }}" 
+                                           class="px-3.5 py-1.5 rounded-full text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#245833] transition-all shadow-sena flex items-center justify-center gap-1.5 cursor-pointer"
+                                           title="Editar contenido interactivo del módulo">
+                                            <i class="fas fa-pencil-alt text-xs"></i>
+                                            <span>Editar Contenido</span>
+                                        </a>
+
                                         <button type="button" 
                                                 onclick="abrirModalEditarModulo({{ json_encode($modulo) }})" 
-                                                title="Editar módulo" 
-                                                class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
-                                            <i class="fas fa-pencil-alt text-xs text-slate-500"></i>
-                                            <span>Editar</span>
+                                                title="Configuración del módulo" 
+                                                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
+                                            <i class="fas fa-cog text-xs text-slate-500"></i>
+                                            <span>Ajustes</span>
                                         </button>
 
                                         <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST">
@@ -262,7 +269,7 @@
                                             <button type="button" 
                                                     onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" 
                                                     title="Eliminar módulo" 
-                                                    class="px-3.5 py-1.5 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-600 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
+                                                    class="px-3 py-1.5 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-600 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
                                                 <i class="fas fa-trash-alt text-xs"></i>
                                                 <span>Desactivar</span>
                                             </button>
@@ -670,6 +677,49 @@
             if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
+        async function ejecutarEliminarModuloAjax(form) {
+            const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const card = form.closest('.modulo-card');
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            if (typeof filtrarModulos === 'function') filtrarModulos();
+                        }, 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al eliminar el módulo.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al eliminar el módulo.', 'danger');
+                }
+            } finally {
+                if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
+            }
+        }
+
         function confirmarEliminarModulo(formId, tituloModulo) {
             const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
             if (!form) return;
@@ -683,7 +733,7 @@
                 advertencia: 'Se eliminarán también las evaluaciones asociadas a este módulo.',
                 btnTexto: 'Sí, eliminar',
                 btnIcon: 'fa-trash-alt',
-                onConfirm: form
+                onConfirm: () => ejecutarEliminarModuloAjax(form)
             });
         }
 

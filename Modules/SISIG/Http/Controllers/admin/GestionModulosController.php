@@ -122,7 +122,7 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Carga la vista del editor de contenido interactivo del módulo seleccionado.
+     * Carga la vista del editor de contenido interactivo (Redirige al nuevo Editor Visual Canvas tipo Canva).
      */
     public function editContent($id)
     {
@@ -175,6 +175,18 @@ class GestionModulosController extends Controller
             $modulo->fondo_opacidad = (int) $request->input('fondo_opacidad');
         }
 
+        // Persistencia del estado JSON del lienzo/editor
+        if ($request->filled('canvas_state')) {
+            $canvasState = $request->input('canvas_state');
+            if (is_string($canvasState)) {
+                $decoded = json_decode($canvasState, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $canvasState = $decoded;
+                }
+            }
+            $modulo->canvas_state = $canvasState;
+        }
+
         $modulo->save();
 
         return redirect()->route('sisig.admin.modulos.index')->with('success', 'Contenido y fondo actualizados exitosamente');
@@ -204,9 +216,20 @@ class GestionModulosController extends Controller
             // Eliminar registro del módulo en base de datos
             $modulo->delete();
 
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'id_modulo' => $id,
+                    'message' => 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente'
+                ]);
+            }
+
             return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado exitosamente');
         } catch (\Exception $e) {
             Log::error('Error al eliminar módulo en SISIG: ' . $e->getMessage(), ['exception' => $e]);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Error al eliminar el módulo.'], 500);
+            }
             return redirect()->route('sisig.admin.modulos.index')->with('error', 'Ocurrió un error al intentar eliminar el módulo.');
         }
     }

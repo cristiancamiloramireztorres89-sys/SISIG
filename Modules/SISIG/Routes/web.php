@@ -8,6 +8,7 @@ use Modules\SISIG\Http\Controllers\Aprendiz\DashboardControllerAprendiz;
 use Modules\SISIG\Http\Controllers\Editor\DashboardControllerEditor;
 use Modules\SISIG\Http\Controllers\Perfilusers\PerfilusersController;
 use Modules\SISIG\Http\Controllers\Editor\ContenidoController;
+use Modules\SISIG\Http\Controllers\Editor\CanvasController;
 use Modules\SISIG\Http\Middleware\CheckAdminSisig;
 use Modules\SISIG\Http\Middleware\CheckEditorSisig;
 
@@ -55,6 +56,10 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
 
         // Módulo de Reportes y Métricas
         Route::get('/reportes', [\Modules\SISIG\Http\Controllers\Admin\ReportesController::class, 'index'])->name('reportes.index');
+
+        // Módulo de Configuración de la Plataforma
+        Route::get('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionPlataformaController::class, 'index'])->name('configuracion.index');
+        Route::put('/configuracion', [\Modules\SISIG\Http\Controllers\Admin\ConfiguracionPlataformaController::class, 'update'])->name('configuracion.update');
     });
 
     // Módulo de Edición de Contenidos (Exclusivo editor_sisig / admin_sisig) - Protegido por RBAC
@@ -66,6 +71,15 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::post('/contenido', [ContenidoController::class, 'store'])->name('contenido.store');
         Route::get('/contenido/{id}/editar', [ContenidoController::class, 'edit'])->name('contenido.edit');
         Route::put('/contenido/{id}', [ContenidoController::class, 'update'])->name('contenido.update');
+
+        // Persistencia y Multimedia del Lienzo Canvas (API asíncrona)
+        Route::get('/canvas/{id?}', [CanvasController::class, 'showEditor'])->name('canvas.editor');
+        Route::get('/modules/{id?}/canvas', [CanvasController::class, 'getState'])->name('canvas.get');
+        Route::post('/modules/{id?}/canvas', [CanvasController::class, 'saveState'])->name('canvas.save');
+        Route::post('/modules/upload-media', [CanvasController::class, 'uploadMedia'])->name('canvas.upload');
+        Route::get('/modules/media', [CanvasController::class, 'getMedia'])->name('canvas.media.list');
+        Route::post('/modules/media/video', [CanvasController::class, 'saveVideoLink'])->name('canvas.media.video');
+        Route::delete('/modules/media', [CanvasController::class, 'deleteMedia'])->name('canvas.media.delete');
 
         // Gestión de Exámenes (Quizzes) para el Editor
         Route::get('/examenes', [\Modules\SISIG\Http\Controllers\Editor\GestionExamenesController::class, 'index'])->name('examenes.index');
@@ -136,5 +150,10 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::put('/perfil/password', [PerfilusersController::class, 'updatePassword'])
             ->middleware('throttle:5,1')
             ->name('perfil.password');
+
+        // Endpoints directos de Canvas Interactivo
+        Route::get('/modules/{id?}/canvas', [CanvasController::class, 'getState'])->name('canvas.direct.get');
+        Route::post('/modules/{id?}/canvas', [CanvasController::class, 'saveState'])->name('canvas.direct.save');
+        Route::post('/modules/upload-media', [CanvasController::class, 'uploadMedia'])->name('canvas.direct.upload');
     });
 });
