@@ -8,6 +8,9 @@
                     <i class="fas fa-users text-sena-green"></i>
                     <span>Gestión de Participantes SISIG</span>
                 </h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Supervisa el progreso, estado formativo y participación de los aprendices en las inducciones del sistema integrado.
+                </p>
             </div>
         </div>
 

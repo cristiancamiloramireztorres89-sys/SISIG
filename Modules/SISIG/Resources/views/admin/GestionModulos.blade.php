@@ -34,7 +34,9 @@
                     <i class="fas fa-layer-group text-[#2E6F40]"></i>
                     <span>{{ auth()->user()->hasRole('admin_sisig') ? 'Gestión de Módulos SIG' : 'Gestión de Contenidos SIG' }}</span>
                 </h1>
-                <p class="text-xs text-slate-500 mt-0.5">Control SISIG &bull; SENA Empresa &bull; {{ $totalActivos }} módulos registrados</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Administra y organiza los módulos temáticos de inducción institucional, sus contenidos formativos y estados de publicación.
+                </p>
             </div>
 
             @if(auth()->user()->hasRole('admin_sisig'))
@@ -226,7 +228,7 @@
                             <div class="p-5 flex flex-col flex-grow justify-between space-y-4 bg-white">
                                 <!-- Descripción real -->
                                 <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
-                                    {{ $modulo->descripcion }}
+                                    {{ !empty(trim($modulo->descripcion)) && !preg_match('/^[.\s]+$/', $modulo->descripcion) && !preg_match('/^a+$/i', $modulo->descripcion) ? $modulo->descripcion : 'Módulo de formación e inducción institucional en el Sistema Integrado de Gestión.' }}
                                 </p>
 
                                 <!-- Progreso real de aprendices de SISIG -->

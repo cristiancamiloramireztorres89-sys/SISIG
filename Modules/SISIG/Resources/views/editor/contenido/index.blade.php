@@ -35,7 +35,9 @@
                     <i class="fas fa-layer-group text-[#2E6F40]"></i>
                     <span>Gestión de Contenidos SIG</span>
                 </h1>
-                <p class="text-xs text-slate-500 mt-0.5">Control SISIG &bull; SENA Empresa &bull; {{ $totalActivos ?? $modulos->count() }} módulos registrados</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Diseña, edita y gestiona el material formativo y multimedia de las temáticas de inducción asignadas.
+                </p>
             </div>
 
             <div class="self-start lg:self-auto flex items-center gap-3">

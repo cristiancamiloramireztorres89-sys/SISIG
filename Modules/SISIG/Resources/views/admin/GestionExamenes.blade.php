@@ -8,6 +8,9 @@
                     <i class="fas fa-clipboard-list text-[#2E6F40]"></i>
                     <span>Gestión de Exámenes</span>
                 </h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Crea, configura y gestiona las evaluaciones evaluativas y quices asociados a los módulos de inducción del SIG.
+                </p>
             </div>
 
             <div class="self-start lg:self-auto">

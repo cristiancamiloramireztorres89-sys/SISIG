@@ -8,7 +8,9 @@
                     <i class="fas fa-users-cog text-sena-green"></i>
                     <span>Gestión de Usuarios SISIG</span>
                 </h1>
-
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Administra los usuarios registrados, asignación de roles institucionales, estados de cuenta y permisos en la plataforma.
+                </p>
             </div>
 
             <div class="self-start lg:self-auto">

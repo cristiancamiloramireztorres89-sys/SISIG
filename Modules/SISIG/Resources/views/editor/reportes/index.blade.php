@@ -8,6 +8,9 @@
                     <i class="fas fa-chart-line text-sena-green"></i>
                     <span>Seguimiento y Reportes SISIG</span>
                 </h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
+                    Consulta métricas de rendimiento, estadísticas de aprobación y reportes analíticos de los módulos de inducción.
+                </p>
             </div>
         </div>
 
