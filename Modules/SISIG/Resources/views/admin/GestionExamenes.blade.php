@@ -491,7 +491,7 @@
                             btnToggle.setAttribute('aria-label', data.activo ? 'Desactivar' : 'Activar');
                             btnToggle.setAttribute('onclick', `confirmarToggleQuiz(document.getElementById('${form.id}'), '${tituloQuiz.replace(/'/g, "\\'")}', ${data.activo ? 'true' : 'false'})`);
                             btnToggle.innerHTML = `<i class="fas ${data.activo ? 'fa-ban' : 'fa-check'} text-xs"></i>`;
-                            btnToggle.className = `w-9 h-9 rounded-full bg-slate-50 ${data.activo ? 'hover:bg-rose-500 hover:border-rose-500' : 'hover:bg-emerald-600 hover:border-emerald-600'} border border-slate-200 text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs`;
+                            btnToggle.className = `w-8 h-8 rounded-full bg-white ${data.activo ? 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700' : 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800'} flex items-center justify-center shadow-2xs transition-all cursor-pointer`;
                         }
                     }
 
@@ -523,7 +523,7 @@
                 item: `"${tituloQuiz}"`,
                 itemTag: 'Examen seleccionado',
                 btnTexto: activo ? 'Sí, desactivar' : 'Sí, activar',
-                btnIcon: activo ? 'fa-pause-circle' : 'fa-check',
+                btnIcon: activo ? 'fa-ban' : 'fa-check',
                 onConfirm: () => ejecutarToggleQuizAjax(form, tituloQuiz)
             });
         }
