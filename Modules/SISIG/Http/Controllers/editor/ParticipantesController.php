@@ -202,12 +202,22 @@ class ParticipantesController extends Controller
                     $estadoSeccion = 'Sin iniciar';
                 }
 
+                $imagenUrl = null;
+                if (!empty($mod->imagen)) {
+                    if (str_starts_with($mod->imagen, 'http://') || str_starts_with($mod->imagen, 'https://')) {
+                        $imagenUrl = $mod->imagen;
+                    } else {
+                        $imagenUrl = asset(ltrim($mod->imagen, '/'));
+                    }
+                }
+
                 $seccionesAprendiz[] = [
                     'id'         => $mod->id,
                     'titulo'     => $mod->titulo,
                     'norma'      => $mod->norma ?? '',
                     'icono'      => $mod->icono_base,
                     'icon_bg'    => $mod->icon_bg,
+                    'imagen'     => $imagenUrl,
                     'porcentaje' => $porcentaje,
                     'estado'     => $estadoSeccion,
                 ];

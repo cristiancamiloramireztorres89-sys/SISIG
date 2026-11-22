@@ -551,14 +551,31 @@
                             : 'Módulo Formativo';
                         const icono = sec.icono || 'fas fa-layer-group';
                         const iconBg = sec.icon_bg || 'bg-slate-100 text-slate-600';
+                        const imagenSrc = sec.imagen || '';
+
+                        let avatarModuloHtml = '';
+                        if (imagenSrc) {
+                            avatarModuloHtml = `
+                                <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center flex-shrink-0 shadow-2xs">
+                                    <img src="${imagenSrc}" alt="${sec.titulo || 'Módulo'}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="w-full h-full ${iconBg} items-center justify-center text-xs font-bold" style="display: none;">
+                                        <i class="${icono}"></i>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            avatarModuloHtml = `
+                                <div class="w-8 h-8 rounded-xl ${iconBg} flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                    <i class="${icono}"></i>
+                                </div>
+                            `;
+                        }
 
                         const item = document.createElement('div');
                         item.className = 'p-3.5 rounded-2xl border border-slate-200/80 bg-white shadow-xs flex items-center justify-between gap-4 transition-all hover:border-slate-300';
                         item.innerHTML = `
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-8 h-8 rounded-xl ${iconBg} flex items-center justify-center text-xs font-bold flex-shrink-0">
-                                    <i class="${icono}"></i>
-                                </div>
+                                ${avatarModuloHtml}
                                 <div class="min-w-0">
                                     <span class="font-bold text-slate-800 text-xs block truncate">${sec.titulo || 'Módulo'}</span>
                                     <span class="text-[10px] text-slate-400 block truncate">${normaText}</span>
