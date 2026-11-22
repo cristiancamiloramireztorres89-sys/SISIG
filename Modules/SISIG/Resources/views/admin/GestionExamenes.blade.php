@@ -238,7 +238,7 @@
                                     <button type="button" onclick="confirmarToggleQuiz(document.getElementById('form-toggle-quiz-{{ $quiz->id_quiz }}'), '{{ addslashes($quiz->titulo) }}', {{ $quiz->activo ? 'true' : 'false' }})" 
                                             title="{{ $quiz->activo ? 'Desactivar examen' : 'Activar examen' }}" 
                                             class="w-8 h-8 rounded-full bg-white {{ $quiz->activo ? 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700' : 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800' }} flex items-center justify-center shadow-2xs transition-all cursor-pointer" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
-                                        <i class="fas {{ $quiz->activo ? 'fa-trash-alt' : 'fa-check' }} text-xs"></i>
+                                        <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }} text-xs"></i>
                                     </button>
                                 </form>
                             </div>

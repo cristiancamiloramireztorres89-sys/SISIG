@@ -268,10 +268,10 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" 
-                                                    onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" 
-                                                    title="Desactivar módulo" 
-                                                    class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
-                                                <i class="fas fa-trash-alt text-xs"></i>
+                                                    onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}', '{{ $modulo->estado }}')" 
+                                                    title="{{ $modulo->estado === 'inactivo' ? 'Reactivar módulo' : 'Desactivar módulo' }}" 
+                                                    class="w-8 h-8 rounded-full bg-white {{ $modulo->estado === 'inactivo' ? 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800' : 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700' }} flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                                <i class="fas {{ $modulo->estado === 'inactivo' ? 'fa-check' : 'fa-ban' }} text-xs"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -692,47 +692,46 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    const card = form.closest('.modulo-card');
-                    if (card) {
-                        card.style.transition = 'all 0.3s ease';
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            card.remove();
-                            if (typeof filtrarModulos === 'function') filtrarModulos();
-                        }, 300);
-                    }
                     if (window.mostrarAlertaBanner) {
                         window.mostrarAlertaBanner(data.message, 'success');
                     }
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
                 } else {
                     if (window.mostrarAlertaBanner) {
-                        window.mostrarAlertaBanner(data.message || 'Error al eliminar el módulo.', 'danger');
+                        window.mostrarAlertaBanner(data.message || 'Error al desactivar el módulo.', 'danger');
                     }
                 }
             } catch (err) {
                 console.error(err);
                 if (window.mostrarAlertaBanner) {
-                    window.mostrarAlertaBanner('Error de conexión al eliminar el módulo.', 'danger');
+                    window.mostrarAlertaBanner('Error de conexión al desactivar el módulo.', 'danger');
                 }
             } finally {
                 if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
             }
         }
 
-        function confirmarEliminarModulo(formId, tituloModulo) {
+        function confirmarEliminarModulo(formId, tituloModulo, estadoActual = 'publicado') {
             const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
             if (!form) return;
 
+            const esInactivo = (estadoActual === 'inactivo');
+
             window.abrirModalConfirmacion({
-                tipo: 'danger',
-                titulo: '¿Eliminar módulo?',
-                descripcion: 'Esta acción no se puede deshacer y retirará el módulo permanentemente del catálogo del SIG.',
+                tipo: esInactivo ? 'info' : 'warning',
+                titulo: esInactivo ? '¿Reactivar módulo?' : '¿Desactivar módulo?',
+                descripcion: esInactivo 
+                    ? 'El módulo volverá a estar disponible para los aprendices en el catálogo del SIG.' 
+                    : 'El módulo pasará a estado inactivo y no estará visible para los aprendices en las inducciones.',
                 item: `"${tituloModulo}"`,
                 itemTag: 'Módulo seleccionado',
-                advertencia: 'Se eliminarán también las evaluaciones asociadas a este módulo.',
-                btnTexto: 'Sí, eliminar',
-                btnIcon: 'fa-trash-alt',
+                advertencia: esInactivo 
+                    ? 'Los aprendices asignados podrán volver a acceder a los contenidos de este módulo.' 
+                    : 'Puedes volver a reactivarlo en cualquier momento haciendo clic en el botón de activación.',
+                btnTexto: esInactivo ? 'Sí, reactivar' : 'Sí, desactivar',
+                btnIcon: esInactivo ? 'fa-check' : 'fa-ban',
                 onConfirm: () => ejecutarEliminarModuloAjax(form)
             });
         }
