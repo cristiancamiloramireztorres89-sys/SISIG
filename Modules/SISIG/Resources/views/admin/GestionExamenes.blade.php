@@ -520,7 +520,7 @@
                 tipo: activo ? 'warning' : 'success',
                 titulo: activo ? '¿Desactivar examen?' : '¿Activar examen?',
                 descripcion: activo ? 'El examen dejará de estar disponible para los aprendices.' : 'El examen volverá a estar habilitado y visible para los aprendices.',
-                item: `"${tituloQuiz}"`,
+                item: tituloQuiz,
                 itemTag: 'Examen seleccionado',
                 btnTexto: activo ? 'Sí, desactivar' : 'Sí, activar',
                 btnIcon: activo ? 'fa-ban' : 'fa-check',

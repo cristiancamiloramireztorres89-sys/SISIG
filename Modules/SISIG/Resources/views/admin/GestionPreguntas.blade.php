@@ -516,7 +516,7 @@
                 tipo: 'danger',
                 titulo: '¿Eliminar pregunta?',
                 descripcion: 'Esta acción no se puede deshacer y retirará la pregunta permanentemente del examen.',
-                item: `"${tituloPregunta}"`,
+                item: tituloPregunta,
                 itemTag: 'Pregunta a eliminar',
                 advertencia: 'Se borrarán también sus opciones de respuesta.',
                 btnTexto: 'Sí, eliminar',

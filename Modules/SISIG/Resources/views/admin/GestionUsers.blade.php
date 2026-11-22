@@ -900,7 +900,7 @@
                 tipo: 'danger',
                 titulo: '¿Eliminar usuario permanentemente?',
                 descripcion: 'Esta acción no se puede deshacer y retirará la cuenta del usuario de la plataforma SISIG.',
-                item: `"${userName}"`,
+                item: userName,
                 itemTag: 'Usuario seleccionado',
                 advertencia: 'Este usuario no tiene actividad registrada y será borrado del sistema.',
                 btnTexto: 'Sí, eliminar',

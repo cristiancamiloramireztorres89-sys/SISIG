@@ -653,11 +653,21 @@
 
             moduloOriginalSnapshot = JSON.stringify(getModuloFormData());
 
-            // Configurar botón eliminar dentro del modal de edición
-            document.getElementById('btn-eliminar-desde-modal').onclick = function() {
-                cerrarModalEditarModulo();
-                confirmarEliminarModulo('form-eliminar-modulo-' + modulo.id, modulo.titulo);
-            };
+            // Configurar botón desactivar/reactivar dentro del modal de edición
+            const btnToggleModal = document.getElementById('btn-eliminar-desde-modal');
+            if (btnToggleModal) {
+                if (modulo.estado === 'inactivo') {
+                    btnToggleModal.className = "text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer";
+                    btnToggleModal.innerHTML = '<i class="fas fa-check text-xs"></i><span>Reactivar Módulo</span>';
+                } else {
+                    btnToggleModal.className = "text-amber-600 hover:text-amber-800 hover:bg-amber-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer";
+                    btnToggleModal.innerHTML = '<i class="fas fa-ban text-xs"></i><span>Desactivar Módulo</span>';
+                }
+                btnToggleModal.onclick = function() {
+                    cerrarModalEditarModulo();
+                    confirmarToggleModulo(`form-toggle-modulo-${modulo.id}`, modulo.titulo, modulo.estado);
+                };
+            }
 
             modal.classList.remove('hidden');
             if (window.lockBodyScroll) window.lockBodyScroll(true);
@@ -743,7 +753,7 @@
                 descripcion: esInactivo 
                     ? 'El módulo volverá a estar disponible para los aprendices en el catálogo del SIG.' 
                     : 'El módulo pasará a estado inactivo y no estará visible para los aprendices en las inducciones.',
-                item: `"${tituloModulo}"`,
+                item: tituloModulo,
                 itemTag: 'Módulo seleccionado',
                 advertencia: esInactivo 
                     ? 'Los aprendices asignados podrán volver a acceder a los contenidos de este módulo.' 
@@ -812,7 +822,7 @@
                 tipo: 'danger',
                 titulo: '¿Eliminar módulo permanentemente?',
                 descripcion: 'Esta acción no se puede deshacer y retirará el módulo de forma definitiva del catálogo y de la base de datos.',
-                item: `"${tituloModulo}"`,
+                item: tituloModulo,
                 itemTag: 'Módulo sin asociaciones',
                 advertencia: 'Este módulo no posee evaluaciones, contenidos ni actividades asociadas, por lo que puede ser retirado con total seguridad.',
                 btnTexto: 'Sí, eliminar',
