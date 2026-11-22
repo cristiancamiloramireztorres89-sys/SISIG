@@ -452,7 +452,7 @@
                     <button type="button" onclick="closeUserModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" id="user-submit-btn" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all">
+                    <button type="submit" id="user-submit-btn" class="px-5 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all cursor-pointer">
                         Crear Usuario
                     </button>
                 </div>

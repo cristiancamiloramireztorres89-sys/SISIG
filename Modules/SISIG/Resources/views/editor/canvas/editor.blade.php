@@ -1186,7 +1186,7 @@
                                         <input type="number" id="input-custom-height" value="960" min="300" max="2400" class="w-full bg-[#243B66] border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-bold text-center">
                                     </div>
                                 </div>
-                                <button type="button" onclick="aplicarTamanoPersonalizado()" class="w-full py-1.5 rounded-xl bg-[#2E6F40] hover:bg-emerald-600 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs">
+                                <button type="button" onclick="aplicarTamanoPersonalizado()" class="w-full py-1.5 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] font-black text-xs transition-colors cursor-pointer shadow-md shadow-emerald-500/20">
                                     Aplicar Medidas
                                 </button>
                             </div>
@@ -1910,8 +1910,8 @@
                             </p>
                             <div class="pt-2 border-t border-slate-100 mt-auto">
                                 <a href="{{ route('sisig.editor.contenido.index') }}" 
-                                   class="w-full py-2.5 px-4 rounded-full text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#245833] transition-all shadow-sena flex items-center justify-center gap-2 cursor-pointer group-hover:scale-[1.02]">
-                                    <i class="fas fa-arrow-left text-xs"></i>
+                                   class="w-full py-2.5 px-4 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] transition-all shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer group-hover:scale-[1.02]">
+                                    <i class="fas fa-arrow-left text-xs text-[#1A2B4C]"></i>
                                     <span>Salir a Gestión de Módulos</span>
                                 </a>
                             </div>

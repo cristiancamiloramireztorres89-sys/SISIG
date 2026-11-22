@@ -52,17 +52,17 @@
             outline: none;
         }
 
-        /* Botón de Acción Principal (Verde SENA Institucional) */
+        /* Botón de Acción Principal (Verde Neón Oficial SENA) */
         .btn-sena-primary {
-            background: linear-gradient(135deg, #2E6F40 0%, #245833 100%);
-            color: #FFFFFF;
-            box-shadow: 0 4px 14px rgba(46, 111, 64, 0.25);
+            background: #33FF57;
+            color: #1A2B4C;
+            box-shadow: 0 4px 14px rgba(51, 255, 87, 0.35);
             transition: all 0.2s ease;
         }
 
         .btn-sena-primary:hover {
-            background: linear-gradient(135deg, #245833 0%, #1c4427 100%);
-            box-shadow: 0 6px 20px rgba(46, 111, 64, 0.35);
+            background: #2ae049;
+            box-shadow: 0 6px 20px rgba(51, 255, 87, 0.45);
             transform: translateY(-1px);
         }
 

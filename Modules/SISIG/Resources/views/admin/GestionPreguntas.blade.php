@@ -245,8 +245,8 @@
                         <button type="button" onclick="closePreguntaModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena transition-all flex items-center gap-2">
-                            <i class="fas fa-save"></i> <span id="btn-submit-label">Guardar pregunta</span>
+                        <button type="submit" class="px-6 py-2.5 rounded-full text-xs sm:text-sm font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer">
+                            <i class="fas fa-save text-xs text-[#1A2B4C]"></i> <span id="btn-submit-label">Guardar pregunta</span>
                         </button>
                     </div>
                 </form>
