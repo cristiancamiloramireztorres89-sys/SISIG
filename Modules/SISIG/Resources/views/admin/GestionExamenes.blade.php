@@ -553,5 +553,15 @@
                 }
             });
         }
+
+        // Si la validación falla al enviar el formulario, reabrir el modal y alertar al usuario
+        @if(isset($errors) && $errors->any())
+            document.addEventListener('DOMContentLoaded', () => {
+                openExamenModal();
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('{{ addslashes($errors->first()) }}', 'danger');
+                }
+            });
+        @endif
     </script>
 </x-sisig::layouts.admin>

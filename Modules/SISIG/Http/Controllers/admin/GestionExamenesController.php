@@ -111,7 +111,7 @@ class GestionExamenesController extends Controller
             'activo'          => 'required|boolean',
             'numero_intentos' => 'required|integer|min:1|max:10',
             'puntaje_minimo'  => 'required|numeric|min:0|max:100',
-            'tiempo_minutos'  => 'required|integer|min:1|max:300',
+            'tiempo_minutos'  => 'required|integer|min:0|max:300',
             'fecha_limite'    => 'nullable|date'
         ]);
 
@@ -145,7 +145,7 @@ class GestionExamenesController extends Controller
             'activo'          => 'required|boolean',
             'numero_intentos' => 'required|integer|min:1|max:10',
             'puntaje_minimo'  => 'required|numeric|min:0|max:100',
-            'tiempo_minutos'  => 'required|integer|min:1|max:300',
+            'tiempo_minutos'  => 'required|integer|min:0|max:300',
             'fecha_limite'    => 'nullable|date'
         ]);
 

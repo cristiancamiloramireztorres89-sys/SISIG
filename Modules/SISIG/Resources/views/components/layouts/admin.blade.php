@@ -334,6 +334,16 @@
                             <i class="fas fa-times text-xs leading-none"></i>
                         </button>
                     </div>
+                @elseif(isset($errors) && $errors->any())
+                    <div id="session-alert" class="p-4 mb-4 rounded-2xl bg-rose-50 border-rose-200 text-rose-800 border flex items-center justify-between gap-3 shadow-sm transition-all duration-500 ease-out animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-exclamation-triangle text-rose-600 text-base flex-shrink-0"></i>
+                            <p class="text-xs sm:text-sm font-bold">{{ $errors->first() }}</p>
+                        </div>
+                        <button type="button" onclick="cerrarAlertaGlobal(this.closest('#session-alert'))" class="w-7 h-7 rounded-lg flex items-center justify-center opacity-70 hover:opacity-100 hover:bg-black/5 transition-all cursor-pointer flex-shrink-0" title="Cerrar notificación">
+                            <i class="fas fa-times text-xs leading-none"></i>
+                        </button>
+                    </div>
                 @endif
             </div>
 
