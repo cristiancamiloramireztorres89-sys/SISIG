@@ -226,16 +226,16 @@
                                     <span>Gestionar preguntas</span>
                                 </a>
                                 <button type="button" onclick="openExamenModal({{ $quiz->toJson() }})" title="Editar examen" 
-                                        class="w-9 h-9 rounded-full bg-slate-50 hover:bg-[#1A2B4C] border border-slate-200 hover:border-[#1A2B4C] text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs" aria-label="Editar">
-                                    <i class="fas fa-pencil-alt text-xs"></i>
+                                        class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer" aria-label="Editar">
+                                    <i class="fas fa-edit text-xs"></i>
                                 </button>
-                                <form id="form-toggle-quiz-{{ $quiz->id_quiz }}" action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="inline">
+                                <form id="form-toggle-quiz-{{ $quiz->id_quiz }}" action="{{ route($routePrefix . '.examenes.toggleStatus', $quiz->id_quiz) }}" method="POST" class="inline m-0 p-0">
                                     @csrf
                                     @method('PATCH')
                                     <button type="button" onclick="confirmarToggleQuiz(document.getElementById('form-toggle-quiz-{{ $quiz->id_quiz }}'), '{{ addslashes($quiz->titulo) }}', {{ $quiz->activo ? 'true' : 'false' }})" 
                                             title="{{ $quiz->activo ? 'Desactivar examen' : 'Activar examen' }}" 
-                                            class="w-9 h-9 rounded-full bg-slate-50 hover:bg-rose-500 border border-slate-200 hover:border-rose-500 text-slate-500 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-2xs" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
-                                        <i class="fas {{ $quiz->activo ? 'fa-ban' : 'fa-check' }} text-xs"></i>
+                                            class="w-8 h-8 rounded-full bg-white {{ $quiz->activo ? 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700' : 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800' }} flex items-center justify-center shadow-2xs transition-all cursor-pointer" aria-label="{{ $quiz->activo ? 'Desactivar' : 'Activar' }}">
+                                        <i class="fas {{ $quiz->activo ? 'fa-trash-alt' : 'fa-check' }} text-xs"></i>
                                     </button>
                                 </form>
                             </div>

@@ -227,15 +227,15 @@
                                 <td class="py-3.5 px-4 text-right">
                                     <div class="inline-flex items-center gap-1.5">
                                         <button type="button" onclick="openEditModal({{ $u->id }})"
-                                                class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-sena-green hover:border-emerald-200 hover:bg-emerald-50 transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                                class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer"
                                                 title="Editar información y rol del usuario">
-                                            <i class="fas fa-pencil-alt text-xs"></i>
+                                            <i class="fas fa-edit text-xs"></i>
                                         </button>
 
                                         @if(Auth::id() !== $u->id)
                                             <button type="button" 
                                                     onclick="confirmToggleStatus({{ $u->id }}, '{{ addslashes($u->full_name ?: $u->name) }}', {{ $u->is_active ? 'true' : 'false' }})"
-                                                    class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 {{ $u->is_active ? 'hover:text-amber-500 hover:border-amber-200 hover:bg-amber-50' : 'hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50' }} transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                                    class="w-8 h-8 rounded-full bg-white {{ $u->is_active ? 'hover:bg-amber-50 border border-amber-300 hover:border-amber-400 text-amber-500 hover:text-amber-700' : 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800' }} flex items-center justify-center shadow-2xs transition-all cursor-pointer"
                                                     title="{{ $u->is_active ? 'Desactivar Cuenta' : 'Reactivar Cuenta' }}">
                                                 <i class="fas {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }} text-xs"></i>
                                             </button>
@@ -243,7 +243,7 @@
                                             <!-- Botón de Eliminar Usuario (Validación de Actividad) -->
                                             <button type="button" 
                                                     onclick="confirmDeleteUser({{ $u->id }}, '{{ addslashes($u->full_name ?: $u->name) }}', {{ $u->has_activity ? 'true' : 'false' }})"
-                                                    class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 {{ $u->has_activity ? 'opacity-40 cursor-not-allowed hover:bg-slate-50' : 'hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 cursor-pointer' }} transition-all flex items-center justify-center shadow-xs"
+                                                    class="w-8 h-8 rounded-full bg-white {{ $u->has_activity ? 'opacity-40 cursor-not-allowed border border-slate-200 text-slate-300' : 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 cursor-pointer' }} flex items-center justify-center shadow-2xs transition-all"
                                                     title="{{ $u->has_activity ? 'Tiene actividad registrada (no eliminable)' : 'Eliminar usuario permanentemente' }}">
                                                 <i class="fas fa-trash-alt text-xs"></i>
                                             </button>

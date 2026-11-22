@@ -123,13 +123,15 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-black text-amber-500">{{ $pregunta->puntaje }} pts</span>
-                                    <button type="button" onclick="openEditarPreguntaModal({{ json_encode($pregunta) }})" title="Editar pregunta" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-sky-600 hover:border-sky-200 hover:bg-sky-50 transition-all flex items-center justify-center">
-                                        <i class="fas fa-pen text-xs"></i>
+                                    <button type="button" onclick="openEditarPreguntaModal({{ json_encode($pregunta) }})" title="Editar pregunta" 
+                                            class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                        <i class="fas fa-edit text-xs"></i>
                                     </button>
-                                    <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirmarEliminarPregunta(event, this, '{{ addslashes(Str::limit($pregunta->pregunta, 60)) }}')">
+                                    <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirmarEliminarPregunta(event, this, '{{ addslashes(Str::limit($pregunta->pregunta, 60)) }}')" class="m-0 p-0">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Eliminar pregunta" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all flex items-center justify-center">
+                                        <button type="submit" title="Eliminar pregunta" 
+                                                class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
                                             <i class="fas fa-trash-alt text-xs"></i>
                                         </button>
                                     </form>
