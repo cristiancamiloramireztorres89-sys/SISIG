@@ -257,21 +257,19 @@
 
                                         <button type="button" 
                                                 onclick="abrirModalEditarModulo({{ json_encode($modulo) }})" 
-                                                title="Configuración del módulo" 
-                                                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
-                                            <i class="fas fa-cog text-xs text-slate-500"></i>
-                                            <span>Ajustes</span>
+                                                title="Editar módulo" 
+                                                class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                            <i class="fas fa-edit text-xs"></i>
                                         </button>
 
-                                        <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST">
+                                        <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST" class="m-0 p-0">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" 
                                                     onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" 
-                                                    title="Eliminar módulo" 
-                                                    class="px-3 py-1.5 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-600 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
+                                                    title="Desactivar módulo" 
+                                                    class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
                                                 <i class="fas fa-trash-alt text-xs"></i>
-                                                <span>Desactivar</span>
                                             </button>
                                         </form>
                                     </div>
