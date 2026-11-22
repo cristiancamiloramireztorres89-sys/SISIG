@@ -32,6 +32,7 @@ Route::prefix('sisig')->name('sisig.')->group(function () {
         Route::get('/modulos', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'index'])->name('modulos.index');
         Route::post('/modulos', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'store'])->name('modulos.store');
         Route::put('/modulos/{id}', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'update'])->name('modulos.update');
+        Route::patch('/modulos/{id}/estado', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'toggleStatus'])->name('modulos.toggleStatus');
         Route::delete('/modulos/{id}', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'destroy'])->name('modulos.destroy');
         Route::get('/modulos/{id}/contenido', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'editContent'])->name('modulos.contenido');
         Route::put('/modulos/{id}/contenido', [\Modules\SISIG\Http\Controllers\Admin\GestionModulosController::class, 'updateContent'])->name('modulos.contenido.update');

@@ -193,9 +193,9 @@ class GestionModulosController extends Controller
     }
 
     /**
-     * Elimina un módulo y sus archivos multimedia asociados del servidor.
+     * Conmuta el estado de un módulo entre inactivo y publicado.
      */
-    public function destroy($id)
+    public function toggleStatus($id)
     {
         $this->checkAdminAuthorization();
 
@@ -203,7 +203,6 @@ class GestionModulosController extends Controller
             $modulo = Modulo::findOrFail($id);
             $titulo = $modulo->titulo;
 
-            // En SISIG los módulos se desactivan para preservar historial, exámenes y contenidos
             if ($modulo->estado === 'inactivo') {
                 $modulo->estado = 'publicado';
                 $mensaje = 'Módulo "' . ucfirst($titulo) . '" reactivado exitosamente';
@@ -225,11 +224,63 @@ class GestionModulosController extends Controller
 
             return redirect()->route('sisig.admin.modulos.index')->with('success', $mensaje);
         } catch (\Exception $e) {
-            Log::error('Error al desactivar módulo en SISIG: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Error al cambiar estado de módulo en SISIG: ' . $e->getMessage(), ['exception' => $e]);
             if (request()->ajax() || request()->wantsJson()) {
-                return response()->json(['success' => false, 'message' => 'Error al desactivar el módulo.'], 500);
+                return response()->json(['success' => false, 'message' => 'Error al cambiar estado del módulo.'], 500);
             }
-            return redirect()->route('sisig.admin.modulos.index')->with('error', 'Ocurrió un error al intentar desactivar el módulo.');
+            return redirect()->route('sisig.admin.modulos.index')->with('error', 'Ocurrió un error al intentar cambiar el estado del módulo.');
+        }
+    }
+
+    /**
+     * Elimina permanentemente un módulo del sistema SOLO si no tiene elementos asociados.
+     */
+    public function destroy($id)
+    {
+        $this->checkAdminAuthorization();
+
+        try {
+            $modulo = Modulo::findOrFail($id);
+            $titulo = $modulo->titulo;
+
+            // Validación de integridad: no se puede eliminar si tiene elementos asociados
+            if ($modulo->tieneAsociaciones()) {
+                $motivo = $modulo->getMotivoAsociaciones();
+                $mensaje = 'No se puede eliminar el módulo "' . ucfirst($titulo) . '" porque tiene ' . $motivo . '. Debe desactivarse en su lugar.';
+                if (request()->ajax() || request()->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => $mensaje], 422);
+                }
+                return redirect()->route('sisig.admin.modulos.index')->with('error', $mensaje);
+            }
+
+            // Limpiar archivo físico de portada de forma controlada
+            if ($modulo->imagen && str_contains($modulo->imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->imagen))) {
+                @unlink(public_path($modulo->imagen));
+            }
+
+            // Limpiar archivo físico de fondo de forma controlada
+            if ($modulo->fondo_imagen && str_contains($modulo->fondo_imagen, 'modules/sisig/images/modulos/') && file_exists(public_path($modulo->fondo_imagen))) {
+                @unlink(public_path($modulo->fondo_imagen));
+            }
+
+            // Eliminar registro del módulo en base de datos
+            $modulo->delete();
+
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'id_modulo' => $id,
+                    'message' => 'Módulo "' . ucfirst($titulo) . '" eliminado permanentemente exitosamente.'
+                ]);
+            }
+
+            return redirect()->route('sisig.admin.modulos.index')->with('success', 'Módulo "' . ucfirst($titulo) . '" eliminado permanentemente exitosamente.');
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar módulo en SISIG: ' . $e->getMessage(), ['exception' => $e]);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Error al eliminar el módulo.'], 500);
+            }
+            return redirect()->route('sisig.admin.modulos.index')->with('error', 'Ocurrió un error al intentar eliminar el módulo.');
         }
     }
 

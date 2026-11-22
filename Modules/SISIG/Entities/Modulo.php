@@ -57,4 +57,54 @@ class Modulo extends Model
     {
         return $this->hasMany(Quiz::class, 'modulo_id', 'id');
     }
+
+    /**
+     * Determina si el módulo tiene entidades, evaluaciones, editores o contenidos asociados.
+     */
+    public function tieneAsociaciones(): bool
+    {
+        // 1. Quices / Evaluaciones asociadas
+        if (\Illuminate\Support\Facades\DB::table('sisig_quices')->where('modulo_id', $this->id)->exists()) {
+            return true;
+        }
+
+        // 2. Editores asignados en tabla pivote
+        if (\Illuminate\Support\Facades\DB::table('editor_modulos')->where('modulo_id', $this->id)->exists()) {
+            return true;
+        }
+
+        // 3. Contenido interactivo guardado en lienzo o HTML elaborado
+        if (!empty($this->canvas_state)) {
+            return true;
+        }
+        if (!empty($this->contenido_html) && trim(strip_tags($this->contenido_html)) !== '') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retorna descripción de los elementos asociados para informar al usuario.
+     */
+    public function getMotivoAsociaciones(): string
+    {
+        $motivos = [];
+
+        $quices = \Illuminate\Support\Facades\DB::table('sisig_quices')->where('modulo_id', $this->id)->count();
+        if ($quices > 0) {
+            $motivos[] = $quices . ' evaluación(es)';
+        }
+
+        $editores = \Illuminate\Support\Facades\DB::table('editor_modulos')->where('modulo_id', $this->id)->count();
+        if ($editores > 0) {
+            $motivos[] = $editores . ' editor(es) asignado(s)';
+        }
+
+        if (!empty($this->canvas_state) || (!empty($this->contenido_html) && trim(strip_tags($this->contenido_html)) !== '')) {
+            $motivos[] = 'contenido interactivo guardado en el lienzo';
+        }
+
+        return count($motivos) > 0 ? implode(', ', $motivos) : 'elementos asociados';
+    }
 }

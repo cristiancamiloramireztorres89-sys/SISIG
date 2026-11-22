@@ -264,16 +264,31 @@
                                             <i class="fas fa-edit text-xs"></i>
                                         </button>
 
-                                        <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST" class="m-0 p-0">
+                                        <!-- Botón Desactivar / Reactivar Módulo -->
+                                        <form id="form-toggle-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.toggleStatus', $modulo->id) }}" method="POST" class="m-0 p-0 inline">
                                             @csrf
-                                            @method('DELETE')
+                                            @method('PATCH')
                                             <button type="button" 
-                                                    onclick="confirmarEliminarModulo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}', '{{ $modulo->estado }}')" 
+                                                    onclick="confirmarToggleModulo('form-toggle-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}', '{{ $modulo->estado }}')" 
                                                     title="{{ $modulo->estado === 'inactivo' ? 'Reactivar módulo' : 'Desactivar módulo' }}" 
                                                     class="w-8 h-8 rounded-full bg-white {{ $modulo->estado === 'inactivo' ? 'hover:bg-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-600 hover:text-emerald-800' : 'hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700' }} flex items-center justify-center shadow-2xs transition-all cursor-pointer">
                                                 <i class="fas {{ $modulo->estado === 'inactivo' ? 'fa-check' : 'fa-ban' }} text-xs"></i>
                                             </button>
                                         </form>
+
+                                        @if(!$modulo->tieneAsociaciones())
+                                            <!-- Botón Eliminar Módulo Definitivamente (Solo disponible si no tiene nada asociado) -->
+                                            <form id="form-eliminar-modulo-{{ $modulo->id }}" action="{{ route('sisig.admin.modulos.destroy', $modulo->id) }}" method="POST" class="m-0 p-0 inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" 
+                                                        onclick="confirmarEliminarModuloDefinitivo('form-eliminar-modulo-{{ $modulo->id }}', '{{ addslashes($modulo->titulo) }}')" 
+                                                        title="Eliminar módulo permanentemente (sin elementos asociados)" 
+                                                        class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                                    <i class="fas fa-trash-alt text-xs"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -677,7 +692,10 @@
             if (window.lockBodyScroll) window.lockBodyScroll(false);
         }
 
-        async function ejecutarEliminarModuloAjax(form) {
+        // ==========================================
+        // 1. CONMUTACIÓN DE ESTADO (DESACTIVAR / REACTIVAR)
+        // ==========================================
+        async function ejecutarToggleModuloAjax(form) {
             const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
             try {
                 const response = await fetch(form.action, {
@@ -688,7 +706,7 @@
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-TOKEN': token
                     },
-                    body: JSON.stringify({ _method: 'DELETE' })
+                    body: JSON.stringify({ _method: 'PATCH' })
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -700,20 +718,20 @@
                     }, 500);
                 } else {
                     if (window.mostrarAlertaBanner) {
-                        window.mostrarAlertaBanner(data.message || 'Error al desactivar el módulo.', 'danger');
+                        window.mostrarAlertaBanner(data.message || 'Error al cambiar el estado del módulo.', 'danger');
                     }
                 }
             } catch (err) {
                 console.error(err);
                 if (window.mostrarAlertaBanner) {
-                    window.mostrarAlertaBanner('Error de conexión al desactivar el módulo.', 'danger');
+                    window.mostrarAlertaBanner('Error de conexión al cambiar estado del módulo.', 'danger');
                 }
             } finally {
                 if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
             }
         }
 
-        function confirmarEliminarModulo(formId, tituloModulo, estadoActual = 'publicado') {
+        function confirmarToggleModulo(formId, tituloModulo, estadoActual = 'publicado') {
             const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
             if (!form) return;
 
@@ -732,7 +750,74 @@
                     : 'Puedes volver a reactivarlo en cualquier momento haciendo clic en el botón de activación.',
                 btnTexto: esInactivo ? 'Sí, reactivar' : 'Sí, desactivar',
                 btnIcon: esInactivo ? 'fa-check' : 'fa-ban',
-                onConfirm: () => ejecutarEliminarModuloAjax(form)
+                onConfirm: () => ejecutarToggleModuloAjax(form)
+            });
+        }
+
+        // Alias para compatibilidad
+        const confirmarEliminarModulo = confirmarToggleModulo;
+        const ejecutarEliminarModuloAjax = ejecutarToggleModuloAjax;
+
+        // ==========================================
+        // 2. ELIMINACIÓN PERMANENTE (SOLO SI NO TIENE ASOCIACIONES)
+        // ==========================================
+        async function ejecutarEliminarModuloDefinitivoAjax(form) {
+            const token = form.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const card = form.closest('.modulo-card');
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            if (typeof filtrarModulos === 'function') filtrarModulos();
+                        }, 300);
+                    }
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message, 'success');
+                    }
+                } else {
+                    if (window.mostrarAlertaBanner) {
+                        window.mostrarAlertaBanner(data.message || 'Error al eliminar el módulo.', 'danger');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.mostrarAlertaBanner) {
+                    window.mostrarAlertaBanner('Error de conexión al eliminar el módulo.', 'danger');
+                }
+            } finally {
+                if (window.cerrarModalConfirmacion) window.cerrarModalConfirmacion();
+            }
+        }
+
+        function confirmarEliminarModuloDefinitivo(formId, tituloModulo) {
+            const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
+            if (!form) return;
+
+            window.abrirModalConfirmacion({
+                tipo: 'danger',
+                titulo: '¿Eliminar módulo permanentemente?',
+                descripcion: 'Esta acción no se puede deshacer y retirará el módulo de forma definitiva del catálogo y de la base de datos.',
+                item: `"${tituloModulo}"`,
+                itemTag: 'Módulo sin asociaciones',
+                advertencia: 'Este módulo no posee evaluaciones, contenidos ni actividades asociadas, por lo que puede ser retirado con total seguridad.',
+                btnTexto: 'Sí, eliminar',
+                btnIcon: 'fa-trash-alt',
+                onConfirm: () => ejecutarEliminarModuloDefinitivoAjax(form)
             });
         }
 
