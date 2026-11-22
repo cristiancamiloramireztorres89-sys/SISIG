@@ -528,9 +528,21 @@
 
                                         <label class="subcard-sena rounded-2xl p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none group" id="label-modulo-{{ $modulo->id }}">
                                             <div class="flex items-center gap-3 min-w-0 pr-2">
-                                                <!-- Icono del Módulo -->
-                                                <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-[#2E6F40] group-hover:scale-105 transition-transform flex-shrink-0 shadow-2xs">
-                                                    <i class="{{ $modulo->icon_class ?? 'fas fa-book-open' }} text-xs"></i>
+                                                <!-- Imagen o Icono del Módulo -->
+                                                <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform flex-shrink-0 shadow-2xs">
+                                                    @if(!empty($modulo->imagen))
+                                                        <img src="{{ asset(ltrim($modulo->imagen, '/')) }}" 
+                                                             alt="{{ $modulo->titulo }}" 
+                                                             class="w-full h-full object-cover"
+                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        <div class="w-full h-full items-center justify-center text-[#2E6F40] bg-emerald-50/40" style="display: none;">
+                                                            <i class="{{ str_replace(['text-sky-600', 'text-sky-500'], '', $modulo->icon_class ?? 'fas fa-layer-group') }} text-xs"></i>
+                                                        </div>
+                                                    @else
+                                                        <div class="w-full h-full flex items-center justify-center text-[#2E6F40] bg-emerald-50/40">
+                                                            <i class="{{ str_replace(['text-sky-600', 'text-sky-500'], '', $modulo->icon_class ?? 'fas fa-layer-group') }} text-xs"></i>
+                                                        </div>
+                                                    @endif
                                                 </div>
 
                                                 <div class="min-w-0">
