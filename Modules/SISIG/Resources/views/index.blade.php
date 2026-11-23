@@ -71,10 +71,10 @@
                             <span class="text-[#39A900] font-bold">SENA Empresa CEFA</span>.
                         </p>
 
-                        <!-- Botones de Acción Estilo RealStack (Pill Button SENA Green + Enlace Ghost) -->
+                        <!-- Botones de Acción Estilo RealStack (Pill Button Neón + Enlace Ghost) -->
                         <div class="flex flex-wrap items-center gap-4 pt-2">
                             <a href="#catalogo-modulos" 
-                               class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#39A900] hover:bg-[#2e8800] text-white font-extrabold text-sm tracking-wide shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+                               class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] font-black text-sm tracking-wide shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
                                 <span>Iniciar Inducción</span>
                                 <i class="fas fa-arrow-right text-xs"></i>
                             </a>
@@ -508,7 +508,7 @@
                             <!-- Botón de Entrada al Módulo -->
                             <div class="pt-2">
                                 <a href="{{ route('sisig.aprendiz.induccion.show', $mod->id) }}" 
-                                   class="w-full py-3.5 px-4 rounded-full bg-[#1A2B4C] hover:bg-[#39A900] text-white text-xs font-black shadow-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group/btn">
+                                   class="w-full py-3.5 px-4 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] text-xs font-black shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/35 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group/btn">
                                     <span>Iniciar Inducción</span>
                                     <i class="fas fa-arrow-right text-[11px] group-hover/btn:translate-x-1 transition-transform"></i>
                                 </a>
