@@ -21,7 +21,7 @@ class SISIGController extends Controller
             ->get();
 
         $totalModulos = $modulos->count();
-        $totalQuices = Quiz::where('estado', '!=', 'inactivo')->count();
+        $totalQuices = Quiz::where('activo', 1)->count();
         $totalEvaluaciones = Resultado::whereNotNull('fecha_presentacion')->count();
         $moduloDestacado = $modulos->first();
 

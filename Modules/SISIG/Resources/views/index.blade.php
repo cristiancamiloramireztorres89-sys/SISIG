@@ -297,7 +297,7 @@
                         } elseif (str_contains($normaLower, '14001') || str_contains($tituloLower, 'ambiental') || str_contains($tituloLower, 'medio')) {
                             $categoriaTag = 'ambiental';
                         }
-                        $quicesCount = $mod->quices ? $mod->quices->where('estado', '!=', 'inactivo')->count() : 0;
+                        $quicesCount = $mod->quices ? $mod->quices->where('activo', 1)->count() : 0;
                     @endphp
 
                     <div class="tarjeta-modulo-item bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group"
