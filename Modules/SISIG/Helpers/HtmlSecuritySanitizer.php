@@ -16,33 +16,41 @@ class HtmlSecuritySanitizer
         'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'sub', 'sup',
         'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
         'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td',
-        'a', 'img', 'span', 'div'
+        'a', 'img', 'span', 'div', 'section', 'header', 'footer',
+        'iframe', 'video', 'source', 'style'
     ];
 
     /**
      * Lista blanca de atributos permitidos por etiqueta.
      */
     protected static array $allowedAttributes = [
-        'a'      => ['href', 'title', 'target', 'rel', 'class'],
-        'img'    => ['src', 'alt', 'title', 'width', 'height', 'class', 'style'],
-        'table'  => ['class', 'style', 'border', 'cellpadding', 'cellspacing'],
-        'th'     => ['class', 'style', 'colspan', 'rowspan', 'scope'],
-        'td'     => ['class', 'style', 'colspan', 'rowspan'],
-        'span'   => ['class', 'style'],
-        'div'    => ['class', 'style'],
-        'p'      => ['class', 'style'],
-        'h1'     => ['class', 'style'],
-        'h2'     => ['class', 'style'],
-        'h3'     => ['class', 'style'],
-        'h4'     => ['class', 'style'],
-        'h5'     => ['class', 'style'],
-        'h6'     => ['class', 'style'],
-        'ul'     => ['class', 'style'],
-        'ol'     => ['class', 'style'],
-        'li'     => ['class', 'style'],
-        'code'   => ['class'],
-        'pre'    => ['class'],
-        'blockquote' => ['class', 'style'],
+        'style'   => ['type', 'id'],
+        'a'       => ['href', 'title', 'target', 'rel', 'class', 'style', 'id'],
+        'img'     => ['src', 'alt', 'title', 'width', 'height', 'class', 'style', 'id', 'loading'],
+        'table'   => ['class', 'style', 'border', 'cellpadding', 'cellspacing', 'id'],
+        'th'      => ['class', 'style', 'colspan', 'rowspan', 'scope', 'id'],
+        'td'      => ['class', 'style', 'colspan', 'rowspan', 'id'],
+        'span'    => ['class', 'style', 'id'],
+        'div'     => ['class', 'style', 'id', 'data-gjs-type', 'data-highlightable'],
+        'section' => ['class', 'style', 'id'],
+        'header'  => ['class', 'style', 'id'],
+        'footer'  => ['class', 'style', 'id'],
+        'p'       => ['class', 'style', 'id'],
+        'h1'      => ['class', 'style', 'id'],
+        'h2'      => ['class', 'style', 'id'],
+        'h3'      => ['class', 'style', 'id'],
+        'h4'      => ['class', 'style', 'id'],
+        'h5'      => ['class', 'style', 'id'],
+        'h6'      => ['class', 'style', 'id'],
+        'ul'      => ['class', 'style', 'id'],
+        'ol'      => ['class', 'style', 'id'],
+        'li'      => ['class', 'style', 'id'],
+        'code'    => ['class', 'style', 'id'],
+        'pre'     => ['class', 'style', 'id'],
+        'blockquote' => ['class', 'style', 'id'],
+        'iframe'  => ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'class', 'style', 'id', 'title', 'loading'],
+        'video'   => ['src', 'controls', 'width', 'height', 'class', 'style', 'id', 'poster', 'autoplay', 'loop', 'muted', 'playsinline'],
+        'source'  => ['src', 'type'],
     ];
 
     /**
@@ -66,9 +74,9 @@ class HtmlSecuritySanitizer
         // Eliminar caracteres nulos
         $html = str_replace(chr(0), '', $html);
 
-        // Prevenir ataques con etiquetas script/iframe encubiertas
-        $html = preg_replace('/<\s*(script|iframe|object|embed|applet|form|svg|math|link|meta|base)[^>]*>.*?<\s*\/\s*\1\s*>/is', '', $html);
-        $html = preg_replace('/<\s*(script|iframe|object|embed|applet|form|svg|math|link|meta|base)[^>]*\/?>/is', '', $html);
+        // Prevenir ataques con etiquetas script/object encubiertas (se preserva iframe para videos de YouTube/Vimeo seguros)
+        $html = preg_replace('/<\s*(script|object|embed|applet|form|svg|math|link|meta|base)[^>]*>.*?<\s*\/\s*\1\s*>/is', '', $html);
+        $html = preg_replace('/<\s*(script|object|embed|applet|form|svg|math|link|meta|base)[^>]*\/?>/is', '', $html);
 
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
@@ -116,6 +124,36 @@ class HtmlSecuritySanitizer
                     continue;
                 }
 
+                // Para bloques de estilo CSS, sanitizar el contenido interno
+                if ($tagName === 'style') {
+                    $css = $child->textContent;
+                    $child->textContent = self::sanitizeCssContent($css);
+                    continue;
+                }
+
+                // Para iframes, restringir estrictamente a proveedores de video autorizados (YouTube / Vimeo)
+                if ($tagName === 'iframe') {
+                    $src = $child->getAttribute('src');
+                    $host = parse_url($src, PHP_URL_HOST);
+                    $allowedVideoHosts = [
+                        'youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com',
+                        'youtu.be', 'vimeo.com', 'player.vimeo.com'
+                    ];
+                    $isValidHost = false;
+                    if ($host) {
+                        foreach ($allowedVideoHosts as $allowedHost) {
+                            if ($host === $allowedHost || str_ends_with($host, '.' . $allowedHost)) {
+                                $isValidHost = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$isValidHost) {
+                        $node->removeChild($child);
+                        continue;
+                    }
+                }
+
                 // Sanitizar atributos
                 self::sanitizeAttributes($child, $tagName);
 
@@ -156,6 +194,28 @@ class HtmlSecuritySanitizer
                 if (!self::isValidUri($attrValue)) {
                     $attributesToRemove[] = $attrName;
                     continue;
+                }
+
+                // Para iframes, restringir estrictamente a proveedores de video educativos confiables (YouTube / Vimeo)
+                if ($tagName === 'iframe') {
+                    $host = parse_url($attrValue, PHP_URL_HOST);
+                    $allowedVideoHosts = [
+                        'youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com',
+                        'youtu.be', 'vimeo.com', 'player.vimeo.com'
+                    ];
+                    $isValidHost = false;
+                    if ($host) {
+                        foreach ($allowedVideoHosts as $allowedHost) {
+                            if ($host === $allowedHost || str_ends_with($host, '.' . $allowedHost)) {
+                                $isValidHost = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$isValidHost) {
+                        $attributesToRemove[] = $attrName;
+                        continue;
+                    }
                 }
 
                 // Para enlaces externos, forzar rel noopener
@@ -207,6 +267,24 @@ class HtmlSecuritySanitizer
         }
 
         return in_array(strtolower($scheme), self::$allowedProtocols, true);
+    }
+
+    /**
+     * Sanitiza el contenido de un bloque <style> eliminando código ejecutable o fuentes remotas no confiables.
+     */
+    public static function sanitizeCssContent(string $css): string
+    {
+        // Eliminar comentarios CSS
+        $css = preg_replace('/\/\*.*?\*\//s', '', $css);
+        // Eliminar @import
+        $css = preg_replace('/@import[^;]*;/i', '', $css);
+        // Eliminar esquemas peligrosos
+        $css = preg_replace('/javascript\s*:/i', '', $css);
+        $css = preg_replace('/expression\s*\(.*?\)/is', '', $css);
+        $css = preg_replace('/behavior\s*:[^;}]*/i', '', $css);
+        $css = preg_replace('/-moz-binding\s*:[^;}]*/i', '', $css);
+
+        return $css;
     }
 
     /**

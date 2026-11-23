@@ -13,10 +13,11 @@ use Modules\SISIG\Entities\Modulo;
 class CanvasController extends Controller
 {
     /**
-     * Muestra la interfaz gráfica del editor interactivo (Canvas / Fabric.js).
+     * Muestra la interfaz gráfica del editor interactivo documental.
+     * Redirige al editor institucional enriquecido tipo Google Docs con plantillas SIG.
      *
      * @param int|string $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function showEditor($id = 1)
     {
@@ -25,15 +26,8 @@ class CanvasController extends Controller
             $primer = Modulo::first();
             $id = $primer ? $primer->id : 1;
         }
-        $module = Modulo::find($id) ?? InductionModule::find($id);
-        if (!$module) {
-            $module = Modulo::first() ?? Modulo::create([
-                'titulo' => 'Módulo ' . $id,
-                'canvas_state' => null
-            ]);
-        }
 
-        return view('sisig::editor.canvas.editor', compact('module'));
+        return redirect()->route('sisig.editor.contenido.edit', $id);
     }
     /**
      * Valida la petición, extrae el payload JSON ($request->input('canvas_state'))

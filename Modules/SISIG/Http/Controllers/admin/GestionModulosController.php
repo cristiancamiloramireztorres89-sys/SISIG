@@ -189,6 +189,21 @@ class GestionModulosController extends Controller
 
         $modulo->save();
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Contenido y diseño visual guardados exitosamente.',
+                'data' => [
+                    'id'             => $modulo->id,
+                    'title'          => $modulo->titulo,
+                    'canvas_state'   => $modulo->canvas_state,
+                    'contenido_html' => $modulo->contenido_html,
+                    'updated_at'     => $modulo->updated_at?->toIso8601String(),
+                    'updated_human'  => $modulo->updated_at?->diffForHumans(),
+                ]
+            ], 200);
+        }
+
         return redirect()->route('sisig.admin.modulos.index')->with('success', 'Contenido y fondo actualizados exitosamente');
     }
 
