@@ -189,22 +189,41 @@ class ReportesController extends Controller
             }
 
             // Verificar si el aprendiz presentó la evaluación de esta sección
-            $resultado = null;
+            $intentosAprendiz = collect();
             if (!empty($quizIds)) {
-                $resultado = DB::table('sisig_resultados')
+                $intentosAprendiz = DB::table('sisig_resultados')
                     ->where('user_id', $aprendiz->id)
                     ->whereIn('id_quiz', $quizIds)
                     ->orderByDesc('id_resultado')
-                    ->first();
+                    ->get();
             }
 
-            if ($resultado) {
+            if ($intentosAprendiz->isNotEmpty()) {
+                $intentoAprobado = $intentosAprendiz->first(fn($r) => !($r->fue_anulado ?? false) && ((float)($r->puntaje ?? 0) >= 70 || $r->aprobado == 1));
+                $intentoAnulado = $intentosAprendiz->first(fn($r) => (bool) ($r->fue_anulado ?? false));
+
+                if ($intentoAprobado) {
+                    $resultado = $intentoAprobado;
+                    $esAprobado = true;
+                    $fueAnulado = false;
+                } elseif ($intentoAnulado) {
+                    $resultado = $intentoAnulado;
+                    $esAprobado = false;
+                    $fueAnulado = true;
+                } else {
+                    $resultado = $intentosAprendiz->first();
+                    $esAprobado = false;
+                    $fueAnulado = false;
+                }
+
                 $puntaje = (int) round($resultado->puntaje ?? 0);
-                $intentos = $resultado->intento ?? 1;
-                $fueAnulado = (bool) ($resultado->fue_anulado ?? false);
-                $esAprobado = !$fueAnulado && ($puntaje >= 70 || $resultado->aprobado == 1);
+                $intentos = $intentosAprendiz->count();
                 $fechaRaw = $resultado->fecha_presentacion ?? $resultado->created_at ?? now();
                 $fecha = Carbon::parse($fechaRaw)->translatedFormat('d M Y');
+                $infraccionesCount = $intentosAprendiz->sum(fn($r) => (int)($r->infracciones_detectadas ?? 0));
+                if ($infraccionesCount === 0 && isset($resultado->infracciones_detectadas)) {
+                    $infraccionesCount = (int) $resultado->infracciones_detectadas;
+                }
 
                 $item = (object) [
                     'id'                     => $aprendiz->id,
@@ -220,7 +239,7 @@ class ReportesController extends Controller
                     'aprobado'               => $esAprobado,
                     'fue_anulado'            => $fueAnulado,
                     'motivo_anulacion'       => $resultado->motivo_anulacion ?? null,
-                    'infracciones_detectadas'=> (int) ($resultado->infracciones_detectadas ?? 0),
+                    'infracciones_detectadas'=> $infraccionesCount,
                     'motivo_no_aprobado'     => $fueAnulado ? 'Anulado por Trampa (Infracciones)' : 'Respuestas incorrectas (Puntaje bajo)',
                     'quiz_id'                => $resultado->id_quiz,
                 ];

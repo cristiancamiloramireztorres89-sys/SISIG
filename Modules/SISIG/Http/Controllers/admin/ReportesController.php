@@ -335,39 +335,58 @@ class ReportesController extends Controller
                     $ficha = (string) $aprendiz->ficha;
                 }
 
-                // Consultar resultado del quiz (el más reciente por id_resultado)
-                $resultado = null;
+                // Consultar todos los intentos del aprendiz en los quices de este módulo
+                $intentosAprendiz = collect();
                 if (!empty($quicesModulo)) {
-                    $resultado = DB::table('sisig_resultados')
+                    $intentosAprendiz = DB::table('sisig_resultados')
                         ->where('user_id', $aprendiz->id)
                         ->whereIn('id_quiz', $quicesModulo)
                         ->orderByDesc('id_resultado')
-                        ->first();
+                        ->get();
                 }
 
-                if ($resultado) {
-                    $puntaje = (int) round($resultado->puntaje ?? 0);
-                    $intentos = $resultado->intento ?? 1;
-                    $fueAnulado = (bool) ($resultado->fue_anulado ?? false);
-                    $esAprobado = !$fueAnulado && ($puntaje >= 70 || $resultado->aprobado == 1);
-                    $fechaRaw = $resultado->fecha_presentacion ?? $resultado->created_at ?? now();
-                    $fecha = Carbon::parse($fechaRaw)->translatedFormat('d M Y');
-                    $motivoAnulacion = $resultado->motivo_anulacion ?? 'Infracciones anti-trampa detectadas';
-                    $infraccionesCount = (int) ($resultado->infracciones_detectadas ?? 0);
+                if ($intentosAprendiz->isNotEmpty()) {
+                    // 1. Prioridad: ¿Aprobó en algún intento válido?
+                    $intentoAprobado = $intentosAprendiz->first(fn($r) => !($r->fue_anulado ?? false) && ((float)($r->puntaje ?? 0) >= 70 || $r->aprobado == 1));
+                    // 2. ¿Tuvo algún intento anulado por trampa/sistema?
+                    $intentoAnulado = $intentosAprendiz->first(fn($r) => (bool) ($r->fue_anulado ?? false));
 
-                    if ($fueAnulado) {
+                    if ($intentoAprobado) {
+                        $resultado = $intentoAprobado;
+                        $fueAnulado = false;
+                        $esAprobado = true;
+                        $secAprobados++;
+                        $resultadoTexto = 'Aprobado';
+                        $estadoTipo = 'aprobado';
+                    } elseif ($intentoAnulado) {
+                        // Si no aprobó y tiene al menos un intento anulado por trampa, se categoriza como Trampa/Anulado
+                        $resultado = $intentoAnulado;
+                        $fueAnulado = true;
+                        $esAprobado = false;
                         $secAnulados++;
                         $secNoAprobados++;
                         $resultadoTexto = 'Anulado por Trampa';
                         $estadoTipo = 'trampa';
-                    } elseif ($esAprobado) {
-                        $secAprobados++;
-                        $resultadoTexto = 'Aprobado';
-                        $estadoTipo = 'aprobado';
                     } else {
+                        // No aprobado normal (por puntaje bajo)
+                        $resultado = $intentosAprendiz->first();
+                        $fueAnulado = false;
+                        $esAprobado = false;
                         $secNoAprobados++;
                         $resultadoTexto = 'No aprobado (Puntaje bajo)';
                         $estadoTipo = 'no_aprobado';
+                    }
+
+                    $puntaje = (int) round($resultado->puntaje ?? 0);
+                    $intentos = $intentosAprendiz->count();
+                    $fechaRaw = $resultado->fecha_presentacion ?? $resultado->created_at ?? now();
+                    $fecha = Carbon::parse($fechaRaw)->translatedFormat('d M Y');
+                    $motivoAnulacion = $resultado->motivo_anulacion ?? 'Infracciones anti-trampa detectadas';
+                    
+                    // Contar total de infracciones acumuladas en los intentos
+                    $infraccionesCount = $intentosAprendiz->sum(fn($r) => (int)($r->infracciones_detectadas ?? 0));
+                    if ($infraccionesCount === 0 && isset($resultado->infracciones_detectadas)) {
+                        $infraccionesCount = (int) $resultado->infracciones_detectadas;
                     }
 
                     $filasModulo[] = (object) [
