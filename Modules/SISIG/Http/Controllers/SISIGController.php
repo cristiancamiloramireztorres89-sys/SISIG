@@ -4,6 +4,9 @@ namespace Modules\SISIG\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\SISIG\Entities\Modulo;
+use Modules\SISIG\Entities\Quiz;
+use Modules\SISIG\Entities\Resultado;
 
 class SISIGController extends Controller
 {
@@ -12,9 +15,17 @@ class SISIGController extends Controller
      */
     public function index()
     {
-        $modulos = \Modules\SISIG\Entities\Modulo::where('estado', '!=', 'inactivo')->orderBy('id', 'asc')->get();
+        $modulos = Modulo::with('quices')
+            ->where('estado', '!=', 'inactivo')
+            ->orderBy('id', 'asc')
+            ->get();
 
-        return view('sisig::index', compact('modulos'));
+        $totalModulos = $modulos->count();
+        $totalQuices = Quiz::where('estado', '!=', 'inactivo')->count();
+        $totalEvaluaciones = Resultado::whereNotNull('fecha_presentacion')->count();
+        $moduloDestacado = $modulos->first();
+
+        return view('sisig::index', compact('modulos', 'totalModulos', 'totalQuices', 'totalEvaluaciones', 'moduloDestacado'));
     }
 
     /**
