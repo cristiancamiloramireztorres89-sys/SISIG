@@ -134,14 +134,6 @@
                         <i class="fas fa-layer-group text-sm"></i>
                         <span>Submódulos</span>
                     </a>
-                    <a href="{{ route('sisig.index') }}#areas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="areas">
-                        <i class="fas fa-shield-alt text-sm"></i>
-                        <span>Ejes SIG</span>
-                    </a>
-                    <a href="{{ route('sisig.index') }}#caracteristicas" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="caracteristicas">
-                        <i class="fas fa-bolt text-sm"></i>
-                        <span>Funciones</span>
-                    </a>
                     <a href="{{ route('sisig.desarrolladores') }}" class="nav-spy-item text-sm flex items-center gap-1.5 {{ request()->routeIs('sisig.desarrolladores') ? 'active' : '' }}">
                         <i class="fas fa-code text-sm"></i>
                         <span>Desarrolladores</span>
