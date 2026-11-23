@@ -460,16 +460,6 @@
                                         }
                                     }
                                 }
-                                if (!$imgSrc && !empty($mod->fondo_imagen)) {
-                                    if (str_starts_with($mod->fondo_imagen, 'http://') || str_starts_with($mod->fondo_imagen, 'https://')) {
-                                        $imgSrc = $mod->fondo_imagen;
-                                    } else {
-                                        $cleanFondo = ltrim(str_replace('\\', '/', $mod->fondo_imagen), '/');
-                                        if (file_exists(public_path($cleanFondo))) {
-                                            $imgSrc = asset($cleanFondo);
-                                        }
-                                    }
-                                }
                             @endphp
 
                             <!-- Badges Superiores Flotantes -->
