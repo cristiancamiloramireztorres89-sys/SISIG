@@ -157,17 +157,17 @@
                     @if(auth()->check())
                         <div class="flex items-center gap-3">
                             @if(auth()->user()->hasRole('admin_sisig'))
-                                <a href="{{ route('sisig.admin.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
+                                <a href="{{ route('sisig.admin.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] rounded-full shadow-md shadow-emerald-500/20 transition-all">
                                     <i class="fas fa-chart-line"></i>
                                     <span>Panel Admin</span>
                                 </a>
                             @elseif(auth()->user()->hasRole('editor_sisig'))
-                                <a href="{{ route('sisig.editor.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
+                                <a href="{{ route('sisig.editor.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] rounded-full shadow-md shadow-emerald-500/20 transition-all">
                                     <i class="fas fa-edit"></i>
                                     <span>Panel Edición</span>
                                 </a>
                             @else
-                                <a href="{{ route('sisig.aprendiz.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena transition-all">
+                                <a href="{{ route('sisig.aprendiz.dashboard') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] rounded-full shadow-md shadow-emerald-500/20 transition-all">
                                     <i class="fas fa-graduation-cap"></i>
                                     <span>Mi Dashboard</span>
                                 </a>
@@ -290,7 +290,7 @@
                             </script>
                         </div>
                     @else
-                        <a href="{{ route('login') }}?redirect=/sisig" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-sena-green-hover rounded-xl shadow-sena hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5">
+                        <a href="{{ route('login') }}?redirect=/sisig" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] rounded-full shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer">
                             <i class="fas fa-sign-in-alt text-sm"></i>
                             <span>Iniciar Sesión</span>
                         </a>
