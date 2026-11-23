@@ -61,10 +61,12 @@
 
                         <!-- Descripción Clara & Profesional -->
                         <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
-                            Capacítate y certifícate en 
-                            <strong class="text-slate-900 font-bold">Seguridad y Salud (ISO 45001)</strong>, 
-                            <strong class="text-slate-900 font-bold">Gestión de la Calidad (ISO 9001)</strong> y 
-                            <strong class="text-slate-900 font-bold">Gestión Ambiental (ISO 14001)</strong>. 
+                            @if($modulos->isNotEmpty())
+                                Capacítate y certifícate en los módulos oficiales de 
+                                <strong class="text-slate-900 font-bold">{{ $modulos->pluck('titulo')->join(', ', ' y ') }}</strong>. 
+                            @else
+                                Capacítate y certifícate en los ejes formativos oficiales del Sistema Integrado de Gestión.
+                            @endif
                             Evaluaciones supervisadas con protocolo anti-trampa y calificación equitativa sobre 100% para aprendices de 
                             <span class="text-[#39A900] font-bold">SENA Empresa CEFA</span>.
                         </p>
@@ -167,30 +169,30 @@
                                         @endif
                                     </div>
 
-                                    <!-- Mini Grid de Módulos dentro del Mockup Desktop -->
-                                    <div class="grid grid-cols-2 gap-2.5">
-                                        <div class="bg-white/5 border border-white/10 rounded-xl p-2.5 space-y-1.5">
-                                            <div class="flex items-center justify-between">
-                                                <span class="text-[9px] font-bold text-slate-400 uppercase">ISO 9001</span>
-                                                <span class="text-[9px] text-[#33FF57] font-mono">100%</span>
-                                            </div>
-                                            <div class="text-xs font-bold text-white truncate">Gestión Calidad</div>
-                                            <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
-                                                <div class="bg-[#33FF57] h-full w-3/4"></div>
-                                            </div>
+                                    <!-- Mini Grid de Módulos dentro del Mockup Desktop (Dinámico con los módulos reales) -->
+                                    @php
+                                        $modulosSecundarios = $modulos->skip(1)->take(2);
+                                    @endphp
+                                    @if($modulosSecundarios->isNotEmpty())
+                                        <div class="grid grid-cols-2 gap-2.5">
+                                            @foreach($modulosSecundarios as $idxSec => $mSec)
+                                                <div class="bg-white/5 border border-white/10 rounded-xl p-2.5 space-y-1.5">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[85px]">
+                                                            {{ !empty($mSec->norma) ? $mSec->norma : 'Eje SIG' }}
+                                                        </span>
+                                                        <span class="text-[9px] text-[#33FF57] font-mono">100%</span>
+                                                    </div>
+                                                    <div class="text-xs font-bold text-white truncate" title="{{ $mSec->titulo }}">
+                                                        {{ $mSec->titulo }}
+                                                    </div>
+                                                    <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                                                        <div class="bg-[#33FF57] h-full" style="width: {{ $idxSec === 0 ? '75%' : '60%' }}"></div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-
-                                        <div class="bg-white/5 border border-white/10 rounded-xl p-2.5 space-y-1.5">
-                                            <div class="flex items-center justify-between">
-                                                <span class="text-[9px] font-bold text-slate-400 uppercase">ISO 14001</span>
-                                                <span class="text-[9px] text-emerald-400 font-mono">Activo</span>
-                                            </div>
-                                            <div class="text-xs font-bold text-white truncate">Medio Ambiente</div>
-                                            <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
-                                                <div class="bg-emerald-500 h-full w-2/3"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endif
 
                                 </div>
 
@@ -552,14 +554,34 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <!-- Paso 1 -->
-                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-lg transition-all space-y-4 relative group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 font-black text-base flex items-center justify-center border border-emerald-200 group-hover:scale-105 transition-transform">
-                        01
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-lg transition-all space-y-4 relative group flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 font-black text-base flex items-center justify-center border border-emerald-200 group-hover:scale-105 transition-transform">
+                            01
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">1. Explora el Catálogo</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            @if($modulos->isNotEmpty())
+                                Accede a los módulos formativos de 
+                                <strong class="text-slate-800 font-semibold">{{ $modulos->pluck('titulo')->join(', ', ' y ') }}</strong> 
+                                asignados a tu programa o etapa de inducción.
+                            @else
+                                Accede a los módulos formativos institucionales asignados a tu programa o etapa de inducción.
+                            @endif
+                        </p>
                     </div>
-                    <h3 class="text-base font-bold text-slate-900">1. Explora el Catálogo</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Accede a los módulos formativos de SST, Calidad y Medio Ambiente asignados a tu programa o etapa de inducción.
-                    </p>
+
+                    @if($modulos->isNotEmpty())
+                        <!-- Badges dinámicos de los módulos creados en la plataforma -->
+                        <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
+                            @foreach($modulos as $mItem)
+                                <a href="#catalogo-modulos" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 text-[11px] font-bold transition-colors">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#39A900]"></span>
+                                    <span>{{ $mItem->titulo }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Paso 2 -->
