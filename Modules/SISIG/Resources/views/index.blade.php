@@ -445,8 +445,8 @@
                          data-categoria="{{ $categoriaTag }}"
                          data-busqueda="{{ $tituloLower }} {{ $normaLower }} {{ mb_strtolower($mod->descripcion ?? '') }}">
                         
-                        <!-- Encabezado Visual de Tarjeta / Imagen de Portada Completa -->
-                        <div class="h-48 w-full relative overflow-hidden flex-shrink-0 bg-gradient-to-br from-[#1A2B4C] via-[#1E335A] to-[#14233C] group/header">
+                        <!-- Encabezado Visual de Tarjeta / Imagen o Logo Normal -->
+                        <div class="h-48 w-full bg-gradient-to-br from-[#1A2B4C] via-[#1E335A] to-[#14233C] flex items-center justify-center relative overflow-hidden flex-shrink-0">
                             
                             @php
                                 $imgSrc = null;
@@ -472,53 +472,33 @@
                                 }
                             @endphp
 
-                            @if($imgSrc)
-                                <!-- Imagen de Portada Asignada al Módulo (Llena toda la cabecera) -->
-                                <img src="{{ $imgSrc }}" 
-                                     alt="{{ $mod->titulo }}" 
-                                     class="w-full h-full object-cover group-hover/header:scale-105 transition-transform duration-500">
-                                
-                                <!-- Overlay de contraste suave para resaltar los badges -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-slate-950/40 pointer-events-none"></div>
-                            @else
-                                <!-- Portada Temática sin el icono genérico en caja -->
-                                <div class="w-full h-full flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#1A2B4C] via-[#15233E] to-[#0A1322]">
-                                    <div class="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
-
-                                    <div class="text-center p-4 relative z-10 space-y-1.5">
-                                        <div class="w-12 h-12 mx-auto rounded-2xl bg-white/10 border border-white/20 text-[#33FF57] flex items-center justify-center text-xl shadow-lg backdrop-blur-md group-hover/header:scale-110 transition-transform duration-300">
-                                            @if(str_contains($categoriaTag, 'sst'))
-                                                <i class="fas fa-shield-alt text-[#33FF57]"></i>
-                                            @elseif(str_contains($categoriaTag, 'calidad'))
-                                                <i class="fas fa-award text-blue-400"></i>
-                                            @elseif(str_contains($categoriaTag, 'ambiental'))
-                                                <i class="fas fa-leaf text-emerald-400"></i>
-                                            @else
-                                                <i class="fas fa-graduation-cap text-[#33FF57]"></i>
-                                            @endif
-                                        </div>
-                                        <span class="text-xs font-black text-white uppercase tracking-wider block drop-shadow-sm">
-                                            {{ $mod->titulo }}
-                                        </span>
-                                    </div>
-
-                                    <div class="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-emerald-500/15 blur-xl pointer-events-none"></div>
-                                </div>
-                            @endif
-
                             <!-- Badges Superiores Flotantes -->
                             <div class="absolute top-4 left-4 z-10">
-                                <span class="bg-[#0A1322]/85 backdrop-blur-md text-white border border-white/20 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
+                                <span class="bg-[#1A2B4C]/90 backdrop-blur-md text-white border border-white/20 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
                                     {{ !empty($mod->norma) ? $mod->norma : 'Eje SIG' }}
                                 </span>
                             </div>
 
                             <div class="absolute top-4 right-4 z-10">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#0A1322]/85 backdrop-blur-md text-white border border-white/20 shadow-sm">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-sm">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $mod->estado === 'publicado' ? 'bg-[#33FF57]' : 'bg-amber-400' }}"></span>
                                     <span class="capitalize">{{ $mod->estado ?? 'Publicado' }}</span>
                                 </span>
                             </div>
+
+                            <!-- Contenedor Central de Imagen o Logo Normal -->
+                            <div class="w-20 h-20 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white overflow-hidden shadow-xl group-hover:scale-110 transition-transform duration-300 z-10">
+                                @if($imgSrc)
+                                    <img src="{{ $imgSrc }}" 
+                                         alt="{{ $mod->titulo }}" 
+                                         class="w-full h-full object-cover">
+                                @else
+                                    <i class="{{ !empty($mod->icon_class) ? $mod->icon_class : 'fas fa-layer-group' }} text-3xl"></i>
+                                @endif
+                            </div>
+
+                            <!-- Resplandor sutil interior -->
+                            <div class="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-emerald-500/20 blur-xl pointer-events-none"></div>
                         </div>
 
                         <!-- Cuerpo de la Tarjeta -->

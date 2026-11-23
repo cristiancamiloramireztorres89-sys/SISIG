@@ -88,10 +88,28 @@
             color: #ffffff;
         }
 
+        .nav-spy-item::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #33FF57;
+            box-shadow: 0 0 10px #33FF57;
+            border-radius: 9999px;
+            transition: all 0.25s ease-in-out;
+            transform: translateX(-50%);
+        }
+
         .nav-spy-item.active {
             color: #33FF57 !important; /* Neon Green */
             font-weight: 800 !important;
             text-shadow: 0 0 16px rgba(51, 255, 87, 0.65);
+        }
+
+        .nav-spy-item.active::after {
+            width: 85%;
         }
 
         .nav-spy-item.active i {
@@ -125,10 +143,18 @@
                 </div>
 
                 <!-- Nav Navigation Links (Sin cuadros / resaltado de palabra dinámico) -->
-                <nav class="hidden lg:flex items-center gap-7">
+                <nav class="hidden lg:flex items-center gap-6">
                     <a href="{{ route('sisig.index') }}#inicio" class="nav-spy-item {{ request()->routeIs('sisig.index') ? 'active' : '' }} text-sm flex items-center gap-1.5" data-section="inicio">
                         <i class="fas fa-home text-sm"></i>
                         <span>Inicio</span>
+                    </a>
+                    <a href="{{ route('sisig.index') }}#catalogo-modulos" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="catalogo-modulos">
+                        <i class="fas fa-graduation-cap text-sm"></i>
+                        <span>Módulos SIG</span>
+                    </a>
+                    <a href="{{ route('sisig.index') }}#ruta-aprendizaje" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="ruta-aprendizaje">
+                        <i class="fas fa-route text-sm"></i>
+                        <span>Ruta de Inducción</span>
                     </a>
                     <a href="{{ route('sisig.index') }}#submodulos" class="nav-spy-item text-sm flex items-center gap-1.5" data-section="submodulos">
                         <i class="fas fa-layer-group text-sm"></i>
@@ -330,34 +356,58 @@
         </div>
     </footer>
 
-    <!-- ScrollSpy Script: detecta en qué sección vas y resalta la palabra dinámicamente -->
+    <!-- ScrollSpy Script: detecta en qué sección vas y resalta la palabra dinámicamente sin dejar zonas apagadas -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.nav-spy-item');
+            const isDesarrolladores = window.location.pathname.includes('desarrolladores');
+            if (isDesarrolladores) return; // En desarrolladores su enlace se mantiene activo
+
+            const sections = Array.from(document.querySelectorAll('section[id]'));
+            const navLinks = document.querySelectorAll('.nav-spy-item[data-section]');
+
+            if (!sections.length || !navLinks.length) return;
 
             const onScroll = () => {
-                const scrollPos = window.scrollY + 140; // Offset para el navbar fijo
+                const scrollPos = window.scrollY + 180; // Offset cómodo para considerar la sección activa
+                const docHeight = document.documentElement.scrollHeight;
+                const winHeight = window.innerHeight;
 
-                sections.forEach(sec => {
-                    const top = sec.offsetTop;
-                    const height = sec.offsetHeight;
-                    const id = sec.getAttribute('id');
+                let currentId = null;
 
-                    if (scrollPos >= top && scrollPos < top + height) {
-                        navLinks.forEach(link => {
-                            if (link.getAttribute('data-section') === id) {
-                                link.classList.add('active');
-                            } else {
-                                link.classList.remove('active');
-                            }
-                        });
+                // Si llegó casi al fondo del documento, activar la última sección
+                if (window.scrollY + winHeight >= docHeight - 80) {
+                    currentId = sections[sections.length - 1].getAttribute('id');
+                } else {
+                    for (let i = 0; i < sections.length; i++) {
+                        const sec = sections[i];
+                        const top = sec.offsetTop;
+                        const nextSec = sections[i + 1];
+                        const nextTop = nextSec ? nextSec.offsetTop : Infinity;
+
+                        // La sección está activa desde su inicio hasta el inicio de la siguiente
+                        if (scrollPos >= top && scrollPos < nextTop) {
+                            currentId = sec.getAttribute('id');
+                            break;
+                        }
+                    }
+                }
+
+                // Fallback a la primera sección si está en la parte superior
+                if (!currentId && window.scrollY < 250 && sections.length > 0) {
+                    currentId = sections[0].getAttribute('id');
+                }
+
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-section') === currentId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
                     }
                 });
             };
 
-            window.addEventListener('scroll', onScroll);
-            onScroll(); // Ejecutar al cargar
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
         });
     </script>
 </body>
