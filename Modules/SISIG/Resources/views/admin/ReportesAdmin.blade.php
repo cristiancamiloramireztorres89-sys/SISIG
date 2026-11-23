@@ -341,8 +341,8 @@
                     <button type="button"
                             onclick="cambiarSeccionQuiz({{ $mod['id'] }})"
                             data-modulo-id="{{ $mod['id'] }}"
-                            class="tab-quiz-btn px-4 py-2 rounded-2xl font-bold transition-all flex items-center gap-2 cursor-pointer {{ $isActive ? 'bg-sena-green text-white shadow-sena transform -translate-y-0.5' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200' }}">
-                        <i class="tab-icon {{ $isActive ? 'fas fa-check-circle text-xs' : 'fas fa-layer-group text-xs text-slate-400' }}"></i>
+                            class="tab-quiz-btn px-4 py-2 rounded-2xl font-bold transition-all flex items-center gap-2 cursor-pointer {{ $isActive ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20 transform -translate-y-0.5' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200' }}">
+                        <i class="tab-icon {{ $isActive ? 'fas fa-check-circle text-xs text-[#1A2B4C]' : 'fas fa-layer-group text-xs text-slate-400' }}"></i>
                         <span>{{ $mod['nombre'] }}</span>
                         <span class="text-[10px] opacity-80 font-mono">({{ $mod['norma'] }})</span>
                     </button>
@@ -706,8 +706,8 @@
             document.querySelectorAll('.tab-quiz-btn').forEach(btn => {
                 const esActivo = (btn.dataset.moduloId == id);
                 if (esActivo) {
-                    btn.className = 'tab-quiz-btn px-4 py-2 rounded-2xl font-bold transition-all flex items-center gap-2 cursor-pointer bg-sena-green text-white shadow-sena transform -translate-y-0.5';
-                    btn.querySelector('.tab-icon').className = 'tab-icon fas fa-check-circle text-xs';
+                    btn.className = 'tab-quiz-btn px-4 py-2 rounded-2xl font-black transition-all flex items-center gap-2 cursor-pointer bg-[#33FF57] text-[#1A2B4C] shadow-md shadow-emerald-500/20 transform -translate-y-0.5';
+                    btn.querySelector('.tab-icon').className = 'tab-icon fas fa-check-circle text-xs text-[#1A2B4C]';
                 } else {
                     btn.className = 'tab-quiz-btn px-4 py-2 rounded-2xl font-bold transition-all flex items-center gap-2 cursor-pointer bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200';
                     btn.querySelector('.tab-icon').className = 'tab-icon fas fa-layer-group text-xs text-slate-400';

@@ -128,7 +128,7 @@
                                id="seccion-pill-{{ $mod->id }}"
                                title="{{ $mod->titulo }}"
                                @if($tieneMasDeTres) style="flex: 0 0 calc((100% - 12px) / 3); min-width: 0;" @endif
-                               class="px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate {{ $esActivo ? 'bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 is-active-seccion' : 'text-slate-600 hover:bg-slate-200/80 hover:text-slate-900' }}">
+                               class="px-2.5 py-1.5 rounded-xl font-bold transition-all flex items-center justify-center flex-shrink-0 whitespace-nowrap text-center truncate {{ $esActivo ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20 is-active-seccion' : 'text-slate-600 hover:bg-slate-200/80 hover:text-slate-900' }}">
                                 <span class="truncate">{{ $mod->titulo }}</span>
                             </a>
                         @endforeach
@@ -166,8 +166,8 @@
                         Aprobados: {{ $aprobadosList->count() }}
                     </span>
                     <button type="button" onclick="exportarTablaExcel('tabla-aprobados', 'Aprobados_Quiz_{{ ucfirst($seccion) }}')"
-                            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-200 transition-all shadow-xs cursor-pointer">
-                        <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <i class="fas fa-file-excel text-xs text-[#1A2B4C]"></i>
                         <span>Exportar Excel</span>
                     </button>
                 </div>
@@ -289,8 +289,8 @@
                         No aprobados: {{ $noAprobadosList->count() }}
                     </span>
                     <button type="button" onclick="exportarTablaExcel('tabla-no-aprobados', 'No_Aprobados_Quiz_{{ ucfirst($seccion) }}')"
-                            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 hover:text-rose-700 hover:border-rose-200 transition-all shadow-xs cursor-pointer">
-                        <i class="fas fa-file-excel text-rose-500 text-xs"></i>
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <i class="fas fa-file-excel text-xs text-[#1A2B4C]"></i>
                         <span>Exportar Excel</span>
                     </button>
                 </div>

@@ -118,8 +118,8 @@
                         Registros: <strong class="text-slate-800">{{ $infraccionesList->count() }}</strong>
                     </span>
                     <button type="button" onclick="exportarTablaExcel('tabla-infracciones', 'Auditoria_Infracciones_SISIG_{{ ucfirst($seccion) }}')"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all cursor-pointer">
-                        <i class="fas fa-file-excel text-xs"></i>
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <i class="fas fa-file-excel text-xs text-[#1A2B4C]"></i>
                         <span>Exportar Excel</span>
                     </button>
                 </div>
