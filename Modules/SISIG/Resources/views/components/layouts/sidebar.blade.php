@@ -61,6 +61,13 @@
                         <span class="sidebar-text truncate">Gestión de Exámenes</span>
                     </a>
 
+                    <a href="{{ route('sisig.admin.resultados.index') }}" 
+                       title="Auditoría de Resultados y Exámenes"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group {{ request()->routeIs('sisig.admin.resultados.*') ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20' : 'hover:bg-white/10 hover:text-white text-slate-200' }}">
+                        <i class="fas fa-poll-h text-sm w-5 text-center flex-shrink-0 {{ request()->routeIs('sisig.admin.resultados.*') ? 'text-[#1A2B4C]' : 'text-slate-200' }}"></i>
+                        <span class="sidebar-text truncate">Resultados y Auditoría</span>
+                    </a>
+
                     <a href="{{ route('sisig.admin.reportes.index') }}" 
                        title="Reportes y Métricas"
                        class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group {{ request()->routeIs('sisig.admin.reportes.*') ? 'bg-[#33FF57] text-[#1A2B4C] font-black shadow-md shadow-emerald-500/20' : 'hover:bg-white/10 hover:text-white text-slate-200' }}">

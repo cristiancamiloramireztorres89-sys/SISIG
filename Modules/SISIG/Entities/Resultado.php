@@ -20,7 +20,8 @@ class Resultado extends Model
         'motivo_anulacion',
         'fecha_presentacion',
         'tiempo_segundos_empleado',
-        'infracciones_detectadas'
+        'infracciones_detectadas',
+        'detalles_revision'
     ];
 
     protected $casts = [
@@ -29,7 +30,8 @@ class Resultado extends Model
         'puntaje' => 'float',
         'fecha_presentacion' => 'datetime',
         'tiempo_segundos_empleado' => 'integer',
-        'infracciones_detectadas' => 'integer'
+        'infracciones_detectadas' => 'integer',
+        'detalles_revision' => 'array'
     ];
 
     /**

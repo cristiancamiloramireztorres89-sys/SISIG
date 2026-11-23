@@ -364,6 +364,7 @@ class EvaluacionesAprendizController extends Controller
         $totalPreguntas = $quiz->preguntas->count();
         $respuestasCorrectas = 0;
         $detallesRevision = [];
+        $detallesRevisionPersistible = [];
 
         foreach ($quiz->preguntas as $pregunta) {
             $opcionSeleccionadaId = $respuestasUsuario[$pregunta->id_pregunta] ?? null;
@@ -374,6 +375,30 @@ class EvaluacionesAprendizController extends Controller
             if ($esCorrecta) {
                 $respuestasCorrectas++;
             }
+
+            $opcionesArray = $pregunta->opciones->map(function ($opc) {
+                return [
+                    'id_opcion' => $opc->id_opcion,
+                    'opcion' => $opc->opcion,
+                    'es_correcta' => (bool)$opc->es_correcta
+                ];
+            })->values()->toArray();
+
+            $detallesRevisionPersistible[] = [
+                'id_pregunta' => $pregunta->id_pregunta,
+                'pregunta' => $pregunta->pregunta,
+                'opciones' => $opcionesArray,
+                'opcion_seleccionada' => $opcionSeleccionada ? [
+                    'id_opcion' => $opcionSeleccionada->id_opcion,
+                    'opcion' => $opcionSeleccionada->opcion
+                ] : null,
+                'opcion_correcta' => $opcionCorrecta ? [
+                    'id_opcion' => $opcionCorrecta->id_opcion,
+                    'opcion' => $opcionCorrecta->opcion
+                ] : null,
+                'es_correcta' => $esCorrecta,
+                'retroalimentacion' => $pregunta->retroalimentacion ?? 'Revisa nuevamente la guía didáctica del módulo para reforzar este concepto.'
+            ];
 
             $detallesRevision[] = (object) [
                 'pregunta' => $pregunta->pregunta,
@@ -398,6 +423,7 @@ class EvaluacionesAprendizController extends Controller
             'tiempo_segundos_empleado' => $segundosTranscurridos,
             'infracciones_detectadas' => $totalInfracciones,
             'fecha_presentacion' => now(),
+            'detalles_revision' => $detallesRevisionPersistible
         ]);
 
         $intentosPermitidos = $quiz->numero_intentos ?? 3;
@@ -444,6 +470,36 @@ class EvaluacionesAprendizController extends Controller
         $totalPreguntas = $quiz->preguntas()->count();
         $respuestasCorrectas = round(($puntaje / 100) * $totalPreguntas);
         $detallesRevision = [];
+        if (!empty($resultado->detalles_revision) && is_array($resultado->detalles_revision)) {
+            foreach ($resultado->detalles_revision as $item) {
+                $opcionesCollect = collect($item['opciones'] ?? [])->map(function ($op) {
+                    return (object) [
+                        'id_opcion' => $op['id_opcion'] ?? null,
+                        'opcion' => $op['opcion'] ?? '',
+                        'es_correcta' => !empty($op['es_correcta']) ? 1 : 0
+                    ];
+                });
+
+                $opcSel = !empty($item['opcion_seleccionada']) ? (object)[
+                    'id_opcion' => $item['opcion_seleccionada']['id_opcion'] ?? null,
+                    'opcion' => $item['opcion_seleccionada']['opcion'] ?? 'Sin responder'
+                ] : null;
+
+                $opcCor = !empty($item['opcion_correcta']) ? (object)[
+                    'id_opcion' => $item['opcion_correcta']['id_opcion'] ?? null,
+                    'opcion' => $item['opcion_correcta']['opcion'] ?? ''
+                ] : null;
+
+                $detallesRevision[] = (object) [
+                    'pregunta' => $item['pregunta'] ?? '',
+                    'opciones' => $opcionesCollect,
+                    'opcion_seleccionada' => $opcSel,
+                    'opcion_correcta' => $opcCor,
+                    'es_correcta' => !empty($item['es_correcta']),
+                    'retroalimentacion' => $item['retroalimentacion'] ?? ''
+                ];
+            }
+        }
         $infracciones = $resultado->infracciones()->orderBy('marca_tiempo', 'asc')->get();
 
         return view('sisig::aprendiz.evaluaciones.resultado', compact(
