@@ -71,8 +71,8 @@ class ContenidoController extends Controller
             }
         }
 
-        // Redirigir siempre de forma directa al nuevo Editor Canvas tipo Canva
-        return redirect()->route('sisig.editor.canvas.editor', $id);
+        // Carga la vista del editor enriquecido documental para el módulo seleccionado
+        return view('sisig::editor.contenido.edit', compact('modulos', 'moduloSeleccionado'));
     }
 
     /**
@@ -168,8 +168,8 @@ class ContenidoController extends Controller
             $modulo->fondo_opacidad = (int) $request->input('fondo_opacidad');
         }
 
-        // Persistencia del estado JSON del lienzo/editor
-        if ($request->filled('canvas_state')) {
+        // Persistencia del estado JSON del lienzo/editor con verificación defensiva de esquema
+        if ($request->filled('canvas_state') && \Illuminate\Support\Facades\Schema::hasColumn('sisig_modulos', 'canvas_state')) {
             $canvasState = $request->input('canvas_state');
             if (is_string($canvasState)) {
                 $decoded = json_decode($canvasState, true);
