@@ -368,33 +368,27 @@
             if (!sections.length || !navLinks.length) return;
 
             const onScroll = () => {
-                const scrollPos = window.scrollY + 180; // Offset cómodo para considerar la sección activa
-                const docHeight = document.documentElement.scrollHeight;
-                const winHeight = window.innerHeight;
-
+                const navOffset = 180; // Margen de lectura bajo la barra superior
                 let currentId = null;
 
-                // Si llegó casi al fondo del documento, activar la última sección
-                if (window.scrollY + winHeight >= docHeight - 80) {
-                    currentId = sections[sections.length - 1].getAttribute('id');
-                } else {
-                    for (let i = 0; i < sections.length; i++) {
-                        const sec = sections[i];
-                        const top = sec.offsetTop;
-                        const nextSec = sections[i + 1];
-                        const nextTop = nextSec ? nextSec.offsetTop : Infinity;
-
-                        // La sección está activa desde su inicio hasta el inicio de la siguiente
-                        if (scrollPos >= top && scrollPos < nextTop) {
-                            currentId = sec.getAttribute('id');
-                            break;
-                        }
+                // Detectar qué sección se encuentra bajo el foco de la pantalla
+                for (let i = 0; i < sections.length; i++) {
+                    const sec = sections[i];
+                    const rect = sec.getBoundingClientRect();
+                    // Si el encabezado de la sección ya pasó o está a tiro del navbar
+                    if (rect.top <= navOffset) {
+                        currentId = sec.getAttribute('id');
                     }
                 }
 
-                // Fallback a la primera sección si está en la parte superior
-                if (!currentId && window.scrollY < 250 && sections.length > 0) {
+                // Si estamos en la parte superior (primeros 150px de scroll), asegurar Inicio
+                if (window.scrollY < 150 && sections.length > 0) {
                     currentId = sections[0].getAttribute('id');
+                }
+
+                // Si llegamos al final del scroll de la página, activar la última sección
+                if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100)) {
+                    currentId = sections[sections.length - 1].getAttribute('id');
                 }
 
                 navLinks.forEach(link => {
@@ -407,7 +401,9 @@
             };
 
             window.addEventListener('scroll', onScroll, { passive: true });
-            onScroll();
+            // Ejecutar con un leve retardo para asegurar que los elementos ya calcularon su altura
+            setTimeout(onScroll, 50);
+            window.addEventListener('load', onScroll);
         });
     </script>
 </body>
