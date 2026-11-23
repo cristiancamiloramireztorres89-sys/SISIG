@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\SISIG\Entities\Quiz;
 use Modules\SISIG\Entities\Pregunta;
 use Modules\SISIG\Entities\Opcion;
+use Modules\SISIG\Entities\Resultado;
 
 class GestionPreguntasController extends Controller
 {
@@ -45,7 +46,12 @@ class GestionPreguntasController extends Controller
         $quiz = $this->findQuizOrFail($quiz_id);
         $routePrefix = $this->routePrefix;
         
-        return view('sisig::admin.GestionPreguntas', compact('quiz', 'routePrefix'));
+        // Verificar si el examen ya fue presentado por algún aprendiz
+        $tieneIntentos = Resultado::where('id_quiz', $quiz_id)->whereNotNull('fecha_presentacion')->exists();
+        $totalPreguntas = $quiz->preguntas->count();
+        $pesoPorPregunta = $totalPreguntas > 0 ? round(100 / $totalPreguntas, 1) : 0;
+        
+        return view('sisig::admin.GestionPreguntas', compact('quiz', 'routePrefix', 'tieneIntentos', 'pesoPorPregunta'));
     }
 
     /**
@@ -58,11 +64,17 @@ class GestionPreguntasController extends Controller
         // Obtener el examen contenedor
         $quiz = $this->findQuizOrFail($quiz_id);
 
-        // Validación de datos de la pregunta
+        // Bloqueo estricto de integridad: si el examen ya fue respondido, no se pueden agregar preguntas
+        if (Resultado::where('id_quiz', $quiz_id)->whereNotNull('fecha_presentacion')->exists()) {
+            return redirect()->route($this->routePrefix . '.examenes.preguntas.index', $quiz_id)
+                ->with('error', 'No es posible agregar nuevas preguntas a esta evaluación porque ya cuenta con intentos respondidos por aprendices.');
+        }
+
+        // Validación de datos de la pregunta (el puntaje es opcional/automático al 100%)
         $validated = $request->validate([
             'tipo'               => 'required|string|in:opcion_multiple,seleccion_multiple,verdadero_falso,espacios_blanco,abierta,tabla_relleno',
             'pregunta'           => 'required|string|max:2000',
-            'puntaje'            => 'required|numeric|min:0|max:100',
+            'puntaje'            => 'nullable|numeric|min:0|max:100',
             'retroalimentacion'  => 'nullable|string|max:2000',
             'configuracion_json' => 'nullable|array'
         ]);
@@ -71,7 +83,7 @@ class GestionPreguntasController extends Controller
         $pregunta = $quiz->preguntas()->create([
             'pregunta'           => trim($validated['pregunta']),
             'tipo'               => $validated['tipo'],
-            'puntaje'            => (float)$validated['puntaje'],
+            'puntaje'            => (float)($validated['puntaje'] ?? 1.0),
             'retroalimentacion'  => isset($validated['retroalimentacion']) ? trim($validated['retroalimentacion']) : null,
             'configuracion_json' => $validated['configuracion_json'] ?? null
         ]);
@@ -106,10 +118,16 @@ class GestionPreguntasController extends Controller
         $quiz = $this->findQuizOrFail($quiz_id);
         $pregunta = Pregunta::where('id_quiz', $quiz_id)->where('id_pregunta', $pregunta_id)->firstOrFail();
 
+        // Bloqueo estricto de integridad: si el examen ya fue respondido, no se pueden modificar preguntas
+        if (Resultado::where('id_quiz', $quiz_id)->whereNotNull('fecha_presentacion')->exists()) {
+            return redirect()->route($this->routePrefix . '.examenes.preguntas.index', $quiz_id)
+                ->with('error', 'No es posible modificar las preguntas ni las opciones de respuesta de esta evaluación porque ya ha sido respondida por aprendices.');
+        }
+
         // Validación de campos editables
         $validated = $request->validate([
             'pregunta'           => 'required|string|max:2000',
-            'puntaje'            => 'required|numeric|min:0|max:100',
+            'puntaje'            => 'nullable|numeric|min:0|max:100',
             'retroalimentacion'  => 'nullable|string|max:2000',
             'configuracion_json' => 'nullable|array'
         ]);
@@ -117,7 +135,7 @@ class GestionPreguntasController extends Controller
         // Actualizar datos básicos de la pregunta
         $pregunta->update([
             'pregunta'           => trim($validated['pregunta']),
-            'puntaje'            => (float)$validated['puntaje'],
+            'puntaje'            => (float)($validated['puntaje'] ?? $pregunta->puntaje ?? 1.0),
             'retroalimentacion'  => isset($validated['retroalimentacion']) ? trim($validated['retroalimentacion']) : null,
             'configuracion_json' => $validated['configuracion_json'] ?? null
         ]);
@@ -149,6 +167,18 @@ class GestionPreguntasController extends Controller
         // Obtener examen y la pregunta correspondiente
         $quiz = $this->findQuizOrFail($quiz_id);
         $pregunta = Pregunta::where('id_quiz', $quiz_id)->where('id_pregunta', $pregunta_id)->firstOrFail();
+
+        // Bloqueo estricto de integridad: si el examen ya fue respondido, no se pueden eliminar preguntas
+        if (Resultado::where('id_quiz', $quiz_id)->whereNotNull('fecha_presentacion')->exists()) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No es posible eliminar preguntas de una evaluación que ya cuenta con intentos o calificaciones registradas.'
+                ], 422);
+            }
+            return redirect()->route($this->routePrefix . '.examenes.preguntas.index', $quiz_id)
+                ->with('error', 'No es posible eliminar preguntas de una evaluación que ya cuenta con intentos o calificaciones registradas.');
+        }
         
         // Eliminar la pregunta (sus opciones se eliminan en cascada según el modelo)
         $pregunta->delete();

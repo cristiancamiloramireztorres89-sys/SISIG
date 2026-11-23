@@ -17,89 +17,116 @@
                     </p>
                 </div>
             </div>
-            <div class="text-right">
-                <span class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wide">Total Preguntas</span>
-                <span class="text-2xl font-black text-sena-green">{{ $quiz->preguntas->count() }}</span>
+            <div class="flex items-center gap-6 text-right">
+                <div>
+                    <span class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wide">Puntaje Máximo</span>
+                    <span class="text-2xl font-black text-sena-green">100%</span>
+                </div>
+                <div class="border-l border-slate-200 pl-6">
+                    <span class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wide">Total Preguntas</span>
+                    <span class="text-2xl font-black text-slate-700">{{ $quiz->preguntas->count() }}</span>
+                </div>
             </div>
         </div>
 
-        <!-- Selector de Tipo de Pregunta (Diseño Wayground) -->
-        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
-            <h3 class="text-base font-black text-slate-700 mb-6 flex items-center gap-2">
-                <i class="fas fa-magic text-amber-500"></i> Agregar nueva pregunta
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Opción Múltiple -->
-                <button onclick="openPreguntaModal('opcion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
-                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
-                        <i class="fas fa-check-square"></i>
+        @if(!empty($tieneIntentos))
+            <!-- Banner Examen Protegido (Solo Lectura) -->
+            <div class="bg-amber-50 border border-amber-200/90 rounded-3xl p-6 shadow-xs flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 flex items-center justify-center shrink-0 text-xl font-black">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-900 flex items-center gap-1.5">
+                            <i class="fas fa-shield-alt text-xs"></i> Examen con respuestas registradas
+                        </span>
+                        <span class="text-xs font-bold text-amber-700">Modo Solo Lectura</span>
                     </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Opción múltiple</h4>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Una sola respuesta correcta.</p>
-                    </div>
-                </button>
-
-                <!-- Selección Múltiple -->
-                <button onclick="openPreguntaModal('seleccion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
-                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
-                        <i class="fas fa-check-double"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Selección múltiple</h4>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Varias respuestas correctas.</p>
-                    </div>
-                </button>
-
-                <!-- Verdadero o Falso -->
-                <button onclick="openPreguntaModal('verdadero_falso')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
-                    <div class="text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center gap-1">
-                        <i class="fas fa-check text-emerald-500 text-lg"></i>
-                        <i class="fas fa-times text-rose-500 text-sm"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Verdadero o falso</h4>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Evalúa una afirmación.</p>
-                    </div>
-                </button>
-
-                <!-- Espacios en blanco -->
-                <button onclick="openPreguntaModal('espacios_blanco')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
-                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
-                        <i class="fas fa-pen-nib"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Completa los espacios en blanco</h4>
-                    </div>
-                </button>
-
-                <!-- Respuestas Abiertas -->
-                <button onclick="openPreguntaModal('abierta')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
-                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
-                        <i class="fas fa-align-left"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Respuestas abiertas</h4>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Texto libre y descriptivo.</p>
-                    </div>
-                </button>
-
-                <!-- Tabla de relleno -->
-                <button onclick="openPreguntaModal('tabla_relleno')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer relative overflow-hidden">
-                    <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
-                        <i class="fas fa-table"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
-                            Tabla de relleno
-                            <span class="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Nuevo</span>
-                        </h4>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Completar celdas.</p>
-                    </div>
-                </button>
+                    <h3 class="text-base font-black text-slate-800 mb-1">Evaluación protegida contra modificaciones</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                        Este examen ya ha sido presentado por aprendices. Para proteger la validez de los resultados históricos y la integridad de las calificaciones, no se permite agregar, editar ni eliminar preguntas. Puedes usar el botón <strong class="text-slate-800">"Ver"</strong> en cada reactivo para revisar sus enunciados y opciones.
+                    </p>
+                </div>
             </div>
-        </div>
+        @else
+            <!-- Selector de Tipo de Pregunta (Diseño Wayground) -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+                <h3 class="text-base font-black text-slate-700 mb-6 flex items-center gap-2">
+                    <i class="fas fa-magic text-amber-500"></i> Agregar nueva pregunta
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Opción Múltiple -->
+                    <button onclick="openPreguntaModal('opcion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                        <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                            <i class="fas fa-check-square"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Opción múltiple</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Una sola respuesta correcta.</p>
+                        </div>
+                    </button>
+
+                    <!-- Selección Múltiple -->
+                    <button onclick="openPreguntaModal('seleccion_multiple')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                        <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Selección múltiple</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Varias respuestas correctas.</p>
+                        </div>
+                    </button>
+
+                    <!-- Verdadero o Falso -->
+                    <button onclick="openPreguntaModal('verdadero_falso')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                        <div class="text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center gap-1">
+                            <i class="fas fa-check text-emerald-500 text-lg"></i>
+                            <i class="fas fa-times text-rose-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Verdadero o falso</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Evalúa una afirmación.</p>
+                        </div>
+                    </button>
+
+                    <!-- Espacios en blanco -->
+                    <button onclick="openPreguntaModal('espacios_blanco')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                        <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                            <i class="fas fa-pen-nib"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Completa los espacios en blanco</h4>
+                        </div>
+                    </button>
+
+                    <!-- Respuestas Abiertas -->
+                    <button onclick="openPreguntaModal('abierta')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer">
+                        <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                            <i class="fas fa-align-left"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Respuestas abiertas</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Texto libre y descriptivo.</p>
+                        </div>
+                    </button>
+
+                    <!-- Tabla de relleno -->
+                    <button onclick="openPreguntaModal('tabla_relleno')" class="group flex items-center gap-3.5 p-3.5 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-left cursor-pointer relative overflow-hidden">
+                        <div class="text-emerald-500 text-2xl shrink-0 group-hover:scale-110 transition-transform w-8 flex items-center justify-center">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
+                                Tabla de relleno
+                                <span class="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Nuevo</span>
+                            </h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">Completar celdas.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        @endif
 
         <!-- Lista de Preguntas Creadas -->
         <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
@@ -122,19 +149,29 @@
                                     <h4 class="text-sm font-bold text-slate-800">{{ $pregunta->pregunta }}</h4>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-black text-amber-500">{{ $pregunta->puntaje }} pts</span>
-                                    <button type="button" onclick="openEditarPreguntaModal({{ json_encode($pregunta) }})" title="Editar pregunta" 
-                                            class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
-                                        <i class="fas fa-edit text-xs"></i>
-                                    </button>
-                                    <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirmarEliminarPregunta(event, this, '{{ addslashes(Str::limit($pregunta->pregunta, 60)) }}')" class="m-0 p-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Eliminar pregunta" 
-                                                class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
-                                            <i class="fas fa-trash-alt text-xs"></i>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200/60" title="Ponderación automática equitativa">
+                                        <i class="fas fa-percentage text-[10px] mr-1 text-emerald-500"></i>{{ $pesoPorPregunta }}%
+                                    </span>
+                                    @if(!empty($tieneIntentos))
+                                        <button type="button" onclick="openVerPreguntaModal({{ json_encode($pregunta) }})" title="Ver detalles de la pregunta (modo lectura)" 
+                                                class="px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 hover:text-slate-900 flex items-center gap-1.5 shadow-2xs transition-all text-xs font-bold cursor-pointer">
+                                            <i class="fas fa-eye text-xs text-slate-500"></i>
+                                            <span>Ver</span>
                                         </button>
-                                    </form>
+                                    @else
+                                        <button type="button" onclick="openEditarPreguntaModal({{ json_encode($pregunta) }})" title="Editar pregunta" 
+                                                class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                            <i class="fas fa-edit text-xs"></i>
+                                        </button>
+                                        <form action="{{ route($routePrefix . '.examenes.preguntas.destroy', [$quiz->id_quiz, $pregunta->id_pregunta]) }}" method="POST" onsubmit="return confirmarEliminarPregunta(event, this, '{{ addslashes(Str::limit($pregunta->pregunta, 60)) }}')" class="m-0 p-0">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" title="Eliminar pregunta" 
+                                                    class="w-8 h-8 rounded-full bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 text-rose-500 hover:text-rose-700 flex items-center justify-center shadow-2xs transition-all cursor-pointer">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
 
@@ -182,7 +219,7 @@
                     <i id="modal-icon" class="fas fa-question-circle text-2xl text-sena-green"></i>
                     <div>
                         <h3 class="text-base font-bold text-slate-800"><span id="modal-action-title">Configurar</span> Pregunta: <span id="modal-tipo-label" class="text-sena-green font-extrabold"></span></h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Define el enunciado, puntaje y opciones de respuesta</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="modal-subtitle">Define el enunciado y las opciones de respuesta</p>
                     </div>
                 </div>
                 <button type="button" onclick="closePreguntaModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" title="Cerrar modal">
@@ -202,18 +239,23 @@
                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-none"></textarea>
                     </div>
 
-                    <!-- Puntaje -->
-                    <div class="w-1/3">
-                        <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block mb-2">Puntaje *</label>
-                        <input type="number" name="puntaje" id="input-puntaje" required step="0.1" min="0" value="1" 
-                               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                    <!-- Ponderación Automática sobre 100% -->
+                    <input type="hidden" name="puntaje" id="input-puntaje" value="1">
+                    <div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                            <i class="fas fa-calculator text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="block text-[11px] font-extrabold text-emerald-800 uppercase tracking-wider">Calificación Equitativa Automática (Base 100%)</span>
+                            <p class="text-xs text-emerald-700 font-medium">Cada pregunta se pondera automáticamente de manera equitativa sobre el total de preguntas del examen.</p>
+                        </div>
                     </div>
 
                     <!-- Zona Dinámica de Opciones -->
                     <div id="opciones-container" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl hidden">
                         <div class="flex items-center justify-between mb-3">
                             <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider block">Opciones de respuesta</label>
-                            <button type="button" onclick="addOpcion()" class="text-xs font-bold text-sena-green hover:text-emerald-700">
+                            <button type="button" id="btn-add-opcion" onclick="addOpcion()" class="text-xs font-bold text-sena-green hover:text-emerald-700 cursor-pointer">
                                 <i class="fas fa-plus"></i> Añadir opción
                             </button>
                         </div>
@@ -241,11 +283,11 @@
                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all resize-none"></textarea>
                     </div>
 
-                    <div class="pt-6 flex items-center justify-end gap-3 mt-4 border-t border-slate-100">
-                        <button type="button" onclick="closePreguntaModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+                    <div id="modal-footer-buttons" class="pt-6 flex items-center justify-end gap-3 mt-4 border-t border-slate-100">
+                        <button type="button" onclick="closePreguntaModal()" id="btn-cancelar-modal" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-6 py-2.5 rounded-full text-xs sm:text-sm font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer">
+                        <button type="submit" id="btn-submit-pregunta" class="px-6 py-2.5 rounded-full text-xs sm:text-sm font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer">
                             <i class="fas fa-save text-xs text-[#1A2B4C]"></i> <span id="btn-submit-label">Guardar pregunta</span>
                         </button>
                     </div>
@@ -260,7 +302,10 @@
         const form = document.getElementById('pregunta-form');
         const formMethod = document.getElementById('form-method');
         const modalActionTitle = document.getElementById('modal-action-title');
+        const modalSubtitle = document.getElementById('modal-subtitle');
         const btnSubmitLabel = document.getElementById('btn-submit-label');
+        const btnSubmitPregunta = document.getElementById('btn-submit-pregunta');
+        const btnCancelarModal = document.getElementById('btn-cancelar-modal');
         const inputPregunta = document.getElementById('input-pregunta');
         const inputPuntaje = document.getElementById('input-puntaje');
         const inputRetro = document.getElementById('input-retroalimentacion');
@@ -282,11 +327,51 @@
             'tabla_relleno': 'Tabla de relleno'
         };
 
+        function setFormReadOnly(readOnly) {
+            inputPregunta.readOnly = readOnly;
+            inputRetro.readOnly = readOnly;
+            
+            if (readOnly) {
+                inputPregunta.classList.add('bg-slate-100', 'cursor-not-allowed', 'text-slate-600');
+                inputRetro.classList.add('bg-slate-100', 'cursor-not-allowed', 'text-slate-600');
+                if (btnSubmitPregunta) btnSubmitPregunta.classList.add('hidden');
+                if (btnCancelarModal) btnCancelarModal.textContent = 'Cerrar';
+            } else {
+                inputPregunta.classList.remove('bg-slate-100', 'cursor-not-allowed', 'text-slate-600');
+                inputRetro.classList.remove('bg-slate-100', 'cursor-not-allowed', 'text-slate-600');
+                if (btnSubmitPregunta) btnSubmitPregunta.classList.remove('hidden');
+                if (btnCancelarModal) btnCancelarModal.textContent = 'Cancelar';
+            }
+
+            const btnAddOpc = document.getElementById('btn-add-opcion');
+            if (btnAddOpc) {
+                btnAddOpc.style.display = readOnly ? 'none' : 'inline-flex';
+            }
+
+            const textInputs = listaOpciones.querySelectorAll('input[type="text"]');
+            textInputs.forEach(input => {
+                input.readOnly = readOnly;
+                if (readOnly) input.classList.add('cursor-not-allowed', 'text-slate-600');
+                else input.classList.remove('cursor-not-allowed', 'text-slate-600');
+            });
+
+            const checkAndRadio = listaOpciones.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+            checkAndRadio.forEach(input => {
+                input.disabled = readOnly;
+            });
+
+            const deleteOptionBtns = listaOpciones.querySelectorAll('.btn-del-opcion');
+            deleteOptionBtns.forEach(btn => {
+                btn.style.display = readOnly ? 'none' : '';
+            });
+        }
+
         function openPreguntaModal(tipo) {
             currentType = tipo;
             form.action = storeUrl;
             formMethod.value = 'POST';
             modalActionTitle.textContent = 'Configurar';
+            if (modalSubtitle) modalSubtitle.textContent = 'Define el enunciado y las opciones de respuesta';
             btnSubmitLabel.textContent = 'Guardar pregunta';
 
             document.getElementById('input-tipo').value = tipo;
@@ -323,6 +408,7 @@
                 infoCompleja.classList.remove('hidden');
             }
 
+            setFormReadOnly(false);
             modal.classList.remove('hidden');
         }
 
@@ -331,6 +417,7 @@
             form.action = updateUrlTemplate.replace(':preguntaId', pregunta.id_pregunta);
             formMethod.value = 'PUT';
             modalActionTitle.textContent = 'Editar';
+            if (modalSubtitle) modalSubtitle.textContent = 'Modifica el enunciado y las opciones de respuesta';
             btnSubmitLabel.textContent = 'Actualizar pregunta';
 
             document.getElementById('input-tipo').value = pregunta.tipo;
@@ -381,11 +468,19 @@
                 infoCompleja.classList.remove('hidden');
             }
 
+            setFormReadOnly(false);
             modal.classList.remove('hidden');
             if (window.lockBodyScroll) window.lockBodyScroll(true);
             setTimeout(() => {
                 preguntaOriginalSnapshot = JSON.stringify(getPreguntaSnapshot());
             }, 50);
+        }
+
+        function openVerPreguntaModal(pregunta) {
+            openEditarPreguntaModal(pregunta);
+            modalActionTitle.textContent = 'Consultar';
+            if (modalSubtitle) modalSubtitle.textContent = 'Modo solo lectura: la evaluación ya cuenta con intentos de aprendices.';
+            setFormReadOnly(true);
         }
 
         let preguntaOriginalSnapshot = null;
@@ -443,7 +538,7 @@
                          <input type="hidden" name="opciones[${index}][es_correcta]" id="radio-sync-${index}" value="${isVal}">`
                     }
                     <input type="text" name="opciones[${index}][texto]" value="${safeText}" required placeholder="Texto de la opción..." class="flex-1 bg-transparent text-sm font-medium text-slate-700 outline-none">
-                    <button type="button" onclick="document.getElementById('opcion-row-${index}').remove()" class="text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2" title="Eliminar opción">
+                    <button type="button" onclick="document.getElementById('opcion-row-${index}').remove()" class="btn-del-opcion text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2 cursor-pointer" title="Eliminar opción">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>

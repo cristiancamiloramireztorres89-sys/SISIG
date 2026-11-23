@@ -35,9 +35,7 @@
                     <i class="fas fa-layer-group text-[#2E6F40]"></i>
                     <span>Gestión de Contenidos SIG</span>
                 </h1>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
-                    Diseña, edita y gestiona el material formativo y multimedia de las temáticas de inducción asignadas.
-                </p>
+                <p class="text-xs text-slate-500 mt-0.5">Control SISIG &bull; SENA Empresa &bull; {{ $totalActivos ?? $modulos->count() }} módulos registrados</p>
             </div>
 
             <div class="self-start lg:self-auto flex items-center gap-3">
@@ -246,8 +244,8 @@
                                     
                                     <div class="flex items-center gap-2">
                                         <a href="{{ route('sisig.editor.canvas.editor', $modulo->id) }}" 
-                                           class="px-4 py-2 rounded-full text-xs font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-                                            <i class="fas fa-pencil-alt text-xs text-[#1A2B4C]"></i>
+                                           class="px-4 py-2 rounded-full text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#245833] transition-all shadow-sena flex items-center justify-center gap-1.5 cursor-pointer">
+                                            <i class="fas fa-pencil-alt text-xs"></i>
                                             <span>Editar Contenido</span>
                                         </a>
                                     </div>
@@ -377,8 +375,8 @@
                         Cancelar
                     </button>
                     <button type="submit" 
-                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-black text-[#1A2B4C] bg-[#33FF57] hover:bg-[#2ae049] shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-                        <i class="fas fa-save text-xs text-[#1A2B4C]"></i>
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-sena-green hover:bg-emerald-600 shadow-sena hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <i class="fas fa-save text-xs"></i>
                         <span>Guardar Módulo</span>
                     </button>
                 </div>

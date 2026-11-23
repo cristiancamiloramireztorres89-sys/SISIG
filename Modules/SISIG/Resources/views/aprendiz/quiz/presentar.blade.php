@@ -317,7 +317,7 @@
                 <div>
                     <h2 class="text-base font-extrabold text-slate-800">Cuestionario Oficial de Conocimientos</h2>
                     <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                        Lee detenidamente cada enunciado y selecciona la opción que consideres correcta. 
+                        Lee detenidamente cada enunciado y selecciona la opción que consideres correcta. Cada pregunta tiene el mismo peso equitativo sobre el <strong>100%</strong> de la evaluación. 
                         Puntaje mínimo de aprobación institucional: <strong>{{ number_format($quiz->puntaje_minimo, 0) }}%</strong>.
                     </p>
                 </div>
@@ -337,8 +337,11 @@
                                 Pregunta {{ $index + 1 }} de {{ $preguntas->count() }}
                             </span>
                         </div>
-                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
-                            {{ $pregunta->puntaje ?? 1 }} Pts
+                        @php
+                            $pesoPreg = $preguntas->count() > 0 ? round(100 / $preguntas->count(), 1) : 0;
+                        @endphp
+                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1" title="Ponderación automática equitativa sobre 100%">
+                            <i class="fas fa-percentage text-[10px] text-emerald-500"></i> {{ $pesoPreg }}% (equitativo)
                         </span>
                     </div>
 

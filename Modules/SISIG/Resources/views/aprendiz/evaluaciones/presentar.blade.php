@@ -217,10 +217,18 @@
                              class="pregunta-step-box bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/90 shadow-sm space-y-6 {{ $idx === 0 ? '' : 'hidden' }}">
                             
                             <!-- Indicador de Pregunta -->
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                                <span class="px-3.5 py-1.5 rounded-xl text-xs font-black text-slate-700 bg-slate-100 uppercase tracking-wide">
-                                    Pregunta {{ $idx + 1 }} de {{ $quiz->preguntas->count() }}
-                                </span>
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-100 flex-wrap gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3.5 py-1.5 rounded-xl text-xs font-black text-slate-700 bg-slate-100 uppercase tracking-wide">
+                                        Pregunta {{ $idx + 1 }} de {{ $quiz->preguntas->count() }}
+                                    </span>
+                                    @php
+                                        $pesoPreg = $quiz->preguntas->count() > 0 ? round(100 / $quiz->preguntas->count(), 1) : 0;
+                                    @endphp
+                                    <span class="px-2.5 py-1 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60" title="Ponderación automática equitativa sobre 100%">
+                                        <i class="fas fa-percentage text-[10px] mr-1 text-emerald-500"></i>{{ $pesoPreg }}%
+                                    </span>
+                                </div>
                                 <span class="text-xs font-semibold text-slate-400">
                                     {{ $pregunta->tipo === 'seleccion_multiple' ? 'Selección Múltiple' : 'Opción Múltiple' }}
                                 </span>
