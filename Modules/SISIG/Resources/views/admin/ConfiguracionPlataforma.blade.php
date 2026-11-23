@@ -1,4 +1,4 @@
-<x-sisig::layouts.admin title="Configuración de la Plataforma">
+<x-sisig::layouts.admin title="Configuración de la Plataforma SISIG">
     <!-- Quill.js CSS (Local / Offline) -->
     <link href="{{ asset('modules/sisig/vendor/quill/quill.snow.css') }}" rel="stylesheet">
 
@@ -141,34 +141,14 @@
 
     <div class="space-y-6 sm:space-y-8 animate-fade-in pb-16 w-full max-w-[1600px] mx-auto">
         
-        <!-- 1. Banner Principal Ejecutivo con Colores Oficiales (Dark Navy + Neon Green) -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1A2B4C] via-[#1E3A5F] to-[#243B66] border border-[#243B66] p-7 sm:p-9 text-white shadow-xl">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-[#33FF57]/15 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-[#00BCD4]/15 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div class="space-y-2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#33FF57] text-xs font-black tracking-wider uppercase">
-                        <i class="fas fa-sliders-h text-xs"></i>
-                        <span>Panel de Administración Maestro</span>
-                    </div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                        Configuración de la Plataforma SISIG
-                    </h1>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
-                        Administra la identidad corporativa de <strong class="text-white">SENA Empresa</strong>, los textos legales e institucionales y las asignaciones y restricciones operativas para los editores.
-                    </p>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 text-white shadow-xs">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#33FF57] animate-pulse"></span>
-                        <span class="text-xs font-bold text-slate-100">
-                            Rol: <strong class="text-white">Administrador SISIG</strong>
-                        </span>
-                    </div>
-                </div>
-            </div>
+        <!-- 1. Encabezado de la Sección (Estilo institucional limpio) -->
+        <div class="pb-5 border-b border-slate-200">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Configuración de la Plataforma SISIG
+            </h1>
+            <p class="text-xs text-slate-500 font-medium mt-1">
+                Administra la identidad corporativa de SENA Empresa, los textos legales e institucionales y las asignaciones y restricciones operativas para los editores.
+            </p>
         </div>
 
         <!-- 2. Formulario Maestro de Configuración -->
