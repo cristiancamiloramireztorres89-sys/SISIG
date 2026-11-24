@@ -27,14 +27,27 @@ class ReportesController extends Controller
             abort(403, 'Acceso denegado: Se requieren privilegios de Editor de Contenidos o Administrador SISIG.');
         }
 
-        // 1. Obtener todos los módulos formativos de la base de datos de manera dinámica
-        $modulos = DB::table('sisig_modulos')
-            ->where('estado', '!=', 'inactivo')
-            ->orderBy('id', 'asc')
-            ->get();
+        $isAdmin = $user->hasRole('admin_sisig') || $user->hasRole('sisig.admin') || $user->hasRole('superadmin');
 
-        if ($modulos->isEmpty()) {
-            $modulos = DB::table('sisig_modulos')->orderBy('id', 'asc')->get();
+        // 1. Obtener módulos formativos de la base de datos de manera dinámica según rol
+        if ($isAdmin) {
+            $modulos = DB::table('sisig_modulos')
+                ->where('estado', '!=', 'inactivo')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            if ($modulos->isEmpty()) {
+                $modulos = DB::table('sisig_modulos')->orderBy('id', 'asc')->get();
+            }
+        } else {
+            $modulos = $user->modulosEditables()
+                ->where('estado', '!=', 'inactivo')
+                ->orderBy('sisig_modulos.id', 'asc')
+                ->get();
+
+            if ($modulos->isEmpty()) {
+                $modulos = $user->modulosEditables()->orderBy('sisig_modulos.id', 'asc')->get();
+            }
         }
 
         // Asignar icono visual a cada módulo

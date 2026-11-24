@@ -65,14 +65,27 @@ class ParticipantesController extends Controller
 
         $usuarios = $query->orderBy('name')->get();
 
-        // 1. Obtener todas las secciones formativas activas dinámicamente de la BD (Solo SELECT)
-        $modulos = DB::table('sisig_modulos')
-            ->where('estado', '!=', 'inactivo')
-            ->orderBy('id', 'asc')
-            ->get();
+        $isAdmin = $user->hasRole('admin_sisig') || $user->hasRole('sisig.admin') || $user->hasRole('superadmin');
 
-        if ($modulos->isEmpty()) {
-            $modulos = DB::table('sisig_modulos')->orderBy('id', 'asc')->get();
+        // 1. Obtener las secciones formativas activas dinámicamente de la BD según permisos
+        if ($isAdmin) {
+            $modulos = DB::table('sisig_modulos')
+                ->where('estado', '!=', 'inactivo')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            if ($modulos->isEmpty()) {
+                $modulos = DB::table('sisig_modulos')->orderBy('id', 'asc')->get();
+            }
+        } else {
+            $modulos = $user->modulosEditables()
+                ->where('estado', '!=', 'inactivo')
+                ->orderBy('sisig_modulos.id', 'asc')
+                ->get();
+
+            if ($modulos->isEmpty()) {
+                $modulos = $user->modulosEditables()->orderBy('sisig_modulos.id', 'asc')->get();
+            }
         }
 
         // Asignar visual e icono dinámico a cada módulo

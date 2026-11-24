@@ -26,7 +26,7 @@
                 color="sky">
                 <x-slot:footer>
                     <span class="text-slate-500 font-medium">Ejes formativos SIG</span>
-                    <span class="text-xs font-bold text-sky-600">Registrados</span>
+                    <span class="text-xs font-bold text-sky-600">{{ ($isAdmin ?? false) ? 'Registrados' : 'Asignados' }}</span>
                 </x-slot:footer>
             </x-sisig::stat-card>
 
@@ -128,7 +128,13 @@
                         <i class="fas fa-book-open text-sena-green"></i>
                         <span>Estado de los Módulos de Inducción SIG</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Control y resumen de las áreas temáticas actualmente registradas en el sistema</p>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        @if($isAdmin ?? false)
+                            Control y resumen de las áreas temáticas actualmente registradas en el sistema
+                        @else
+                            Módulos temáticos autorizados y asignados para tu gestión editorial
+                        @endif
+                    </p>
                 </div>
                 <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-auto">
                     Total: {{ $modulos->count() }}
@@ -143,9 +149,13 @@
                             <div class="bg-gradient-to-r from-[#1A2B4C] to-[#243B66] p-5 text-white relative rounded-t-2xl">
                                 <div class="flex items-center justify-between gap-3 mb-3">
                                     <div class="flex items-center gap-2.5">
-                                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
-                                            <i class="{{ $mod->meta['icono'] ?? 'fas fa-layer-group' }}"></i>
-                                        </div>
+                                        @if(!empty($mod->imagen))
+                                            <img src="{{ asset($mod->imagen) }}" alt="{{ $mod->nombre }}" class="w-8 h-8 object-cover rounded-full border border-white/30 shadow-xs flex-shrink-0">
+                                        @else
+                                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs text-white border border-white/20 flex-shrink-0">
+                                                <i class="{{ $mod->meta['icono'] ?? 'fas fa-layer-group' }}"></i>
+                                            </div>
+                                        @endif
                                         <span class="text-[11px] font-bold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/15 truncate max-w-[170px]" style="color: #ffffff !important;">
                                             {{ $mod->meta['badge'] }}
                                         </span>
@@ -189,7 +199,7 @@
                                         <i class="fas fa-question text-[#00BCD4]"></i>
                                         <strong>{{ $mod->preguntas_count }}</strong> preguntas
                                     </span>
-                                    <a href="{{ route('sisig.editor.canvas.editor', $mod->id) }}" class="inline-flex items-center gap-1 text-[#2E6F40] hover:text-emerald-800 font-bold transition-colors">
+                                    <a href="{{ route('sisig.editor.contenido.edit', $mod->id) }}" class="inline-flex items-center gap-1 text-[#2E6F40] hover:text-emerald-800 font-bold transition-colors">
                                         <span>Editar</span>
                                         <i class="fas fa-arrow-right text-[10px]"></i>
                                     </a>
@@ -199,14 +209,18 @@
                     @endforeach
                 </div>
             @else
-                <!-- Estado vacío si aún no hay módulos registrados -->
+                <!-- Estado vacío si aún no hay módulos asignados o registrados -->
                 <div class="text-center py-12 px-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200 space-y-3">
                     <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-2xl text-slate-400">
                         <i class="fas fa-layer-group"></i>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-700">No hay módulos temáticos registrados todavía</h4>
+                    <h4 class="text-sm font-bold text-slate-700">No tienes módulos temáticos disponibles</h4>
                     <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                        A medida que tu equipo registre módulos en la tabla <code class="text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-slate-200">sisig_secciones</code>, aparecerán listados aquí automáticamente con su conteo de recursos y evaluaciones.
+                        @if($isAdmin ?? false)
+                            Aún no se han registrado módulos temáticos en el sistema. Puedes crearlos desde la Gestión de Módulos.
+                        @else
+                            No tienes módulos formativos asignados actualmente para tu perfil de editor. Solicita al Administrador SISIG que te asigne áreas formativas en la Configuración de Plataforma.
+                        @endif
                     </p>
                 </div>
             @endif
