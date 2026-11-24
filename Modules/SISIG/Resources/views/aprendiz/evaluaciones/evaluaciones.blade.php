@@ -320,6 +320,12 @@
                                             <i class="fas fa-ban"></i>
                                             <span>Intentos Agotados</span>
                                         </button>
+                                    @elseif($ev->esta_vencida)
+                                        <button disabled 
+                                                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200 w-full cursor-not-allowed">
+                                            <i class="fas fa-calendar-times"></i>
+                                            <span>Plazo Vencido</span>
+                                        </button>
                                     @elseif($ev->numero_preguntas == 0)
                                         <button disabled 
                                                 class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold bg-slate-100 text-slate-400 border border-slate-200 w-full cursor-not-allowed">

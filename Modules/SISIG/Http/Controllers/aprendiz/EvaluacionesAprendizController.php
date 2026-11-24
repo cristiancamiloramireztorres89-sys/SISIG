@@ -50,7 +50,10 @@ class EvaluacionesAprendizController extends Controller
             $intentosPermitidos = $quiz->numero_intentos ?? 3;
             $intentosRestantes = max(0, $intentosPermitidos - $intentosRealizados);
 
-            $puedePresentar = !$aprobado && ($intentosRestantes > 0) && ($quiz->preguntas->count() > 0);
+            $fechaLimite = $quiz->fecha_limite ? \Carbon\Carbon::parse($quiz->fecha_limite)->endOfDay() : null;
+            $estaVencida = $fechaLimite ? $fechaLimite->isPast() : false;
+
+            $puedePresentar = !$aprobado && ($intentosRestantes > 0) && ($quiz->preguntas->count() > 0) && !$estaVencida;
 
             return (object) [
                 'id_quiz' => $quiz->id_quiz,
@@ -66,6 +69,8 @@ class EvaluacionesAprendizController extends Controller
                 'mejor_puntaje' => (float) $mejorPuntaje,
                 'ultimo_intento' => $ultimoIntento,
                 'puede_presentar' => $puedePresentar,
+                'fecha_limite' => $quiz->fecha_limite,
+                'esta_vencida' => $estaVencida,
             ];
         });
 
@@ -100,10 +105,22 @@ class EvaluacionesAprendizController extends Controller
         $userId = Auth::id();
         $quiz = Quiz::with(['modulo', 'preguntas.opciones'])->findOrFail($id_quiz);
 
+        // Validar que la fecha límite no haya expirado al enviar la prueba
+        if ($quiz->fecha_limite && \Carbon\Carbon::parse($quiz->fecha_limite)->endOfDay()->isPast()) {
+            return redirect()->route('sisig.aprendiz.evaluaciones.index')
+                ->with('error', 'El plazo para presentar esta evaluación ya ha vencido.');
+        }
+
         // Validar que el quiz esté activo
         if (!$quiz->activo) {
             return redirect()->route('sisig.aprendiz.evaluaciones.index')
                 ->with('error', 'Esta evaluación no se encuentra activa en este momento.');
+        }
+
+        // Validar que la fecha límite no haya expirado
+        if ($quiz->fecha_limite && \Carbon\Carbon::parse($quiz->fecha_limite)->endOfDay()->isPast()) {
+            return redirect()->route('sisig.aprendiz.evaluaciones.index')
+                ->with('error', 'El plazo para presentar esta evaluación ha vencido (Fecha límite: ' . \Carbon\Carbon::parse($quiz->fecha_limite)->format('d/m/Y') . ').');
         }
 
         // Validar que tenga preguntas
@@ -307,6 +324,12 @@ class EvaluacionesAprendizController extends Controller
     {
         $userId = Auth::id();
         $quiz = Quiz::with(['modulo', 'preguntas.opciones'])->findOrFail($id_quiz);
+
+        // Validar que la fecha límite no haya expirado al enviar la prueba
+        if ($quiz->fecha_limite && \Carbon\Carbon::parse($quiz->fecha_limite)->endOfDay()->isPast()) {
+            return redirect()->route('sisig.aprendiz.evaluaciones.index')
+                ->with('error', 'El plazo para presentar esta evaluación ya ha vencido.');
+        }
 
         // Buscar el intento activo correspondiente
         $idResultado = $request->input('id_resultado');

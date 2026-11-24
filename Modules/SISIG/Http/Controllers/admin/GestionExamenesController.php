@@ -112,7 +112,10 @@ class GestionExamenesController extends Controller
             'numero_intentos' => 'required|integer|min:1|max:10',
             'puntaje_minimo'  => 'required|numeric|min:0|max:100',
             'tiempo_minutos'  => 'required|integer|min:0|max:300',
-            'fecha_limite'    => 'nullable|date'
+            'fecha_limite'    => 'nullable|date|after_or_equal:today'
+        ], [
+            'fecha_limite.after_or_equal' => 'La fecha límite no puede ser una fecha que ya haya pasado.',
+            'fecha_limite.date'           => 'El formato de la fecha límite es inválido.'
         ]);
 
         // Crear el examen únicamente con campos explícitamente autorizados
@@ -139,6 +142,8 @@ class GestionExamenesController extends Controller
         // Validación de campos del examen
         $modulosIds = $this->getModulosIdsPermitidos();
 
+        $quiz = $this->findQuizOrFail($id);
+
         $validated = $request->validate([
             'titulo'          => 'required|string|max:100',
             'modulo_id'       => 'required|in:' . implode(',', $modulosIds),
@@ -146,10 +151,23 @@ class GestionExamenesController extends Controller
             'numero_intentos' => 'required|integer|min:1|max:10',
             'puntaje_minimo'  => 'required|numeric|min:0|max:100',
             'tiempo_minutos'  => 'required|integer|min:0|max:300',
-            'fecha_limite'    => 'nullable|date'
+            'fecha_limite'    => [
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($quiz) {
+                    if (!empty($value)) {
+                        $today = now()->startOfDay();
+                        $selectedDate = \Carbon\Carbon::parse($value)->startOfDay();
+                        $originalDate = $quiz->fecha_limite ? \Carbon\Carbon::parse($quiz->fecha_limite)->startOfDay() : null;
+                        if ($selectedDate->lt($today) && (!$originalDate || !$selectedDate->equalTo($originalDate))) {
+                            $fail('La fecha límite no puede ser una fecha que ya haya pasado.');
+                        }
+                    }
+                }
+            ]
+        ], [
+            'fecha_limite.date' => 'El formato de la fecha límite es inválido.'
         ]);
-
-        $quiz = $this->findQuizOrFail($id);
         $quiz->fill([
             'titulo'          => trim($validated['titulo']),
             'modulo_id'       => $validated['modulo_id'],

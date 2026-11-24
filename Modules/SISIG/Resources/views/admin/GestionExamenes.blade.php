@@ -202,10 +202,21 @@
 
                             <!-- Fecha Límite -->
                             <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
-                                <i class="far fa-calendar-alt {{ $quiz->fecha_limite ? 'text-[#2E6F40]' : 'text-slate-400' }}"></i>
                                 @if($quiz->fecha_limite)
-                                    <span class="text-slate-700 font-bold">Fecha límite: {{ \Carbon\Carbon::parse($quiz->fecha_limite)->format('d M Y') }}</span>
+                                    @php
+                                        $isVencida = \Carbon\Carbon::parse($quiz->fecha_limite)->endOfDay()->isPast();
+                                    @endphp
+                                    <i class="far fa-calendar-alt {{ $isVencida ? 'text-rose-500' : 'text-[#2E6F40]' }}"></i>
+                                    <span class="{{ $isVencida ? 'text-rose-600 font-bold' : 'text-slate-700 font-bold' }}">
+                                        Fecha límite: {{ \Carbon\Carbon::parse($quiz->fecha_limite)->format('d M Y') }}
+                                    </span>
+                                    @if($isVencida)
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                                            Vencida
+                                        </span>
+                                    @endif
                                 @else
+                                    <i class="far fa-calendar-alt text-slate-400"></i>
                                     <span class="italic text-slate-400">Sin fecha límite asignada</span>
                                 @endif
                             </div>
@@ -337,8 +348,9 @@
                 <!-- Fecha Límite -->
                 <div>
                     <label class="text-xs font-bold text-slate-700 block mb-1">Fecha Límite de Entrega (Opcional)</label>
-                    <input type="date" name="fecha_limite" id="quiz-fecha" 
+                    <input type="date" name="fecha_limite" id="quiz-fecha" min="{{ date('Y-m-d') }}"
                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
+                    <p class="text-[11px] text-slate-400 mt-1">Solo se admiten fechas a partir de hoy (no se permiten fechas pasadas).</p>
                 </div>
 
                 <!-- Footer de Botones -->
@@ -372,12 +384,41 @@
             };
         }
 
+        // Validación en tiempo real sobre el campo de fecha límite
+        const inputFechaLimite = document.getElementById('quiz-fecha');
+        if (inputFechaLimite) {
+            inputFechaLimite.addEventListener('change', function() {
+                if (this.value) {
+                    const hoy = new Date();
+                    hoy.setHours(0, 0, 0, 0);
+                    const partes = this.value.split('-');
+                    const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
+                    fechaSeleccionada.setHours(0, 0, 0, 0);
+
+                    if (fechaSeleccionada < hoy) {
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner('La fecha límite no puede ser una fecha que ya haya pasado.', 'warning');
+                        } else {
+                            alert('La fecha límite no puede ser una fecha que ya haya pasado.');
+                        }
+                        this.value = '';
+                        this.focus();
+                    }
+                }
+            });
+        }
+
         function openExamenModal(quiz = null) {
             form.reset();
             const icon = document.getElementById('modal-icon');
             const title = document.getElementById('modal-title');
             const subtitle = document.getElementById('modal-subtitle');
             const btnSubmit = document.getElementById('btn-submit');
+            const hoyStr = new Date().toISOString().split('T')[0];
+
+            if (inputFechaLimite) {
+                inputFechaLimite.min = hoyStr;
+            }
 
             if (quiz) {
                 // Modo Edición
@@ -421,6 +462,38 @@
         }
 
         form.addEventListener('submit', function(e) {
+            // Validar que la fecha límite no sea pasada
+            const fechaVal = document.getElementById('quiz-fecha').value;
+            if (fechaVal) {
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const partes = fechaVal.split('-');
+                const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
+                fechaSeleccionada.setHours(0, 0, 0, 0);
+
+                if (fechaSeleccionada < hoy) {
+                    let esFechaOriginal = false;
+                    if (quizOriginalSnapshot) {
+                        try {
+                            const originalObj = JSON.parse(quizOriginalSnapshot);
+                            if (originalObj.fecha_limite === fechaVal) {
+                                esFechaOriginal = true;
+                            }
+                        } catch (err) {}
+                    }
+                    if (!esFechaOriginal) {
+                        e.preventDefault();
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner('La fecha límite no puede ser una fecha que ya haya pasado.', 'warning');
+                        } else {
+                            alert('La fecha límite no puede ser una fecha que ya haya pasado.');
+                        }
+                        document.getElementById('quiz-fecha').focus();
+                        return false;
+                    }
+                }
+            }
+
             if (quizOriginalSnapshot) {
                 const currentData = JSON.stringify(getQuizFormData());
                 if (currentData === quizOriginalSnapshot) {
