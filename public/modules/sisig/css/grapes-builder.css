@@ -147,7 +147,21 @@
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 0.75rem !important;
-    padding: 0.25rem !important;
+    padding: 0.5rem 0.25rem 0.75rem 0.25rem !important;
+}
+
+/* Permitir colapsar y ocultar categorías de bloques al hacer clic en el título */
+.gjs-block-category:not(.gjs-open) .gjs-blocks-c,
+.gjs-block-category .gjs-blocks-c[style*="display: none"],
+.gjs-block-category .gjs-blocks-c[style*="display:none"],
+.gjs-blocks-c.gjs-hidden {
+    display: none !important;
+}
+
+.gjs-block-category {
+    border-bottom: 1px solid #334155 !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
 }
 
 .gjs-block {
@@ -189,11 +203,32 @@
     background: transparent !important;
     border: none !important;
     color: #94a3b8 !important;
-    font-size: 0.7rem !important;
+    font-size: 0.72rem !important;
     font-weight: 800 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
     padding: 0.75rem 0.25rem 0.4rem 0.25rem !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    transition: color 0.15s ease !important;
+}
+
+.gjs-block-category .gjs-title:hover {
+    color: #ffffff !important;
+}
+
+.gjs-block-category .gjs-caret-icon {
+    margin-right: 0.2rem !important;
+    font-size: 0.7rem !important;
+    color: #64748b !important;
+    transition: transform 0.2s ease, color 0.15s ease !important;
+}
+
+.gjs-block-category .gjs-title:hover .gjs-caret-icon {
+    color: #33FF57 !important;
 }
 
 /* 5. Personalización del Gestor de Estilos (Style Manager) */

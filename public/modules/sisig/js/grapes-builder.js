@@ -728,5 +728,28 @@
                 toast.style.transform = 'translateY(10px)';
             }, 3500);
         }
+
+        // 13. Sincronización robusta de apertura/cierre de categorías del panel de bloques
+        document.addEventListener('click', (e) => {
+            const catTitle = e.target.closest('.gjs-block-category .gjs-title');
+            if (!catTitle) return;
+            const categoryEl = catTitle.closest('.gjs-block-category');
+            if (!categoryEl) return;
+            const blocksContainer = categoryEl.querySelector('.gjs-blocks-c');
+            if (!blocksContainer) return;
+
+            // Esperar un breve instante para que GrapesJS actualice el estado interno de la categoría
+            setTimeout(() => {
+                const isClosed = !categoryEl.classList.contains('gjs-open') || 
+                                 blocksContainer.style.display === 'none' ||
+                                 Boolean(catTitle.querySelector('.fa-caret-right, .caretR'));
+                
+                if (isClosed) {
+                    blocksContainer.style.setProperty('display', 'none', 'important');
+                } else {
+                    blocksContainer.style.setProperty('display', 'grid', 'important');
+                }
+            }, 25);
+        });
     });
 })();
