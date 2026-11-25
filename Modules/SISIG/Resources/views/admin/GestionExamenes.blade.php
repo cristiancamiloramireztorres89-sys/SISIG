@@ -348,7 +348,7 @@
                 <!-- Fecha Límite -->
                 <div>
                     <label class="text-xs font-bold text-slate-700 block mb-1">Fecha Límite de Entrega (Opcional)</label>
-                    <input type="date" name="fecha_limite" id="quiz-fecha" min="{{ date('Y-m-d') }}"
+                    <input type="date" name="fecha_limite" id="quiz-fecha"
                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-sena-green focus:ring-2 focus:ring-sena-green/20 outline-none transition-all">
                     <p class="text-[11px] text-slate-400 mt-1">Solo se admiten fechas a partir de hoy (no se permiten fechas pasadas).</p>
                 </div>
@@ -384,26 +384,70 @@
             };
         }
 
-        // Validación en tiempo real sobre el campo de fecha límite
+        // Validación sobre el campo de fecha límite (permite escribir el año completo sin reiniciar)
         const inputFechaLimite = document.getElementById('quiz-fecha');
+
+        function verificarFechaLimite(input, mostrarAlerta = true) {
+            if (!input || !input.value) return true;
+
+            const partes = input.value.split('-');
+            if (partes.length === 3) {
+                const anio = parseInt(partes[0], 10);
+                // Si el año aún no tiene 4 dígitos completos o es menor a 1000, el usuario aún está escribiendo
+                if (isNaN(anio) || anio < 1000 || partes[0].length < 4) {
+                    return true;
+                }
+            }
+
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const fechaSeleccionada = new Date(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10));
+            fechaSeleccionada.setHours(0, 0, 0, 0);
+
+            if (fechaSeleccionada < hoy) {
+                let esFechaOriginal = false;
+                if (quizOriginalSnapshot) {
+                    try {
+                        const originalObj = JSON.parse(quizOriginalSnapshot);
+                        if (originalObj.fecha_limite === input.value) {
+                            esFechaOriginal = true;
+                        }
+                    } catch (err) {}
+                }
+
+                if (!esFechaOriginal) {
+                    if (mostrarAlerta) {
+                        const mensaje = 'La fecha límite no puede ser una fecha que ya haya pasado.';
+                        if (window.mostrarAlertaBanner) {
+                            window.mostrarAlertaBanner(mensaje, 'warning');
+                        } else {
+                            alert(mensaje);
+                        }
+                        input.value = '';
+                        input.focus();
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
         if (inputFechaLimite) {
+            // Solo validar en 'change' si el año ya está completo de 4 dígitos (p. ej. seleccionado desde el calendario)
             inputFechaLimite.addEventListener('change', function() {
                 if (this.value) {
-                    const hoy = new Date();
-                    hoy.setHours(0, 0, 0, 0);
                     const partes = this.value.split('-');
-                    const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
-                    fechaSeleccionada.setHours(0, 0, 0, 0);
-
-                    if (fechaSeleccionada < hoy) {
-                        if (window.mostrarAlertaBanner) {
-                            window.mostrarAlertaBanner('La fecha límite no puede ser una fecha que ya haya pasado.', 'warning');
-                        } else {
-                            alert('La fecha límite no puede ser una fecha que ya haya pasado.');
-                        }
-                        this.value = '';
-                        this.focus();
+                    if (partes.length === 3 && partes[0].length === 4 && parseInt(partes[0], 10) >= 1000) {
+                        verificarFechaLimite(this, true);
                     }
+                }
+            });
+
+            // Al salir del campo (blur), si se dejó una fecha pasada, alertar y limpiar
+            inputFechaLimite.addEventListener('blur', function() {
+                if (this.value) {
+                    verificarFechaLimite(this, true);
                 }
             });
         }
@@ -414,11 +458,6 @@
             const title = document.getElementById('modal-title');
             const subtitle = document.getElementById('modal-subtitle');
             const btnSubmit = document.getElementById('btn-submit');
-            const hoyStr = new Date().toISOString().split('T')[0];
-
-            if (inputFechaLimite) {
-                inputFechaLimite.min = hoyStr;
-            }
 
             if (quiz) {
                 // Modo Edición
@@ -462,35 +501,12 @@
         }
 
         form.addEventListener('submit', function(e) {
-            // Validar que la fecha límite no sea pasada
-            const fechaVal = document.getElementById('quiz-fecha').value;
-            if (fechaVal) {
-                const hoy = new Date();
-                hoy.setHours(0, 0, 0, 0);
-                const partes = fechaVal.split('-');
-                const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
-                fechaSeleccionada.setHours(0, 0, 0, 0);
-
-                if (fechaSeleccionada < hoy) {
-                    let esFechaOriginal = false;
-                    if (quizOriginalSnapshot) {
-                        try {
-                            const originalObj = JSON.parse(quizOriginalSnapshot);
-                            if (originalObj.fecha_limite === fechaVal) {
-                                esFechaOriginal = true;
-                            }
-                        } catch (err) {}
-                    }
-                    if (!esFechaOriginal) {
-                        e.preventDefault();
-                        if (window.mostrarAlertaBanner) {
-                            window.mostrarAlertaBanner('La fecha límite no puede ser una fecha que ya haya pasado.', 'warning');
-                        } else {
-                            alert('La fecha límite no puede ser una fecha que ya haya pasado.');
-                        }
-                        document.getElementById('quiz-fecha').focus();
-                        return false;
-                    }
+            // Validar que la fecha límite no sea pasada antes de enviar
+            const inputFecha = document.getElementById('quiz-fecha');
+            if (inputFecha && inputFecha.value) {
+                if (!verificarFechaLimite(inputFecha, true)) {
+                    e.preventDefault();
+                    return false;
                 }
             }
 

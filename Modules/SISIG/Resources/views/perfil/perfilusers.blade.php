@@ -90,7 +90,7 @@
                                     <span id="avatar-initials" class="hidden text-3xl font-black text-white">{{ $initials }}</span>
                                 @else
                                     <span id="avatar-initials" class="text-3xl font-black text-white">{{ $initials }}</span>
-                                    <img id="avatar-img" src="" alt="" class="w-full h-full object-cover hidden" onerror="this.classList.add('hidden'); document.getElementById('avatar-initials').classList.remove('hidden');">
+                                    <img id="avatar-img" src="" alt="" class="w-full h-full object-cover hidden">
                                 @endif
                             </div>
                             <label for="avatar_file" title="Cambiar Foto de Perfil" class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#33FF57] hover:bg-[#2ae049] text-[#1A2B4C] flex items-center justify-center shadow-md cursor-pointer transition-all hover:scale-110 border-2 border-white">

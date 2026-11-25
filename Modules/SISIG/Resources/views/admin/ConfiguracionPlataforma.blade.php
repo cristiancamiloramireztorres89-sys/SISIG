@@ -167,17 +167,17 @@
             <!-- FILA 1: IDENTIDAD VISUAL + TEXTOS LEGALES -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
                 
-                <!-- TARJETA 1: IDENTIDAD VISUAL (5 Columnas) -->
+                <!-- TARJETA 1: IDENTIDAD Y POLÍTICAS OPERATIVAS (5 Columnas) -->
                 <div class="lg:col-span-5 space-y-6">
                     <div class="card-sena rounded-3xl p-6 sm:p-7 space-y-6 h-full flex flex-col justify-between">
                         <div class="space-y-6">
                             <div class="flex items-center gap-3.5 border-b border-slate-100 pb-4">
                                 <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-[#2E6F40] flex items-center justify-center font-bold text-base flex-shrink-0">
-                                    <i class="fas fa-palette"></i>
+                                    <i class="fas fa-sliders-h"></i>
                                 </div>
                                 <div>
-                                    <h2 class="text-base font-extrabold text-[#1A2B4C] tracking-tight">1. Identidad Visual</h2>
-                                    <p class="text-xs text-slate-500">Nombre institucional y logotipo oficial</p>
+                                    <h2 class="text-base font-extrabold text-[#1A2B4C] tracking-tight">1. Identidad y Políticas Operativas</h2>
+                                    <p class="text-xs text-slate-500">Nombre institucional y directrices del rol editor</p>
                                 </div>
                             </div>
 
@@ -203,53 +203,112 @@
                                 @enderror
                             </div>
 
-                            <!-- Logotipo Oficial con Previsualizador -->
-                            <div class="space-y-3">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                                    Logotipo Oficial (Formatos: JPG / PNG)
-                                </label>
-
-                                <div class="relative group p-6 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 hover:border-[#2E6F40] transition-all text-center flex flex-col items-center justify-center gap-3.5 cursor-pointer" 
-                                     onclick="document.getElementById('input-logo-file').click()"
-                                     title="Haz clic para seleccionar un nuevo logotipo">
-                                    
-                                    <input type="file" 
-                                           name="logo" 
-                                           id="input-logo-file" 
-                                           accept="image/png,image/jpeg,image/jpg" 
-                                           class="hidden" 
-                                           onchange="actualizarPrevisualizacionLogo(event)">
-                                    
-                                    <div class="w-24 h-24 rounded-2xl bg-white border border-slate-200 flex items-center justify-center p-3 shadow-xs relative overflow-hidden group-hover:scale-105 transition-transform duration-200">
-                                        <img id="preview-logo-imagen" 
-                                             src="{{ asset($configuracion->logo_path ?? 'modules/sisig/images/logo.png') }}" 
-                                             alt="Logotipo Actual" 
-                                             class="w-full h-full object-contain filter drop-shadow-xs">
-                                        
-                                        <div class="absolute inset-0 bg-[#1A2B4C]/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-bold transition-opacity">
-                                            <i class="fas fa-camera text-base mb-1"></i>
-                                            <span>Cambiar</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-1">
-                                        <p class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors">
-                                            Cargar nuevo archivo de imagen
-                                        </p>
-                                        <p class="text-[11px] text-slate-500">
-                                            Recomendado con fondo transparente (Máx. 2MB)
-                                        </p>
-                                    </div>
+                            <!-- Restricciones Operativas del Rol Editor -->
+                            <div class="space-y-3 pt-3 border-t border-slate-100">
+                                <div class="flex items-center justify-between">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                                        Restricciones Operativas (Rol Editor)
+                                    </label>
+                                    <span class="text-[10px] font-mono font-bold text-[#2E6F40] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                        editor_sisig
+                                    </span>
                                 </div>
-                                @error('logo')
-                                    <p class="text-xs text-rose-600 font-semibold mt-1">{{ $message }}</p>
-                                @enderror
+
+                                <div class="space-y-2.5">
+                                    <!-- Toggle 1: Bloquear contenido crítico -->
+                                    <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
+                                        <div class="pr-3">
+                                            <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
+                                                Bloquear edición de contenido crítico
+                                            </span>
+                                            <span class="text-[10px] text-slate-500 block mt-0.5 leading-relaxed">
+                                                Impide a los editores alterar normas o módulos centrales del SIG.
+                                            </span>
+                                        </div>
+                                        <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                            <input type="checkbox" 
+                                                   name="editor_bloquear_edicion_critica" 
+                                                   value="1" 
+                                                   {{ $configuracion->editor_bloquear_edicion_critica ? 'checked' : '' }} 
+                                                   class="sr-only switch-sena-input">
+                                            <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
+                                                <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Toggle 2: Limitar creación de módulos -->
+                                    <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
+                                        <div class="pr-3">
+                                            <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
+                                                Limitar creación de módulos
+                                            </span>
+                                            <span class="text-[10px] text-slate-500 block mt-0.5 leading-relaxed">
+                                                Solo administradores podrán inaugurar nuevos módulos didácticos.
+                                            </span>
+                                        </div>
+                                        <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                            <input type="checkbox" 
+                                                   name="editor_limitar_creacion_modulos" 
+                                                   value="1" 
+                                                   {{ $configuracion->editor_limitar_creacion_modulos ? 'checked' : '' }} 
+                                                   class="sr-only switch-sena-input">
+                                            <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
+                                                <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Toggle 3: Restringir eliminación de quices -->
+                                    <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
+                                        <div class="pr-3">
+                                            <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
+                                                Restringir eliminación de evaluaciones
+                                            </span>
+                                            <span class="text-[10px] text-slate-500 block mt-0.5 leading-relaxed">
+                                                Evita suprimir quices o preguntas con evaluaciones realizadas.
+                                            </span>
+                                        </div>
+                                        <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                            <input type="checkbox" 
+                                                   name="editor_restringir_eliminacion_quices" 
+                                                   value="1" 
+                                                   {{ $configuracion->editor_restringir_eliminacion_quices ? 'checked' : '' }} 
+                                                   class="sr-only switch-sena-input">
+                                            <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
+                                                <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Toggle 4: Exigir aprobación previa -->
+                                    <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
+                                        <div class="pr-3">
+                                            <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
+                                                Exigir aprobación previa de contenidos
+                                            </span>
+                                            <span class="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
+                                                Cualquier cambio editorial quedará en estado 'Revisión'.
+                                            </span>
+                                        </div>
+                                        <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                            <input type="checkbox" 
+                                                   name="editor_requerir_aprobacion" 
+                                                   value="1" 
+                                                   {{ $configuracion->editor_requerir_aprobacion ? 'checked' : '' }} 
+                                                   class="sr-only switch-sena-input">
+                                            <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
+                                                <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="pt-3 text-[11px] text-slate-400 flex items-center gap-2">
+                        <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-center gap-2">
                             <i class="fas fa-shield-alt text-[#2E6F40]"></i>
-                            <span>Imagen oficial desplegada en el sidebar y reportes.</span>
+                            <span>Denominación y políticas institucionales aplicadas a toda la plataforma.</span>
                         </div>
                     </div>
                 </div>
@@ -314,119 +373,14 @@
 
             </div>
 
-            <!-- FILA 2: RESTRICCIONES OPERATIVAS + ASIGNACIÓN DINÁMICA DE MÓDULOS -->
+            <!-- FILA 2: ASIGNACIÓN DINÁMICA DE MÓDULOS A EDITORES -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
                 
-                <!-- TARJETA 3: RESTRICCIONES OPERATIVAS (5 Columnas) -->
-                <div class="lg:col-span-5 space-y-6">
-                    <div class="card-sena rounded-3xl p-6 sm:p-7 space-y-6">
-                        <div class="flex items-center gap-3.5 border-b border-slate-100 pb-4">
-                            <div class="w-10 h-10 rounded-2xl bg-blue-50 text-[#1A2B4C] flex items-center justify-center font-bold text-base flex-shrink-0">
-                                <i class="fas fa-user-shield"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-base font-extrabold text-[#1A2B4C] tracking-tight">3. Restricciones Operativas</h2>
-                                <p class="text-xs text-slate-500">Políticas de control para el rol <code class="text-[#2E6F40] bg-emerald-50 px-1.5 py-0.5 rounded font-mono font-bold">editor_sisig</code></p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3.5">
-                            <!-- Toggle 1: Bloquear contenido crítico -->
-                            <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
-                                <div class="pr-3">
-                                    <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
-                                        Bloquear edición de contenido crítico
-                                    </span>
-                                    <span class="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
-                                        Impide a los editores alterar normas o módulos centrales del SIG.
-                                    </span>
-                                </div>
-                                <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    <input type="checkbox" 
-                                           name="editor_bloquear_edicion_critica" 
-                                           value="1" 
-                                           {{ $configuracion->editor_bloquear_edicion_critica ? 'checked' : '' }} 
-                                           class="sr-only switch-sena-input">
-                                    <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
-                                        <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <!-- Toggle 2: Limitar creación de módulos -->
-                            <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
-                                <div class="pr-3">
-                                    <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
-                                        Limitar creación de módulos
-                                    </span>
-                                    <span class="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
-                                        Solo los administradores podrán inaugurar nuevos módulos didácticos.
-                                    </span>
-                                </div>
-                                <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    <input type="checkbox" 
-                                           name="editor_limitar_creacion_modulos" 
-                                           value="1" 
-                                           {{ $configuracion->editor_limitar_creacion_modulos ? 'checked' : '' }} 
-                                           class="sr-only switch-sena-input">
-                                    <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
-                                        <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <!-- Toggle 3: Restringir eliminación de quices -->
-                            <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
-                                <div class="pr-3">
-                                    <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
-                                        Restringir eliminación de evaluaciones
-                                    </span>
-                                    <span class="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
-                                        Evita suprimir quices o bancos de preguntas con evaluaciones realizadas.
-                                    </span>
-                                </div>
-                                <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    <input type="checkbox" 
-                                           name="editor_restringir_eliminacion_quices" 
-                                           value="1" 
-                                           {{ $configuracion->editor_restringir_eliminacion_quices ? 'checked' : '' }} 
-                                           class="sr-only switch-sena-input">
-                                    <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
-                                        <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <!-- Toggle 4: Exigir aprobación previa -->
-                            <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-all cursor-pointer group">
-                                <div class="pr-3">
-                                    <span class="text-xs font-bold text-[#1A2B4C] group-hover:text-[#2E6F40] transition-colors block">
-                                        Exigir aprobación previa de contenidos
-                                    </span>
-                                    <span class="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
-                                        Cualquier cambio editorial quedará en estado 'Revisión' hasta visto bueno del admin.
-                                    </span>
-                                </div>
-                                <div class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    <input type="checkbox" 
-                                           name="editor_requerir_aprobacion" 
-                                           value="1" 
-                                           {{ $configuracion->editor_requerir_aprobacion ? 'checked' : '' }} 
-                                           class="sr-only switch-sena-input">
-                                    <div class="switch-sena-track w-11 h-6 bg-slate-300 rounded-full transition-colors relative">
-                                        <div class="switch-sena-thumb w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 left-0.5 shadow-xs"></div>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- =========================================================
-                     TARJETA 4: ASIGNACIÓN DINÁMICA DE MÓDULOS A EDITORES
-                     (100% REACTIVA: CERO RECARGA DE PÁGINA)
+                     TARJETA 3: ASIGNACIÓN DINÁMICA DE MÓDULOS A EDITORES
+                     (100% REACTIVA: CERO RECARGA DE PÁGINA - FULL WIDTH)
                      ========================================================= -->
-                <div class="lg:col-span-7 space-y-6">
+                <div class="lg:col-span-12 space-y-6">
                     <div class="card-sena rounded-3xl p-6 sm:p-7 space-y-6">
                         
                         <!-- Encabezado de la Tarjeta de Asignación -->
@@ -437,7 +391,7 @@
                                 </div>
                                 <div>
                                     <h2 class="text-base font-extrabold text-[#1A2B4C] tracking-tight">
-                                        4. Asignación Dinámica de Módulos a Editores
+                                        3. Asignación Dinámica de Módulos a Editores
                                     </h2>
                                     <p class="text-xs text-slate-500">
                                         Sincronización en vivo en la tabla pivote <code class="text-[#2E6F40] bg-emerald-50 px-1 py-0.5 rounded font-mono font-bold">editor_modulos</code>
@@ -500,7 +454,7 @@
                                 </div>
 
                                 <!-- Contenedor de Switches con micro-animación en cambio reactivo -->
-                                <div id="contenedor-switches-modulos" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[380px] overflow-y-auto pr-1">
+                                <div id="contenedor-switches-modulos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 max-h-[420px] overflow-y-auto pr-1">
                                     @forelse($modulos as $modulo)
                                         @php
                                             $estaAsignado = in_array($modulo->id, $modulosAsignados);
@@ -558,13 +512,25 @@
                                             </div>
                                         </label>
                                     @empty
-                                        <div class="col-span-2 p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                                        <div class="col-span-full p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                                             <p class="text-xs text-slate-500 italic">No existen módulos registrados en la tabla sisig_modulos.</p>
                                         </div>
                                     @endforelse
                                 </div>
                             </div>
                         @endif
+
+                        <!-- Barra de Estado y Auditoría del Sistema -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-history text-[#2E6F40]"></i>
+                                <span>Última modificación: <strong class="text-slate-700">{{ $configuracion->updated_at ? $configuracion->updated_at->format('d/m/Y h:i A') : 'Reciente' }}</strong></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span>Plataforma activa: <strong class="text-slate-700">{{ $modulos->where('estado', 'publicado')->count() }} de {{ $modulos->count() }} módulos publicados</strong></span>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -584,9 +550,9 @@
 
                 <button type="submit" 
                         id="btn-guardar-configuracion"
-                        class="btn-sena-primary w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer">
-                    <i class="fas fa-save text-sm" id="btn-save-icon"></i>
-                    <span id="btn-save-text">Guardar Toda la Configuración</span>
+                        class="btn-sena-primary px-5 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fas fa-save text-xs" id="btn-save-icon"></i>
+                    <span id="btn-save-text">Guardar Cambios</span>
                 </button>
             </div>
 
@@ -655,11 +621,11 @@
                 const btnIcon = document.getElementById('btn-save-icon');
                 const btnText = document.getElementById('btn-save-text');
 
-                const iconOriginal = btnIcon ? btnIcon.className : 'fas fa-save text-sm';
-                const textOriginal = btnText ? btnText.textContent : 'Guardar Toda la Configuración';
+                const iconOriginal = btnIcon ? btnIcon.className : 'fas fa-save text-xs';
+                const textOriginal = btnText ? btnText.textContent : 'Guardar Cambios';
 
-                if (btnIcon) btnIcon.className = 'fas fa-spinner fa-spin text-sm';
-                if (btnText) btnText.textContent = 'Guardando cambios...';
+                if (btnIcon) btnIcon.className = 'fas fa-spinner fa-spin text-xs';
+                if (btnText) btnText.textContent = 'Guardando...';
                 if (btnSubmit) btnSubmit.disabled = true;
 
                 const formData = new FormData(formulario);
@@ -696,12 +662,6 @@
                             timer: 2500,
                             showConfirmButton: false
                         });
-                    }
-
-                    // Actualizar previsualización de logo si se cambió
-                    if (data.logo_url) {
-                        const imgLogo = document.getElementById('preview-logo-imagen');
-                        if (imgLogo) imgLogo.src = data.logo_url;
                     }
                 })
                 .catch(error => {
@@ -835,19 +795,6 @@
                 btnTerminos.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-[#1A2B4C] flex items-center justify-center gap-2 cursor-pointer';
                 panelPrivacidad.classList.remove('hidden');
                 panelTerminos.classList.add('hidden');
-            }
-        }
-
-        // Previsualización instantánea del Logotipo
-        function actualizarPrevisualizacionLogo(event) {
-            const input = event.target;
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imagenElemento = document.getElementById('preview-logo-imagen');
-                    if (imagenElemento) imagenElemento.src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
             }
         }
     </script>

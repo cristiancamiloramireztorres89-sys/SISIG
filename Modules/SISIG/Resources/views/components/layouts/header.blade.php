@@ -75,7 +75,9 @@
                                 @if($user->person && $user->person->avatar)
                                     <img src="{{ asset('storage/' . $user->person->avatar) }}" 
                                          alt="{{ $displayName }}" 
-                                         class="w-full h-full object-cover">
+                                         class="w-full h-full object-cover"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                                    <span style="display:none;">{{ $initials }}</span>
                                 @else
                                     <span>{{ $initials }}</span>
                                 @endif

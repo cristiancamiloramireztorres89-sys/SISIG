@@ -229,7 +229,11 @@
                                         class="bg-white hover:bg-slate-50 text-[#343A40] pl-2 pr-3.5 py-1.5 rounded-full flex items-center gap-2.5 shadow-sm hover:shadow transition-all group cursor-pointer border border-slate-100 select-none">
                                     <div class="w-8 h-8 rounded-full bg-[#39A900] text-white flex items-center justify-center font-bold text-xs tracking-wider overflow-hidden flex-shrink-0 shadow-xs">
                                         @if($masterUser->person && $masterUser->person->avatar)
-                                            <img src="{{ asset('storage/' . $masterUser->person->avatar) }}" alt="{{ $mDisplayName }}" class="w-full h-full object-cover">
+                                            <img src="{{ asset('storage/' . $masterUser->person->avatar) }}" 
+                                                 alt="{{ $mDisplayName }}" 
+                                                 class="w-full h-full object-cover"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                                            <span style="display:none;">{{ $mInitials }}</span>
                                         @else
                                             <span>{{ $mInitials }}</span>
                                         @endif
